@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 const {
   Model
-} = require('sequelize');
+} = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class TN_T_SETOR extends Model {
     /**
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     ds_local: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'TN_T_SETOR',
+    modelName: "TN_T_SETOR",
   });
   return TN_T_SETOR;
 };

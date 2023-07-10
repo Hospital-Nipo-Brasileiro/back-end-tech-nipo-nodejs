@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 const {
   Model
-} = require('sequelize');
+} = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class TN_T_SISTEMA extends Model {
     /**
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     ds_nome: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'TN_T_SISTEMA',
+    modelName: "TN_T_SISTEMA",
   });
   return TN_T_SISTEMA;
 };
