@@ -1,6 +1,6 @@
 const dotenv = require('dotenv/config')
 const express = require('express')
-const app = require("./api/app.js")
+const app = require("./src/app.js")
 
 const port = 3000
 
