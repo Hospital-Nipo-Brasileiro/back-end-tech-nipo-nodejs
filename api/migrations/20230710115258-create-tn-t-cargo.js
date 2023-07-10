@@ -2,27 +2,28 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('TN_T_Pessoas', {
+    await queryInterface.createTable('TN_T_CARGO', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nome: {
+      ds_nome: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      createdAt: {
+      dt_created: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      dt_updated: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('TN_T_Pessoas');
+    await queryInterface.dropTable('TN_T_CARGO');
   }
 };
