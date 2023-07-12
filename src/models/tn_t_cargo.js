@@ -6,13 +6,14 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class TN_T_CARGO extends Model {
     static associate(models) {
+      TN_T_CARGO.hasMany(models.TN_T_CARGO_SETOR, {foreignKey: "id_cargo"});
     }
   }
   TN_T_CARGO.init({
     ds_nome: DataTypes.STRING
   }, {
     sequelize,
-    paranoid: true,
+    paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
     modelName: "TN_T_CARGO",
     tableName: "TN_T_CARGO",
     timestamps: true, // Habilita campos createdAt e updatedAt

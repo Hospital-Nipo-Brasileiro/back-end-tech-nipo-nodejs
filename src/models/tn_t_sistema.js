@@ -5,13 +5,8 @@ const {
 } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class TN_T_SISTEMA extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      TN_T_SISTEMA.hasMany(models.TN_T_SISTEMA_PESSOA, {foreignKey: "id_sistema"});
     }
   }
   TN_T_SISTEMA.init({
@@ -19,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }, 
   {
     sequelize,
-    paranoid: true,
+    paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
     modelName: "TN_T_SISTEMA",
     tableName: "TN_T_SISTEMA",
     timestamps: true, // Habilita campos createdAt e updatedAt

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      TN_T_SETOR.hasMany(models.TN_T_CARGO_SETOR, {foreignKey: "id_setor"});
     }
   }
   TN_T_SETOR.init({
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     ds_local: DataTypes.STRING
   }, {
     sequelize,
-    paranoid: true,
+    paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
     modelName: "TN_T_SETOR",
     tableName: "TN_T_SETOR",
     timestamps: true, // Habilita campos createdAt e updatedAt

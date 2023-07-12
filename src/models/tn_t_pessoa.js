@@ -5,8 +5,8 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class TN_T_PESSOA extends Model {
     static associate(models) {
-      TN_T_PESSOA.belongsTo(models.TN_T_SISTEMA_PESSOA, {foreignKey : "id_acessos"});
-      TN_T_PESSOA.hasMany(models.TN_T_CARGO_SETOR, {foreignKey: "id_pessoa"});
+      TN_T_PESSOA.hasMany(models.TN_T_SISTEMA_PESSOA, {foreignKey : "id_acessos"});
+      TN_T_PESSOA.belongsTo(models.TN_T_CARGO_SETOR, {foreignKey: "id_cargo_setor"});
     }
   }
   TN_T_PESSOA.init({
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   },
   {
     sequelize,
-    paranoid: true,
+    paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
     modelName: "TN_T_PESSOA",
     tableName: "TN_T_PESSOA",
     timestamps: true, // Habilita campos createdAt e updatedAt
