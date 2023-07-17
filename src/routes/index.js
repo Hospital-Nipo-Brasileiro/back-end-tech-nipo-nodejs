@@ -7,7 +7,9 @@ const cargoSetor = require("./CargoSetorRoute.js");
 const estoques = require("./EstoqueRoute.js");
 const zonas = require("./ZonaRoute.js");
 const armarios = require("./ArmarioRoute.js");
-const prateleira = require("./PrateleirasRoute.js");
+const prateleiras = require("./PrateleirasRoute.js");
+const baus = require("./BauRoute.js");
+const itens = require("./ItemRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -21,7 +23,9 @@ const routes = (app) => {
     estoques,
     zonas,
     armarios,
-    prateleira
+    prateleiras,
+    baus,
+    itens
   );
 };
 

@@ -32,11 +32,11 @@ class ArmarioController {
   }
 
   static async criaArmario(req, res, next) {
-    const zonaEncontrado = await database.TN_T_ZONA.findOne({ where: {id: Number(req.body.id_zona)}});
+    const zonaEncontrada = await database.TN_T_ZONA.findOne({ where: {id: Number(req.body.id_zona)}});
 
     try {
 
-      if(zonaEncontrado) {
+      if(zonaEncontrada) {
         const novaArmario = {
           id_zona: req.body.id_zona,
           dt_created: new Date(),
@@ -60,10 +60,10 @@ class ArmarioController {
   static async atualizaUmArmario(req, res, next) {
     const { id } = req.params;
     const armarioEncontrado = await database.TN_T_ARMARIO.findOne({ where: {id: Number(id)}});
-    const zonaEncontrado = await database.TN_T_ZONA.findOne({ where: {id: Number(req.body.id_zona)}});
+    const zonaEncontrada = await database.TN_T_ZONA.findOne({ where: {id: Number(req.body.id_zona)}});
 
     try{
-      if(armarioEncontrado && zonaEncontrado){
+      if(armarioEncontrado && zonaEncontrada){
 
         const novaArmario = {
           id_zona: req.body.id_zona,
@@ -74,7 +74,7 @@ class ArmarioController {
         const armarioAtualizado = await database.TN_T_ARMARIO.findOne({where: {id: Number(id)}});
         res.status(200).send(armarioAtualizado);
         
-      } else if (armarioEncontrado && !zonaEncontrado){
+      } else if (armarioEncontrado && !zonaEncontrada){
         next(new NaoEncontrado(`Id de zona ${req.body.id_zona} não encontrado`));
       } else {
         next(new NaoEncontrado(`ID ${id} de armario não encontrado para atualizar`));
