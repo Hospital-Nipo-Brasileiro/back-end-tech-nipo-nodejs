@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       id_estoque: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       dt_created: {
         allowNull: false,
@@ -28,6 +28,6 @@ module.exports = {
   },
   // eslint-disable-next-line no-unused-vars
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_ZONAs");
+    await queryInterface.dropTable("TN_T_ZONA");
   }
 };
