@@ -1,16 +1,11 @@
-'use strict';
+"use strict";
 const {
   Model
-} = require('sequelize');
+} = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class TN_T_ITEM extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      TN_T_ITEM.hasMany(models.TN_T_ITEM_GUARDADO, {foreignKey: "id_item"});
     }
   }
   TN_T_ITEM.init({
@@ -19,7 +14,14 @@ module.exports = (sequelize, DataTypes) => {
     ds_item: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'TN_T_ITEM',
+    paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
+    modelName: "TN_T_ITEM",
+    tableName: "TN_T_ITEM",
+    timestamps: true, // Habilita campos createdAt e updatedAt
+    createdAt: "dt_created", // Nome da coluna para data de criação
+    updatedAt: "dt_updated", // Nome da coluna para data de atualização
+    deletedAt: "dt_deleted", // Nome da coluna para data de desativação
+    underscored: true, // Usa o padrão snake_case para os nomes das colunas
   });
   return TN_T_ITEM;
 };

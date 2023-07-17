@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TN_T_ARMARIO.init({
-    id_zona: DataTypes.STRING
+    id_zona: DataTypes.INTEGER
   }, {
     sequelize,
     paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)

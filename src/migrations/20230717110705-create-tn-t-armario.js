@@ -10,14 +10,18 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       id_zona: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
-      createdAt: {
+      dt_created: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      dt_updated: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      dt_deleted: {
+        allowNull: true,
         type: Sequelize.DATE
       }
     });

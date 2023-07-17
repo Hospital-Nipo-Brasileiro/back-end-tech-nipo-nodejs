@@ -33,8 +33,8 @@ class EstoqueController{
 
   static async criaEstoque(req, res, next) {
     const novoEstoque = {
-      ds_nome: req.params.ds_nome,
-      ds_estoque: req.params.ds_estoque,   
+      ds_nome: req.body.ds_nome,
+      ds_estoque: req.body.ds_estoque,   
       dt_created: new Date(),
       dt_updated: new Date()
     };
@@ -51,8 +51,8 @@ class EstoqueController{
     const { id } = req.params;
     const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: {id: Number(id)}});
     const novoEstoque = {
-      ds_nome: req.params.ds_nome,
-      ds_estoque: req.params.ds_estoque,   
+      ds_nome: req.body.ds_nome,
+      ds_estoque: req.body.ds_estoque,   
       dt_updated: new Date()
     };
 

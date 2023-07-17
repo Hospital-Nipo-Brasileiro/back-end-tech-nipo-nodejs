@@ -63,8 +63,8 @@ class CargoSetorController {
 
   static async criaCargoSetor(req, res, next) {
     const novoCargoSetor = {
-      id_cargo: req.params.id_cargo,
-      id_setor: req.params.id_setor,      
+      id_cargo: req.body.id_cargo,
+      id_setor: req.body.id_setor,      
       dt_created: new Date(),
       dt_updated: new Date()
     };
@@ -81,8 +81,8 @@ class CargoSetorController {
     const { id } = req.params;
     const cargoSetorEncontrado = await database.TN_T_CARGO_SETOR.findOne({ where: {id: Number(id)}});
     const novoCargoSetor = {
-      id_cargo: req.params.id_cargo,
-      id_setor: req.params.id_setor,
+      id_cargo: req.body.id_cargo,
+      id_setor: req.body.id_setor,
       dt_updated: new Date()
     };
 
