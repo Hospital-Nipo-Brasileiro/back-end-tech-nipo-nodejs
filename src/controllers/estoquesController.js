@@ -47,7 +47,7 @@ class EstoqueController{
     }
   }
 
-  static async atualizaUmCargoSetor(req, res, next) {
+  static async atualizaUmEstoque(req, res, next) {
     const { id } = req.params;
     const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: {id: Number(id)}});
     const novoEstoque = {

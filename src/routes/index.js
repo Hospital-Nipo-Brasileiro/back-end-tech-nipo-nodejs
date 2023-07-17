@@ -4,6 +4,7 @@ const cargos = require("./CargoRoute.js");
 const setores = require("./SetorRoute.js");
 const sistemas = require("./SistemasRoute.js");
 const cargoSetor = require("./CargoSetorRoute.js");
+const estoque = require("./EstoqueRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -13,7 +14,8 @@ const routes = (app) => {
     cargos,
     setores,
     sistemas,
-    cargoSetor
+    cargoSetor,
+    estoque
   );
 };
 
