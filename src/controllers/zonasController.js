@@ -1,3 +1,4 @@
+const ErroBase = require("../errors/ErroBase");
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
 
@@ -89,10 +90,19 @@ class ZonaController {
   static async deletaUmZona(req, res, next) {
     const { id } = req.params;
     const zonaEncontrada = await database.TN_T_ZONA.findOne({ where: {id: Number(id)}});
+    const bauVinculadoAZona = await database.TN_T_BAU.findAll({ where: {id_zona: Number(id)}});
+    const armarioVinculadoAZona = await database.TN_T_ARMARIO.findAll({ where: {id_zona: Number(id)}});
+
     try{
-      if(zonaEncontrada){
+      if(zonaEncontrada && bauVinculadoAZona == null && armarioVinculadoAZona == null){
         await database.TN_T_ZONA.destroy({ where: { id: Number(id)}});
         res.status(200).send({message: `Zona de ID ${id} deletado.`});
+      } else if(zonaEncontrada && bauVinculadoAZona && armarioVinculadoAZona) {
+        next(new ErroBase("Existe baú e armário vinculado a zona mencionada"));
+      } else if(zonaEncontrada && bauVinculadoAZona && armarioVinculadoAZona !== null){
+        next(new ErroBase("Existe baú vinculado a zona mencionada"));
+      } else if(zonaEncontrada && bauVinculadoAZona !== null && armarioVinculadoAZona) {
+        next(new ErroBase("Existe armário vinculado a zona mencionada"));
       } else {
         next(new NaoEncontrado(`ID ${id} de zona não encontrado para exclusão.`));
       }
