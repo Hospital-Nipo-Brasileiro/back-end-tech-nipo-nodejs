@@ -10,6 +10,7 @@ const armarios = require("./ArmarioRoute.js");
 const prateleiras = require("./PrateleirasRoute.js");
 const baus = require("./BauRoute.js");
 const itens = require("./ItemRoute.js");
+const itemGuardado = require("./ItemGuardadoRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -25,7 +26,8 @@ const routes = (app) => {
     armarios,
     prateleiras,
     baus,
-    itens
+    itens,
+    itemGuardado
   );
 };
 
