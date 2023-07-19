@@ -98,11 +98,11 @@ class ZonaController {
         await database.TN_T_ZONA.destroy({ where: { id: Number(id)}});
         res.status(200).send({message: `Zona de ID ${id} deletado.`});
       } else if(zonaEncontrada && bauVinculadoAZona && armarioVinculadoAZona) {
-        next(new ErroBase("Existe baú e armário vinculado a zona mencionada"));
+        next(new ErroBase("Existe baú e armário vinculado a zona mencionada", 400));
       } else if(zonaEncontrada && bauVinculadoAZona && armarioVinculadoAZona !== null){
-        next(new ErroBase("Existe baú vinculado a zona mencionada"));
+        next(new ErroBase("Existe baú vinculado a zona mencionada", 400));
       } else if(zonaEncontrada && bauVinculadoAZona !== null && armarioVinculadoAZona) {
-        next(new ErroBase("Existe armário vinculado a zona mencionada"));
+        next(new ErroBase("Existe armário vinculado a zona mencionada", 400));
       } else {
         next(new NaoEncontrado(`ID ${id} de zona não encontrado para exclusão.`));
       }

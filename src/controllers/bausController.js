@@ -1,3 +1,4 @@
+const ErroBase = require("../errors/ErroBase");
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
 
@@ -96,10 +97,14 @@ class BauController {
   static async deletaUmBau(req, res, next) {
     const { id } = req.params;
     const bauEncontrado = await database.TN_T_BAU.findOne({ where: {id: Number(id)}});
+    const itemGuardadoNoBau = await database.TN_T_ITEM_GUARDADO.findAll({ where: {id_bau: Number(id)}});
+
     try{
-      if(bauEncontrado){
+      if(bauEncontrado && itemGuardadoNoBau == null){
         await database.TN_T_BAU.destroy({ where: { id: Number(id)}});
         res.status(200).send({message: `Bau de ID ${id} deletado.`});
+      } else if (bauEncontrado && itemGuardadoNoBau) {
+        next(new ErroBase("Existe um item guardado neste baú, delete antes para excluir o baú", 400));
       } else {
         next(new NaoEncontrado(`ID ${id} de bau não encontrado para exclusão.`));
       }

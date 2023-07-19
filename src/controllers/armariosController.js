@@ -1,3 +1,4 @@
+const ErroBase = require("../errors/ErroBase");
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
 
@@ -89,10 +90,14 @@ class ArmarioController {
   static async deletaUmArmario(req, res, next) {
     const { id } = req.params;
     const armarioEncontrado = await database.TN_T_ARMARIO.findOne({ where: {id: Number(id)}});
+    const prateleiraDoArmario = await database.TN_T_PRATELEIRA.findAll({ where: {id_armario: Number(id)}});
+
     try{
-      if(armarioEncontrado){
+      if(armarioEncontrado && prateleiraDoArmario == null){
         await database.TN_T_ARMARIO.destroy({ where: { id: Number(id)}});
         res.status(200).send({message: `Armario de ID ${id} deletado.`});
+      } else if (armarioEncontrado && prateleiraDoArmario){
+        next(new ErroBase("Prateleira existente no armário.", 400));
       } else {
         next(new NaoEncontrado(`ID ${id} de armario não encontrado para exclusão.`));
       }

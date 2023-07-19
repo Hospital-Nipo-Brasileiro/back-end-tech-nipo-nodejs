@@ -1,3 +1,4 @@
+const ErroBase = require("../errors/ErroBase");
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
 
@@ -89,10 +90,14 @@ class PrateleiraController {
   static async deletaUmPrateleira(req, res, next) {
     const { id } = req.params;
     const prateleiraEncontrada = await database.TN_T_PRATELEIRA.findOne({ where: {id: Number(id)}});
+    const itemGuardadoNaPrateleira = await database.TN_T_ITEM_GUARDADO.findAll({ where: {id_prateleira: Number(id)}});
+
     try{
-      if(prateleiraEncontrada){
+      if(prateleiraEncontrada && itemGuardadoNaPrateleira == null){
         await database.TN_T_PRATELEIRA.destroy({ where: { id: Number(id)}});
         res.status(200).send({message: `Prateleira de ID ${id} deletado.`});
+      } else if (prateleiraEncontrada && itemGuardadoNaPrateleira) {
+        next(new ErroBase("Existe um item guardado na prateleira", 400));
       } else {
         next(new NaoEncontrado(`ID ${id} de prateleira não encontrado para exclusão.`));
       }
