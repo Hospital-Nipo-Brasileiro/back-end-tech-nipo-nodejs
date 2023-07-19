@@ -38,6 +38,7 @@ class PrateleiraController {
 
       if(armarioEncontrado) {
         const novaPrateleira = {
+          ds_nome: req.body.ds_nome,
           id_armario: req.body.id_armario,
           dt_created: new Date(),
           dt_updated: new Date()
@@ -66,6 +67,7 @@ class PrateleiraController {
       if(prateleiraEncontrada && armarioEncontrado){
 
         const novaPrateleira = {
+          ds_nome: req.body.ds_nome,
           id_armario: req.body.id_armario,
           dt_updated: new Date()
         };

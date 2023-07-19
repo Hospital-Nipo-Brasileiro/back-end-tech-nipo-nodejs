@@ -38,6 +38,7 @@ class ZonaController {
 
       if(estoqueEncontrado) {
         const novaZona = {
+          ds_nome: req.body.ds_nome,
           id_estoque: req.body.id_estoque,
           dt_created: new Date(),
           dt_updated: new Date()
@@ -57,19 +58,20 @@ class ZonaController {
     }
   }
 
+  //Para atualizar uma zona deve ser passado obrigatóriamente um id_estoque
   static async atualizaUmZona(req, res, next) {
     const { id } = req.params;
     const zonaEncontrada = await database.TN_T_ZONA.findOne({ where: {id: Number(id)}});
     const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: {id: Number(req.body.id_estoque)}});
 
+    const novaZona = {
+      ds_nome: req.body.ds_nome,
+      id_estoque: req.body.id_estoque,
+      dt_updated: new Date(),
+    };
+
     try{
       if(zonaEncontrada && estoqueEncontrado){
-
-        const novaZona = {
-          id_estoque: req.body.id_estoque,
-          dt_updated: new Date()
-        };
-
         await database.TN_T_ZONA.update(novaZona, { where: {id: Number(id)}});
         const zonaAtualizado = await database.TN_T_ZONA.findOne({where: {id: Number(id)}});
         res.status(200).send(zonaAtualizado);

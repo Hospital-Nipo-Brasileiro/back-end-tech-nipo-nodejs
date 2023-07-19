@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TN_T_PRATELEIRA.init({
-    id_armario: DataTypes.INTEGER
+    id_armario: DataTypes.INTEGER,
+    ds_nome: DataTypes.STRING
   }, {
     sequelize,
     paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)

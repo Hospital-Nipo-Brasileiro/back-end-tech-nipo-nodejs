@@ -38,6 +38,7 @@ class ArmarioController {
 
       if(zonaEncontrada) {
         const novaArmario = {
+          ds_nome: req.body.ds_nome,
           id_zona: req.body.id_zona,
           dt_created: new Date(),
           dt_updated: new Date()
@@ -66,6 +67,7 @@ class ArmarioController {
       if(armarioEncontrado && zonaEncontrada){
 
         const novaArmario = {
+          ds_nome: req.body.ds_nome,
           id_zona: req.body.id_zona,
           dt_updated: new Date()
         };

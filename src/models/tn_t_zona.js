@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TN_T_ZONA.init({
-    id_estoque: DataTypes.INTEGER
+    ds_nome: DataTypes.STRING,
+    id_estoque: DataTypes.INTEGER,
   }, {
     sequelize,
     paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
