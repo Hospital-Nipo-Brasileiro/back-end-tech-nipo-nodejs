@@ -1,3 +1,4 @@
+const ErroBase = require("../errors/ErroBase.js");
 const NaoEncontrado = require("../errors/NaoEncontrado.js");
 const database = require("../models");
 
@@ -32,6 +33,8 @@ class ItemGuardadoController {
   }
 
   static async guardaUmItem(req, res, next) {
+
+    
     const novoItem = {
       id_item: req.body.id_item,
       id_prateleira: req.body.id_prateleira,
@@ -43,19 +46,22 @@ class ItemGuardadoController {
       dt_created: new Date(),
       dt_updated: new Date(),
     };
-  
+    
+    const buscaItemGuardadoExistente = await database.TN_T_ITEM_GUARDADO.findOne({where: {id_item: Number(req.body.id_item)}});
+    const buscaItemGuardado = await database.TN_T_ITEM.findOne({ where: {id: Number(novoItem.id_item)}});
     try {
 
-      if(req.body.id_prateleira){
-        novoItem.id_bau = null;
-      } else if (req.body.id_bau) {
-        novoItem.id_prateleira = null;
+      
+      if (!buscaItemGuardado){
+        next(new NaoEncontrado("ID do item não encontrado"));
+      } else if (buscaItemGuardadoExistente){
+        next(new ErroBase("Não é possível guardar um item já guardado", 400));
       } else if (req.body.id_prateleira !== null || req.body.id_bau !== null){
-        next("Não é possível guardar um produto no baú e na prateleira ao mesmo tempo");
+        next(new ErroBase("Não é possível guardar um produto no baú e na prateleira ao mesmo tempo", 400));
+      } else {
+        const novoItemGuardado = await database.TN_T_ITEM_GUARDADO.create(novoItem);
+        res.status(201).send(novoItemGuardado);
       }
-
-      const novoItemGuardado = await database.TN_T_ITEM_GUARDADO.create(novoItem);
-      res.status(201).send(novoItemGuardado);
     } catch (err) {
       next(err);
     }
@@ -82,7 +88,9 @@ class ItemGuardadoController {
           novoItem.id_bau = null;
         } else if (req.body.id_bau) {
           novoItem.id_prateleira = null;
-        } 
+        } else if (req.body.id_prateleira !== null || req.body.id_bau !== null){
+          next(new ErroBase("Não é possível atualizar um item guardado no baú e na prateleira ao mesmo tempo", 400));
+        }
 
         await database.TN_T_ITEM.update(novoItem, {where: {id: Number(id)}});
         const itemGuardadoAtualizado = await database.TN_T_ITEM_GUARDADO.findOne( { where:{ id: Number(id) }});
