@@ -11,7 +11,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   TN_T_BAU.init({
     id_zona: DataTypes.INTEGER,
-    ds_nome: DataTypes.STRING
+    ds_nome: DataTypes.STRING,
+    ds_tipo:{
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate:{
+        validateType: function validateType(params) {
+          if(params !== "CX" || params !== "EF"){
+            throw new Error("A descrição do tipo deve ser ou caixa \"CX\" ou  espaço físico \"EF\" ");
+          }
+        }
+      }
+    }
   }, {
     sequelize,
     paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
