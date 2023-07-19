@@ -34,18 +34,19 @@ class BauController {
   static async criaBau(req, res, next) {
     const zonaEncontrada = await database.TN_T_ZONA.findOne({ where: {id: Number(req.body.id_zona)}});
 
+    const novoBau = {
+      ds_nome: req.body.ds_nome,
+      id_zona: req.body.id_zona,
+      ds_tipo: req.body.ds_tipo,
+      dt_created: new Date(),
+      dt_updated: new Date()
+    };
+
     try {
 
       if(zonaEncontrada) {
-        const novaBau = {
-          ds_nome: req.body.ds_nome,
-          id_zona: req.body.id_zona,
-          dt_created: new Date(),
-          dt_updated: new Date()
-        };
-
-        const novoBauCriada = await database.TN_T_BAU.create(novaBau);
-        res.status(201).send(novoBauCriada);
+        const novoBauCriado = await database.TN_T_BAU.create(novoBau);
+        res.status(201).send(novoBauCriado);
       } else if (!req.body.id_zona){
         next(new NaoEncontrado("É obrigatório o id de zona"));
       } else {
@@ -54,34 +55,40 @@ class BauController {
 
       
     } catch (err) {
+      if (err.name === "SequelizeValidationError") {
+        res.status(400).send({ mensagem: err.message, status: 400 });
+      }
       next(err);
     }
   }
 
+  //PRECISO VALIDAR SE PASSAR O ID DE BAU O USUÁRIO QUER MOVIMENTAR O BAU PARA OUTRA ZONA
   static async atualizaUmBau(req, res, next) {
     const { id } = req.params;
-    const bauEncontrado = await database.TN_T_BAU.findOne({ where: {id: Number(id)}});
-    const zonaEncontrada = await database.TN_T_ZONA.findOne({ where: {id: Number(req.body.id_zona)}});
+    const bauEncontrado = await database.TN_T_BAU.findOne({ where: { id: Number(id) } });
+    const zonaEncontrada = await database.TN_T_ZONA.findOne({ where: { id: Number(req.body.id_zona) } });
 
-    try{
-      if(bauEncontrado && zonaEncontrada){
-
+    try {
+      if (bauEncontrado && zonaEncontrada) {
         const novaBau = {
           ds_nome: req.body.ds_nome,
           id_zona: req.body.id_zona,
-          dt_updated: new Date()
+          ds_tipo: req.body.ds_tipo,
+          dt_updated: new Date(),
         };
 
-        await database.TN_T_BAU.update(novaBau, { where: {id: Number(id)}});
-        const bauAtualizado = await database.TN_T_BAU.findOne({where: {id: Number(id)}});
+        await database.TN_T_BAU.update(novaBau, { where: { id: Number(id) }, omitNull: true });
+        const bauAtualizado = await database.TN_T_BAU.findOne({ where: { id: Number(id) } });
         res.status(200).send(bauAtualizado);
-        
-      } else if (bauEncontrado && !zonaEncontrada){
+      } else if (bauEncontrado && !zonaEncontrada) {
         next(new NaoEncontrado(`Id de zona ${req.body.id_zona} não encontrado`));
       } else {
         next(new NaoEncontrado(`ID ${id} de bau não encontrado para atualizar`));
       }
     } catch (err) {
+      if (err.name === "SequelizeValidationError") {
+        res.status(400).send({ mensagem: err.message, status: 400 });
+      }
       next(err);
     }
   }

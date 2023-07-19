@@ -1,5 +1,6 @@
 const database = require("../models");
 const NaoEncontrado = require("../errors/NaoEncontrado");
+const ErroBase = require("../errors/ErroBase");
 
 class EstoqueController{
 
@@ -72,10 +73,15 @@ class EstoqueController{
   static async deletaUmEstoque(req, res, next) {
     const { id } = req.params;
     const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: {id: Number(id)}});
+    const zonaVinculadaAoEstoque = await database.TN_T_ZONA.findAll({ where: {id_estoque: Number(id)}});
+    
     try{
-      if(estoqueEncontrado){
+      if(estoqueEncontrado && zonaVinculadaAoEstoque == null){
+
         await database.TN_T_ESTOQUE.destroy({ where: { id: Number(id)}});
         res.status(200).send({message: `Estoque de ID ${id} deletado.`});
+      } else if (estoqueEncontrado && zonaVinculadaAoEstoque !== null) {
+        next(new ErroBase("Não possível excluir estoque pois tem uma ou mais zonas vinculadas a ele.", 400));
       } else {
         next(new NaoEncontrado(`ID ${id} de estoque não encontrado para exclusão.`));
       }
