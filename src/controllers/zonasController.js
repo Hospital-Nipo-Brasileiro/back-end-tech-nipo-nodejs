@@ -6,6 +6,7 @@ class ZonaController {
 
   static async buscaTodasZonas(req, res, next) {
     const zonasEncontradas = await database.TN_T_ZONA.findAll();
+
     try{
       if(zonasEncontradas.length !== 0) {
         res.status(200).send(zonasEncontradas);

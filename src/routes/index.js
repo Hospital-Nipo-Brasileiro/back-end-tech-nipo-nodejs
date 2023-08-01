@@ -11,6 +11,7 @@ const prateleiras = require("./PrateleirasRoute.js");
 const baus = require("./BauRoute.js");
 const itens = require("./ItemRoute.js");
 const itemGuardado = require("./ItemGuardadoRoute.js");
+const deskManager = require("./DeskManagerRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -27,7 +28,8 @@ const routes = (app) => {
     prateleiras,
     baus,
     itens,
-    itemGuardado
+    itemGuardado,
+    deskManager
   );
 };
 
