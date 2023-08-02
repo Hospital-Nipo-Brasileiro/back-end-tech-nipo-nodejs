@@ -1,5 +1,6 @@
 const fs = require("fs");
 const csv = require("csv-parser");
+const diacritics = require("diacritics");
 
 class DeskManagerService {
 
@@ -22,11 +23,20 @@ class DeskManagerService {
                 emailDomain = "@desk.ms";
               }
 
-              const partsOfName = data.Nome.split(" ");
-              const firstName = partsOfName[0];
-              const lastName = partsOfName[partsOfName.length - 1];
+              // Remover acentuações do nome
+              const nameWithoutDiacritics = diacritics.remove(data.Nome);
+
+              // Separar o nome em partes
+              const partsOfName = nameWithoutDiacritics.trim().split(" ");
+              const firstName = partsOfName[0].trim();
+              const lastName = partsOfName[partsOfName.length - 1].trim();
+
+              // Criação das novas variáveis com os nomes em letras minúsculas
+              const firstNameEmail = firstName.toLowerCase().trim();
+              const lastNameEmail = lastName.toLowerCase().trim();
+
               const surname = partsOfName.slice(1).join(" ");
-              const email = `${firstName}.${lastName}${emailDomain}`;
+              const email = `${firstNameEmail}.${lastNameEmail}${emailDomain}`;
               const senha = data.Senha;
               let codCliente = 0;
 
@@ -53,7 +63,29 @@ class DeskManagerService {
                   Sobrenome: surname,
                   NomeDepartamento: data.Área,
                   NomeLocal: data.Local,
-                  // Restante da lógica...
+                  
+                  // OBRIGATÓRIO
+
+                  Observacao: "",
+                  AdmAtivo: "N",
+                  GerenteAtivo: "N",
+                  OcultaUser: "N",
+                  CriaUsuarioAtivo: "S",
+                  AprovaChamadoAtivo: "N",
+                  VipAtivo: "S",
+                  VisualizaSLAContratoAtivo: "S",
+                  EmailDepLocalAtivo: "N",
+                  EmailSuporteAtivo: "S",
+                  SatisfacaoEmailAtivo: "S",
+                  SatisfacaoObrigAtivo: "N",
+                  NotificaoAtivo: "N",
+                  BoasVindas: "S",
+                  SMSAtivo: "S",
+                  GoogleAtivo: "S",
+                  MicrosoftAtivo: "S",
+                  AlteradPessoaisAtivo: "S",
+                  MudarSenhaAtivo: "S",
+                  Idioma: "pt-br",
                 },
               };
 
@@ -63,6 +95,7 @@ class DeskManagerService {
         })
         .on("end", () => {
           console.log("Criação de usuários concluída.");
+          console.log(results);
           resolve(results); // Resolve a promise com os resultados após a leitura do CSV ser concluída
         })
         .on("error", (error) => {
@@ -70,6 +103,8 @@ class DeskManagerService {
         });
     });
   }
+
+
 
 }
 

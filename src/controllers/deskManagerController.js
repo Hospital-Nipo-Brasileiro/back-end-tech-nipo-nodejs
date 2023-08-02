@@ -16,6 +16,8 @@ class DeskManagerController {
     
       if(response.status === 200 && response.data && response.data.access_token) {
         res.send(response.data.access_token); 
+        req.access_token = response.data.access_token;
+        next();
       } else if (response.status === 200 && response.data && response.data.erro) {
         next(response.data.erro, 400);
       } else {
@@ -26,20 +28,69 @@ class DeskManagerController {
     }
   }
 
-  
-  static async visualizaUsuarios(req, res, next) {    
+  static async visualizaUsuariosEMostra(req, res, next) {    
 
     try {
-      const file = "./src/controllers/tst.csv"; // Substitua pelo caminho correto do arquivo CSV
+      const file = req.file.path;
+      
+      if (!file) {
+        next("Arquivo não encontrado na requisição.", 400);
+      }
+      
       const usuarios = await DeskManagerService.readCSV(file, res);
-  
+      
+      req.fileData = usuarios; // Armazena os usuários na requisição para uso posterior
+      
       // Aqui você pode retornar uma resposta HTTP com os usuários encontrados
-      res.json(usuarios);
+      res.send(usuarios);
+      console.log("cheguei");
     } catch (error) {
       console.error("Erro ao visualizar usuários:", error.message);
-      next("Erro ao visualizar usuários.", 500);
+      next("Erro ao visualizar usuários.");
     }
     
+  }
+
+  static async visualizaUsuarios(req, res, next) {    
+    const file = req.file.path; // Substitua pelo caminho correto do arquivo CSV
+
+    try {
+      const usuarios = await DeskManagerService.readCSV(file, res);
+      req.fileData = usuarios; // Armazena os usuários na requisição para uso posterior
+      next();
+
+    } catch (error) {
+      console.error("Erro ao visualizar usuários:", error.message);
+      next("Erro ao visualizar usuários.");
+    }
+    
+  }
+
+  static async criaUsuarios(req, res, next) {
+    const url = "https://api.desk.ms/Usuarios";
+
+    try {
+      const usuarios = req.fileData;
+
+      // Perform authentication to get the token
+      const token = req.access_token;
+      
+      if (!token) {
+        throw new Error("Erro na autenticação. Token não obtido.");
+      }
+
+      // Prepare the headers with the authorization token
+      const headers = { headers: { Authorization: token } };
+
+      // Fazer o PUT request para cada usuário individualmente
+      for (const usuario of usuarios) {
+        const usuarioCriado = await axios.put(url, usuario, headers);
+        console.log(usuarioCriado.data); // Print the key of the saved requester for each user
+      }
+
+    } catch (error) {
+      next(`Erro ao salvar solicitante: ${error.message}`, 400);
+    }
   }
 
 }
