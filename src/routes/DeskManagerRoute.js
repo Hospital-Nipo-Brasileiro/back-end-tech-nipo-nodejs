@@ -4,7 +4,7 @@ const DeskManagerController = require("../controllers/deskManagerController.js")
 
 const router = express.Router();
 // Define o diretório onde os arquivos serão temporariamente salvos
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "./src/uploads/" });
 
 router
   .post("/desk-manager/autentica", DeskManagerController.autenticar)

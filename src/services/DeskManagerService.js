@@ -94,8 +94,6 @@ class DeskManagerService {
           }
         })
         .on("end", () => {
-          console.log("Criação de usuários concluída.");
-          console.log(results);
           resolve(results); // Resolve a promise com os resultados após a leitura do CSV ser concluída
         })
         .on("error", (error) => {

@@ -39,11 +39,12 @@ class DeskManagerController {
       
       const usuarios = await DeskManagerService.readCSV(file, res);
       
-      req.fileData = usuarios; // Armazena os usuários na requisição para uso posterior
+      // Armazena os usuários na requisição para uso posterior
+      req.fileData = usuarios; 
       
       // Aqui você pode retornar uma resposta HTTP com os usuários encontrados
       res.send(usuarios);
-      console.log("cheguei");
+      
     } catch (error) {
       console.error("Erro ao visualizar usuários:", error.message);
       next("Erro ao visualizar usuários.");
@@ -52,15 +53,17 @@ class DeskManagerController {
   }
 
   static async visualizaUsuarios(req, res, next) {    
-    const file = req.file.path; // Substitua pelo caminho correto do arquivo CSV
+
+    const file = req.file.path; 
 
     try {
       const usuarios = await DeskManagerService.readCSV(file, res);
-      req.fileData = usuarios; // Armazena os usuários na requisição para uso posterior
+
+      // Armazena os usuários na requisição para uso posterior
+      req.fileData = usuarios; 
       next();
 
     } catch (error) {
-      console.error("Erro ao visualizar usuários:", error.message);
       next("Erro ao visualizar usuários.");
     }
     
@@ -76,7 +79,7 @@ class DeskManagerController {
       const token = req.access_token;
       
       if (!token) {
-        throw new Error("Erro na autenticação. Token não obtido.");
+        next("Erro na autenticação. Token não obtido.", 400);
       }
 
       // Prepare the headers with the authorization token
@@ -85,11 +88,11 @@ class DeskManagerController {
       // Fazer o PUT request para cada usuário individualmente
       for (const usuario of usuarios) {
         const usuarioCriado = await axios.put(url, usuario, headers);
-        console.log(usuarioCriado.data); // Print the key of the saved requester for each user
+        res.send(usuarioCriado);
       }
 
     } catch (error) {
-      next(`Erro ao salvar solicitante: ${error.message}`, 400);
+      next(`Erro ao salvar solicitante: ${error.message}`, 500);
     }
   }
 
