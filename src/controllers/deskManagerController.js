@@ -14,8 +14,7 @@ class DeskManagerController {
         {headers : {Authorization : operatorKey, JsonPath: true}}
       );
     
-      if(response.status === 200 && response.data && response.data.access_token) {
-        res.send(response.data.access_token); 
+      if(response.status === 200 && response.data && response.data.access_token) { 
         req.access_token = response.data.access_token;
         next();
       } else if (response.status === 200 && response.data && response.data.erro) {
@@ -59,6 +58,8 @@ class DeskManagerController {
     try {
       const usuarios = await DeskManagerService.readCSV(file, res);
 
+      res.send(usuarios);
+
       // Armazena os usuários na requisição para uso posterior
       req.fileData = usuarios; 
       next();
@@ -71,12 +72,12 @@ class DeskManagerController {
 
   static async criaUsuarios(req, res, next) {
     const url = "https://api.desk.ms/Usuarios";
-
+    
     try {
-      const usuarios = req.fileData;
-
       // Perform authentication to get the token
       const token = req.access_token;
+
+      const usuarios = req.fileData;
       
       if (!token) {
         next("Erro na autenticação. Token não obtido.", 400);
@@ -85,6 +86,7 @@ class DeskManagerController {
       // Prepare the headers with the authorization token
       const headers = { headers: { Authorization: token } };
 
+      
       // Fazer o PUT request para cada usuário individualmente
       for (const usuario of usuarios) {
         const usuarioCriado = await axios.put(url, usuario, headers);
