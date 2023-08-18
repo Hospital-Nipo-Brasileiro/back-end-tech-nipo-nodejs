@@ -88,7 +88,7 @@ class DeskManagerService {
                   Idioma: "pt-br",
                 },
               };
-
+ 
               results.push(body);
             }
           }

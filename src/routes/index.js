@@ -12,6 +12,7 @@ const baus = require("./BauRoute.js");
 const itens = require("./ItemRoute.js");
 const itemGuardado = require("./ItemGuardadoRoute.js");
 const deskManager = require("./DeskManagerRoute.js");
+const admissaoCSV = require("./AdmissaoRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -29,7 +30,8 @@ const routes = (app) => {
     baus,
     itens,
     itemGuardado,
-    deskManager
+    deskManager,
+    admissaoCSV
   );
 };
 

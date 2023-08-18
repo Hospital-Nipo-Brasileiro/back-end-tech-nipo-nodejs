@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/tests/*.test.js"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +27,7 @@
     "tedious": "^16.1.0"
   },
   "devDependencies": {
+    "mocha": "^10.2.0",
     "eslint": "^8.44.0"
   }
 }

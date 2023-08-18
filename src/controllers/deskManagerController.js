@@ -1,14 +1,12 @@
 const axios = require("axios");
-const DeskManagerService = require("../services/DeskManagerService.js");
-require("dotenv").config(); // Carrega as variáveis de ambiente do arquivo
+const DeskManagerService = require("../services/deskManagerService.js");
+require("dotenv").config();
 
 class DeskManagerController {
        
   static async autenticar(req, res, next){
-    const OPERATOR_KEY = "1979133fd997e784df00f8d3a4855b9491baaac5";
-    const ENVIROMENT_KEY = "2f9e6f32abaaf94b6e161a556343e947020908f5";
-
-    
+    const OPERATOR_KEY = process.env.OPERATOR_KEY;
+    const ENVIROMENT_KEY = process.env.ENVIROMENT_KEY;    
 
     try{
       const response = await axios.post("https://api.desk.ms/Login/autenticar",
@@ -19,6 +17,7 @@ class DeskManagerController {
       if(response.status === 200 && response.data && response.data.access_token) { 
         req.access_token = response.data.access_token;
         next();
+
       } else if (response.status === 200 && response.data && response.data.erro) {
         next(response.data.erro, 400);
       } else {
@@ -71,6 +70,7 @@ class DeskManagerController {
   }
 
   static async criaUsuarios(req, res, next) {
+
     const url = "https://api.desk.ms/Usuarios";
     
     try {
@@ -85,20 +85,23 @@ class DeskManagerController {
 
       // Prepare the headers with the authorization token
       const headers = { headers: { Authorization: token } };
-
-      const usuariosCriados = [];
       
-      for (const usuario of usuarios) {
+      const usuariosCriados = [];
+
+      for (const body of usuarios) {
         try {
-          const usuarioCriado = await axios.put(url, usuario.TUsuario, headers);
-          usuariosCriados.push(usuarioCriado.data);
+          const usuarioCriado = await axios.put(url, body, headers);
+          if (usuarioCriado instanceof Error) {
+            next("Erro deles");
+          }
+          usuariosCriados.push(usuarioCriado);
         } catch (error) {
-          console.error(`Erro ao salvar usuário: ${error.message}`);
-          usuariosCriados.push({ error: `Erro ao salvar usuário: ${error.message}` });
+          next(`Erro ao salvar usuário: ${error.message}`, 500);
         }
       }
   
-      res.json({ usuariosCriados });
+      res.status(200).send(usuariosCriados);
+      
 
     } catch (error) {
       next(`Erro ao salvar solicitante: ${error.message}`, 500);
