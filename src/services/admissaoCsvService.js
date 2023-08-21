@@ -4,6 +4,8 @@ const fs = require("fs");
 class AdmissaoCsvService {
   static async processaPlanilhaCSV(file) {
 
+    const results = [];
+
     const expectedHeaders = [
       "Código da vaga",
       "Área",
@@ -26,12 +28,51 @@ class AdmissaoCsvService {
       "Local"
     ];
 
-    const results = [];
-
     await new Promise((resolve, reject) => {
       const parser = csv({ headers: expectedHeaders })
         .on("data", (data) => {
-          results.push(data);
+
+          
+      
+          async function formatarCPFUsuario(cpf) {
+            const cpfFormatado = cpf.replace(/\D/g, ""); //REMOVER O QUE NÃO FOR NÚMERO
+            return cpfFormatado.slice(0, 8);
+          }
+      
+          const usuarios = [];
+      
+          data.forEach(async (item) => {
+            const local = item["Local"];
+            const tipoContrato = item["Tipo de Contratação"];
+            const cpf = await formatarCPFUsuario(item["Contratados CPF"]);
+      
+            if (local && tipoContrato && cpf) {
+              const localCode = {
+                HNB: "H",
+                CMD: "L",
+                SMA: "S"
+              };
+      
+              const tipoContratoCode = {
+                CLT: "C",
+                Terceiro: "X",
+                Temporário: "T",
+                Temporária: "T",
+                Estágio: "E",
+                Estagiário: "E",
+                Estagiária: "E"
+              };
+      
+              const usuario = `${localCode[local]}${tipoContratoCode[tipoContrato]}${cpf}`;
+              usuarios.push(usuario);
+
+              
+              results.push(data);
+
+            }
+          });
+      
+          return results;
         })
         .on("end", () => {
           console.log("CSV file processed:", results);
@@ -46,42 +87,6 @@ class AdmissaoCsvService {
     });
 
     return results;
-  }
-  async formatarCPFUsuario(cpf) {
-    const cpfFormatado = cpf.replace(/\D/g, ""); //REMOVER O QUE NÃO FOR NÚMERO
-    return cpfFormatado.slice(0, 8);
-  }
-  async gerarUsuarios(dados) {
-    const usuarios = [];
-  
-    dados.forEach(async (item) => {
-      const local = item["Local"];
-      const tipoContrato = item["Tipo de Contratação"];
-      const cpf = await this.formatarCPFUsuario(item["Contratados CPF"]);
-  
-      if (local && tipoContrato && cpf) {
-        const localCode = {
-          HNB: "H",
-          CMD: "L",
-          SMA: "S"
-        };
-  
-        const tipoContratoCode = {
-          CLT: "C",
-          Terceiro: "X",
-          Temporário: "T",
-          Temporária: "T",
-          Estágio: "E",
-          Estagiário: "E",
-          Estagiária: "E"
-        };
-  
-        const usuario = `${localCode[local]}${tipoContratoCode[tipoContrato]}${cpf}`;
-        usuarios.push(usuario);
-      }
-    });
-  
-    return usuarios;
   }
 }
 
