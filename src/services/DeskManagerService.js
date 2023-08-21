@@ -97,7 +97,7 @@ class DeskManagerService {
           resolve(results); // Resolve a promise com os resultados após a leitura do CSV ser concluída
         })
         .on("error", (error) => {
-          reject(error);
+          reject("ERRO INTERNO", error);
         });
     });
   }

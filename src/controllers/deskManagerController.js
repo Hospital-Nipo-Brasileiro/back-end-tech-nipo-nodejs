@@ -60,7 +60,7 @@ class DeskManagerController {
       const usuarios = await DeskManagerService.readCSV(file, res);
 
       // Armazena os usuários na requisição para uso posterior
-      req.fileData = usuarios;     
+      req.fileData = usuarios;
       next();
 
     } catch (error) {
@@ -90,11 +90,22 @@ class DeskManagerController {
 
       for (const body of usuarios) {
         try {
+
+          console.log("Eu chego até aqui");
+          
           const usuarioCriado = await axios.put(url, body, headers);
+
           if (usuarioCriado instanceof Error) {
-            next("Erro deles");
+            next(`Erro server DeskManager ${Error.message}`, 404);
           }
+
+          if (usuarioCriado.status >= 400) {
+            next(`Erro server DeskManager: ${usuarioCriado.statusText}`, usuarioCriado.status);
+            return;
+          }
+
           usuariosCriados.push(usuarioCriado);
+
         } catch (error) {
           next(`Erro ao salvar usuário: ${error.message}`, 500);
         }
