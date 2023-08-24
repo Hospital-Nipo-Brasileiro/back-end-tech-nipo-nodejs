@@ -39,7 +39,8 @@ class PessoasController {
       dt_admissao: req.body.dt_admissao,
       dt_nascimento: req.body.dt_nascimento,
       tp_contrato: req.body.tp_contrato,
-      ds_categoria_cargo: req.body.tp_categoria_cargo,
+      ds_categoria_cargo: req.body.ds_categoria_cargo,
+      id_cargo_setor: req.body.id_cargo_setor,
       dt_created: new Date(),
       dt_updated: new Date(),
     };

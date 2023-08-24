@@ -2,9 +2,18 @@ const express = require("express");
 const routes = require("./routes/index.js");
 const manipulador404 = require("./middlewares/manipulador404.js");
 const manipuladorDeErros = require("./middlewares/manipuladorDeErros.js");
+const verifyToken = require("./middlewares/authMiddleware.js");
+const login = require("../src/routes/LoginRoute.js");
 
 const app = express();
 app.use(express.json());
+
+app.use(login);
+
+//MIDDLEWARE DE AUTENTICAÇÃO
+app.use(verifyToken);
+
+
 routes(app);
 
 //MIDDLEWARE DE ERRO 404
