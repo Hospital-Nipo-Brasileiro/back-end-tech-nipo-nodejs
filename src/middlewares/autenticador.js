@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado");
 
 function verifyToken(req, res, next) {
   const token = req.headers["authorization"]; // Você pode passar o token no cabeçalho da requisição
@@ -9,7 +10,7 @@ function verifyToken(req, res, next) {
 
   jwt.verify(token, "seuSegredoToken", (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: "Token inválido." });
+      next(new AcessoNaoAutorizado("Token inválido"));
     }
 
     req.userId = decoded.userId; // Adicione o ID do usuário autenticado ao objeto de requisição
