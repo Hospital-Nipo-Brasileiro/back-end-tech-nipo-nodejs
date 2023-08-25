@@ -6,7 +6,7 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class TN_T_SISTEMA_PESSOA extends Model {
     static associate(models) {
-      TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_PESSOA, {foreignKey: "id_pessoa"});
+      TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_PESSOA, {foreignKey: "id"});
       TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_SISTEMA, {foreignKey: "id_sistema"});
     }
   }

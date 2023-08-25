@@ -13,6 +13,7 @@ const itens = require("./ItemRoute.js");
 const itemGuardado = require("./ItemGuardadoRoute.js");
 const deskManager = require("./DeskManagerRoute.js");
 const admissaoCSV = require("./AdmissaoRoute.js");
+const login = require("./LoginRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -31,7 +32,8 @@ const routes = (app) => {
     itens,
     itemGuardado,
     deskManager,
-    admissaoCSV
+    admissaoCSV,
+    login
   );
 };
 

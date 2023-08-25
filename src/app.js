@@ -5,6 +5,7 @@ const manipuladorDeErros = require("./middlewares/manipuladorDeErros.js");
 
 const app = express();
 app.use(express.json());
+
 routes(app);
 
 //MIDDLEWARE DE ERRO 404

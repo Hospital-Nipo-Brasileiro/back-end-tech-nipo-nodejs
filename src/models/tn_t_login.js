@@ -7,12 +7,11 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class TN_T_LOGIN extends Model {
     static associate(models) {
-      TN_T_LOGIN.belongsTo(models.TN_T_ZONA, {foreignKey: "id_zona"});
-      TN_T_LOGIN.hasMany(models.TN_T_PRATELEIRA, {foreignKey: "id_login"});
+      TN_T_LOGIN.belongsTo(models.TN_T_PESSOA, {foreignKey: "id_pessoa"});
     }
   }
   TN_T_LOGIN.init({
-    ds_nome: DataTypes.STRING,
+    ds_username: DataTypes.STRING,
     ds_email: DataTypes.STRING,
     ds_password: {
       type: DataTypes.STRING,

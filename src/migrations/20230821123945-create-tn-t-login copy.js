@@ -11,7 +11,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ds_nome: {
+      id_pessoa: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      ds_username: {
         allowNull: false,
         type: Sequelize.STRING,        
       },
