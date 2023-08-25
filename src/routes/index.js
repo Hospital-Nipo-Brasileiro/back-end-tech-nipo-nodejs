@@ -18,7 +18,7 @@ const login = require("./LoginRoute.js");
 const routes = (app) => {
   app.use(
     express.json(),
-    express.Router("/", (req, res) => {res.status(200).json("TechNipo");}),
+    express.Router("/", (req, res) => { res.status(200).json("TechNipo"); }),
     pessoas,
     cargos,
     setores,

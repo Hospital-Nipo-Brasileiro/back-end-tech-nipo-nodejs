@@ -4,9 +4,10 @@ const database = require("../models");
 class CargoController {
 
   static async buscaTodosCargos(req, res, next) {
+
     const cargosEncontrados = await database.TN_T_CARGO.findAll();
-    try{
-      if(cargosEncontrados.length !== 0) {
+    try {
+      if (cargosEncontrados.length !== 0) {
         res.status(200).send(cargosEncontrados);
       } else {
         next(new NaoEncontrado("Nenhum cargo cadastrado."));
@@ -18,10 +19,10 @@ class CargoController {
 
   static async buscaCargoPorId(req, res, next) {
     const { id } = req.params;
-    const cargoEncontrado = await database.TN_T_CARGO.findOne({ where: {id: Number(id)}});
+    const cargoEncontrado = await database.TN_T_CARGO.findOne({ where: { id: Number(id) } });
 
-    try{
-      if(cargoEncontrado ){
+    try {
+      if (cargoEncontrado) {
         res.status(200).send(cargoEncontrado);
       } else {
         next(new NaoEncontrado(`ID ${id} de cargo não encontrado na busca`));
@@ -48,16 +49,16 @@ class CargoController {
 
   static async atualizaUmCargo(req, res, next) {
     const { id } = req.params;
-    const cargoEncontrado = await database.TN_T_CARGO.findOne({ where: {id: Number(id)}});
+    const cargoEncontrado = await database.TN_T_CARGO.findOne({ where: { id: Number(id) } });
     const novoCargo = {
       ds_nome: req.body.ds_nome,
       dt_updated: new Date()
     };
 
-    try{
-      if(cargoEncontrado){
-        await database.TN_T_CARGO.update(novoCargo, { where: {id: Number(id)}});
-        const cargoAtualizado = await database.TN_T_CARGO.findOne({where: {id: Number(id)}});
+    try {
+      if (cargoEncontrado) {
+        await database.TN_T_CARGO.update(novoCargo, { where: { id: Number(id) } });
+        const cargoAtualizado = await database.TN_T_CARGO.findOne({ where: { id: Number(id) } });
         res.status(200).send(cargoAtualizado);
       } else {
         next(new NaoEncontrado(`ID ${id} de cargo não encontrado para atualizar`));
@@ -69,11 +70,11 @@ class CargoController {
 
   static async deletaUmCargo(req, res, next) {
     const { id } = req.params;
-    const cargoEncontrado = await database.TN_T_CARGO.findOne({ where: {id: Number(id)}});
-    try{
-      if(cargoEncontrado){
-        await database.TN_T_CARGO.destroy({ where: { id: Number(id)}});
-        res.status(200).send({message: `Cargo de ID ${id} deletado.`});
+    const cargoEncontrado = await database.TN_T_CARGO.findOne({ where: { id: Number(id) } });
+    try {
+      if (cargoEncontrado) {
+        await database.TN_T_CARGO.destroy({ where: { id: Number(id) } });
+        res.status(200).send({ message: `Cargo de ID ${id} deletado.` });
       } else {
         next(new NaoEncontrado(`ID ${id} de cargo não encontrado para exclusão.`));
       }
@@ -83,10 +84,10 @@ class CargoController {
   }
 
   static async restauraCargo(req, res, next) {
-    const { id } = req.params;    
-    try{      
-      await database.TN_T_CARGO.restore({where : {id : Number(id)}});
-      res.status(200).send({message: `Cargo de ID ${id} restaurado.`});
+    const { id } = req.params;
+    try {
+      await database.TN_T_CARGO.restore({ where: { id: Number(id) } });
+      res.status(200).send({ message: `Cargo de ID ${id} restaurado.` });
     } catch (err) {
       next(err);
     }

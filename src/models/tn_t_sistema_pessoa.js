@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   TN_T_SISTEMA_PESSOA.init({
     ds_usuario: DataTypes.STRING,
     ds_senha: DataTypes.STRING
-  }, 
+  },
   {
     sequelize,
     paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)
