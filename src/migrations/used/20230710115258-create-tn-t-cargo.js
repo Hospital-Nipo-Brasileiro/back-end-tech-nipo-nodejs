@@ -20,6 +20,10 @@ module.exports = {
       dt_updated: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      dt_deleted:{
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },
