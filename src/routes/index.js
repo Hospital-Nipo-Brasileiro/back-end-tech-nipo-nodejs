@@ -14,8 +14,8 @@ const itemGuardado = require("./ItemGuardadoRoute.js");
 const deskManager = require("./DeskManagerRoute.js");
 const admissaoCSV = require("./AdmissaoRoute.js");
 const login = require("./LoginRoute.js");
-const papeis = require("./PapelRoute.js");
-const permissao = require("./PermissaoRoute.js");
+const papeis = require("./papelRoute.js");
+const permissao = require("./permissaoRoute.js");
 
 const routes = (app) => {
   app.use(

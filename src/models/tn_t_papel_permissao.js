@@ -6,8 +6,8 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class TN_T_PAPEL_PERMISSAO extends Model {
     static associate(models) {
-      TN_T_PAPEL_PERMISSAO.hasMany(models.TN_T_PAPEL, {foreignKey: "id_papel"});
-      TN_T_PAPEL_PERMISSAO.belongsTo(models.TN_T_SISTEMA, {foreignKey: "id_permissao"});
+      TN_T_PAPEL_PERMISSAO.belongsTo(models.TN_T_PAPEL, {foreignKey: "id_papel"});
+      TN_T_PAPEL_PERMISSAO.belongsTo(models.TN_T_PERMISSAO, {foreignKey: "id_permissao"});
     }
   }
   TN_T_PAPEL_PERMISSAO.init({

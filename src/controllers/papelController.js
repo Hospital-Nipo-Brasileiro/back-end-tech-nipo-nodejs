@@ -34,7 +34,6 @@ class PapelController {
 
   static async criaUmPapel(req, res, next) {
     const novoPapel = {
-      id_permissao: null,
       ds_nome: req.body.ds_nome,
       ds_descricao: req.body.ds_descricao,
       dt_created: new Date(),
@@ -47,29 +46,6 @@ class PapelController {
     } catch (err) {
       next(new ErroBase(err));
     }
-  }
-
-  static async vinculaPermissaoAoPapel(req, res, next) {
-    const {id} = req.params;
-    const papelEncontrado = await database.TN_T_PAPEL.findOne({ where : {id: Number(id)}});
-    const id_permissao = req.body.id_permissao;
-    const permissaoEncontrada = await database.TN_T_PERMISSAO.findOne({ where: {id: Number(id_permissao)}});
-    const infoPermissao = {
-      id_permissao : req.body.id_permissao
-    };
-    try {
-      if(!papelEncontrado) {
-        next(new NaoEncontrado(`ID ${id} de papel não encontrado para vincular a permissão`));
-      } else if (!permissaoEncontrada) {
-        next(new NaoEncontrado(`ID ${id_permissao} de permissão não encontrada para vincular permissão`));
-      } else if(papelEncontrado && permissaoEncontrada) {
-        const papelVinculado = await database.TN_T_PAPEL.update(infoPermissao, {where: {id: Number(id)}});
-        res.status(200).send(papelVinculado);
-      }
-    } catch (err) {
-      next(err);
-    }
-
   }
 
   static async atualizaUmPapel(req, res, next) {
