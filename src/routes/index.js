@@ -16,6 +16,7 @@ const admissaoCSV = require("./AdmissaoRoute.js");
 const login = require("./LoginRoute.js");
 const papeis = require("./papelRoute.js");
 const permissao = require("./permissaoRoute.js");
+const papeisPermissoes  = require("./PapelPermissaoRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -37,7 +38,8 @@ const routes = (app) => {
     admissaoCSV,
     login,
     papeis,
-    permissao
+    permissao,
+    papeisPermissoes
   );
 };
 

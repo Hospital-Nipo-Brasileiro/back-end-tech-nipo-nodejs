@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   class TN_T_LOGIN extends Model {
     static associate(models) {
       TN_T_LOGIN.belongsTo(models.TN_T_PESSOA, {foreignKey: "id_pessoa"});
-      TN_T_LOGIN.hasMany(models.TN_T_LOGIN_PAPEL, {foreignKey: "id"});
+      TN_T_LOGIN.hasMany(models.TN_T_LOGIN_PAPEL, {foreignKey: "id_login"});
     }
   }
   TN_T_LOGIN.init({

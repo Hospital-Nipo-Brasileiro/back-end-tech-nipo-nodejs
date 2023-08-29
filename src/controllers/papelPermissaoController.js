@@ -3,12 +3,13 @@ const database = require("../models");
 
 class PapelPermissaoController {
   static async buscaTodosPapeisPermissoes (req, res, next) {
-    const papeisPermissoesEncontrados = await database.TN_T_PAPEIS_PERMISSOES.findAll();
+    const papeisPermissoesEncontrados = await database.TN_T_PAPEL_PERMISSAO.findAll();
     try {
-      if(!papeisPermissoesEncontrados) {
+      if(papeisPermissoesEncontrados.length !== 0) {
+        res.status(200).send(papeisPermissoesEncontrados);
+      } else {
         next(new NaoEncontrado("Nenhum papel-permissão vinculados encontrado"));
       }
-      res.status(200).send(papeisPermissoesEncontrados);
     } catch (err) {
       next(err);
     }
@@ -16,7 +17,7 @@ class PapelPermissaoController {
 
   static async buscaPapelPermissaoPorId (req, res, next) {
     const {id} = req.params;
-    const papelPermissaoEncontrado = await database.TN_T_PAPEIS_PERMISSOES.findOne({ where: {id: Number(id)}});
+    const papelPermissaoEncontrado = await database.TN_T_PAPEL_PERMISSAO.findOne({ where: {id: Number(id)}});
 
     try {
       if(!papelPermissaoEncontrado){
@@ -36,10 +37,10 @@ class PapelPermissaoController {
     };
 
     const papelEncontrado = await database.TN_T_PAPEL.findOne({ where: {id: Number(novoPapelPermissao.id_papel)}});
-    const permissaoEncontrada = await database.TN_T_PERMISSAO.findeOnde({where: {id: Number(novoPapelPermissao.id_permissao)}});
+    const permissaoEncontrada = await database.TN_T_PERMISSAO.findOne({where: {id: Number(novoPapelPermissao.id_permissao)}});
     try {
       if(papelEncontrado && permissaoEncontrada) {
-        const papelPermissaoCriado = await database.TN_T_PAPEIS_PERMISSOES.create(novoPapelPermissao);
+        const papelPermissaoCriado = await database.TN_T_PAPEL_PERMISSAO.create(novoPapelPermissao);
         res.status(201).send(papelPermissaoCriado);
       } else if (papelEncontrado && !permissaoEncontrada) {
         next(new NaoEncontrado(`ID ${novoPapelPermissao.id_permissao} de permissão não econstrada`));
@@ -47,7 +48,6 @@ class PapelPermissaoController {
     } catch (err) {
       next(err);
     }
-
   }
 
   static async desvinculaUmaPermissaoAUmPapel (req, res, next) {
@@ -68,7 +68,7 @@ class PapelPermissaoController {
   static async restauraUmPapelPermissao(req, res, next) {
     const { id } = req.params;
     try{
-      await database.TN_T_PAPEL.restore({where : {id : Number(id)}});
+      await database.TN_T_PAPEL_PERMISSAO.restore({where : {id : Number(id)}});
       res.status(200).send({message: `ID ${id} restaurado.`});
     } catch (err) {
       next(err);
