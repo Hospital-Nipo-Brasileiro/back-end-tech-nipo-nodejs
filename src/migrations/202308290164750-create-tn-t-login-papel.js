@@ -1,38 +1,24 @@
-
 /* eslint-disable no-unused-vars */
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("TN_T_LOGIN", {
+    await queryInterface.createTable("TN_T_LOGIN_PAPEL", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_pessoa: {
+      id_login: {
         allowNull: false,
-<<<<<<< HEAD:src/migrations/20230821123945-create-tn-t-login.js
         type: Sequelize.INTEGER,
-        references: { model: "TN_T_PESSOA", key: "id" }
+        references: { model: "TN_T_LOGIN", key: "id" }
       },
-      ds_nome: {
-=======
-        type: Sequelize.INTEGER
-      },
-      ds_username: {
->>>>>>> 858e55b42101b5a18a003fa26c835ac95b8b55d0:src/migrations/used/20230821123945-create-tn-t-login copy.js
+      id_papel: {
         allowNull: false,
-        type: Sequelize.STRING,
-      },
-      ds_email: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      ds_password: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: { model: "TN_T_PAPEL", key: "id" }
       },
       dt_created: {
         allowNull: false,
@@ -45,11 +31,10 @@ module.exports = {
       dt_deleted: {
         allowNull: true,
         type: Sequelize.DATE
-      }
+      },
     });
   },
-
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_LOGIN");
+    await queryInterface.dropTable("TN_T_LOGIN_PAPEL");
   }
 };

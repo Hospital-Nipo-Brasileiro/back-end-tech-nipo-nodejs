@@ -21,12 +21,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-<<<<<<<< HEAD:src/migrations/20230710115258-create-tn-t-cargo.js
       dt_deleted: {
-========
-      dt_deleted:{
->>>>>>>> 858e55b42101b5a18a003fa26c835ac95b8b55d0:src/migrations/used/20230710115258-create-tn-t-cargo.js
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       }
     });
