@@ -1,32 +1,36 @@
-
-/* eslint-disable no-unused-vars */
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("TN_T_SISTEMA_PESSOA", {
+    await queryInterface.createTable("TN_T_ITEM_GUARDADO", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_sistema: {
-        allowNull: false,
+      id_item: {
         type: Sequelize.INTEGER,
-        references: { model: "TN_T_SISTEMA", key: "id" }
+        references: { model: "TN_T_ITEM", key: "id" }
       },
-      id_pessoa: {
-        allowNull: false,
+      id_prateleira: {
         type: Sequelize.INTEGER,
-        references: { model: "TN_T_PESSOA", key: "id" }
+        references: { model: "TN_T_PRATELEIRA", key: "id" }
       },
-      ds_usuario: {
-        allowNull: false,
-        type: Sequelize.STRING
+      id_bau: {
+        type: Sequelize.INTEGER,
+        references: { model: "TN_T_BAU", key: "id" }
       },
-      ds_senha: {
-        allowNull: true,
+      qt_item: {
+        type: Sequelize.INTEGER
+      },
+      nr_tic: {
+        type: Sequelize.INTEGER
+      },
+      nr_patrimonio: {
+        type: Sequelize.INTEGER
+      },
+      nr_serie: {
         type: Sequelize.STRING
       },
       dt_created: {
@@ -40,10 +44,11 @@ module.exports = {
       dt_deleted: {
         allowNull: true,
         type: Sequelize.DATE
-      },
+      }
     });
   },
+  // eslint-disable-next-line no-unused-vars
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_SISTEMA_PESSOA");
+    await queryInterface.dropTable("TN_T_ITEM_GUARDADO");
   }
 };

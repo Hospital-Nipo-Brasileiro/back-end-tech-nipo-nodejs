@@ -13,6 +13,10 @@ const itens = require("./ItemRoute.js");
 const itemGuardado = require("./ItemGuardadoRoute.js");
 const deskManager = require("./DeskManagerRoute.js");
 const admissaoCSV = require("./AdmissaoRoute.js");
+const login = require("./LoginRoute.js");
+const papeis = require("./papelRoute.js");
+const permissao = require("./permissaoRoute.js");
+const papeisPermissoes  = require("./PapelPermissaoRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -31,7 +35,11 @@ const routes = (app) => {
     itens,
     itemGuardado,
     deskManager,
-    admissaoCSV
+    admissaoCSV,
+    login,
+    papeis,
+    permissao,
+    papeisPermissoes
   );
 };
 

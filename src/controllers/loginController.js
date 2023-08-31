@@ -5,10 +5,36 @@ const database = require("../models");
 const ErroBase = require("../errors/ErroBase");
 
 class LoginController {
-  static async createLogin(req, res, next) {
-    const personFinded = await database.TN_T_PESSOA.findOne({ where: { id: Number(req.body.id_pessoa) } });
+  static async buscaTodosLogins(req, res, next) {
+    const loginsEncontrados = await database.TN_T_LOGIN.findAll();
+    try{
+      if(!loginsEncontrados){
+        next(new NaoEncontrado("Não existe nenhum login encontrado no banco"));
+      }
+      res.status(200).send(loginsEncontrados);
+    } catch (err) {
+      next(err);
+    }
+  }
 
-    const infos = {
+  static async buscaLoginPorId(req, res, next) {
+    const {id} = req.params;
+    const loginEncontrado = await database.TN_T_LOGIN.findOne({where : {id: Number(id)}});
+    try{
+      if(loginEncontrado){
+        res.status(200).send(loginEncontrado);
+      } else {
+        next(new NaoEncontrado(`ID ${id} de login não encontrado na busca.`));
+      }
+    }catch (err) {
+      next(err);
+    }
+  }
+
+  static async criaLogin(req, res, next) {
+    const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: Number(req.body.id_pessoa) } });
+
+    const novaPessoa = {
       id_pessoa: req.body.id_pessoa,
       ds_username: req.body.ds_username,
       ds_email: req.body.ds_email,
@@ -18,41 +44,42 @@ class LoginController {
     };
 
     try {
-      if (!personFinded) {
-        return res.status(404).json({ message: "Pessoa não encontrada." });
+      if (!pessoaEncontrada) {
+        next(new NaoEncontrado("Pessoa não encontrada"));
+      } else {
+        const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);
+        res.status(201).send(novoLogin);
       }
-
-      const newLogin = await database.TN_T_LOGIN.create(infos);
-      res.status(201).send(newLogin);
+      
+      
     } catch (err) {
-      console.error("Erro ao criar login:", err);
       next(err);
     }
   }
 
-  static async logon(req, res, next) {
+  static async login(req, res, next) {
     const { ds_username, ds_password } = req.body;
-    const userExisted = await database.TN_T_LOGIN.findOne({ where: { ds_username } });
+    const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username } });
 
     try {
-      if (!userExisted) {
+      if (!usuarioExistente) {
         next(new NaoEncontrado("Usuário não encontrado"));
       }
 
-      const validPassword = await bcrypt.compare(ds_password, userExisted.ds_password);
+      const validaSenha = await bcrypt.compare(ds_password, usuarioExistente.ds_password);
 
-      if (validPassword !== true) {
+      if (validaSenha !== true) {
         next(new ErroBase("Senha incorreta, por favor insira novamente", 401));
       }
-      const token = jwt.sign({ userId: userExisted.id }, "seuSegredoToken", {
+      const token = jwt.sign({ userId: usuarioExistente.id }, "seuSegredoToken", {
         expiresIn: "1h"
       });
 
-      if (validPassword === true) {
+      if (validaSenha === true) {
         res.status(200).send(token);
       }
     } catch (err) {
-      console.error("ERRO AO LOGAR", err);
+      console.error("Erro ao logar: ", err);
       next(err);
     }
 

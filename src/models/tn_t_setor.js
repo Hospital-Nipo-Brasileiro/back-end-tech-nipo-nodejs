@@ -5,11 +5,6 @@ const {
 } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class TN_T_SETOR extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       TN_T_SETOR.hasMany(models.TN_T_CARGO_SETOR, {foreignKey: "id_setor"});
     }

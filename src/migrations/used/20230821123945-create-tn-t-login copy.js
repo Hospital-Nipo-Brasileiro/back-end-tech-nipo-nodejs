@@ -13,10 +13,16 @@ module.exports = {
       },
       id_pessoa: {
         allowNull: false,
+<<<<<<< HEAD:src/migrations/20230821123945-create-tn-t-login.js
         type: Sequelize.INTEGER,
         references: { model: "TN_T_PESSOA", key: "id" }
       },
       ds_nome: {
+=======
+        type: Sequelize.INTEGER
+      },
+      ds_username: {
+>>>>>>> 858e55b42101b5a18a003fa26c835ac95b8b55d0:src/migrations/used/20230821123945-create-tn-t-login copy.js
         allowNull: false,
         type: Sequelize.STRING,
       },

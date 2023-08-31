@@ -5,18 +5,19 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class TN_T_PESSOA extends Model {
     static associate(models) {
-      TN_T_PESSOA.hasMany(models.TN_T_SISTEMA_PESSOA, {foreignKey : "id_acessos"});
-      TN_T_PESSOA.belongsTo(models.TN_T_CARGO_SETOR, {foreignKey: "id_cargo_setor"});
-      TN_T_PESSOA.hasOne(models.TN_T_LOGIN, {foreignKey: "id_pessoa"});
+      TN_T_PESSOA.belongsTo(models.TN_T_CARGO_SETOR, {foreignKey: "id"});
+      TN_T_PESSOA.belongsTo(models.TN_T_SISTEMA_PESSOA, {foreignKey : "id"});
+      TN_T_PESSOA.hasOne(models.TN_T_LOGIN, {foreignKey: "id"});
     }
   }
   TN_T_PESSOA.init({
     ds_nome: DataTypes.STRING,
-    nr_cpf: DataTypes.INTEGER,
+    nr_cpf: DataTypes.STRING,
     dt_admissao: DataTypes.DATEONLY,
     dt_nascimento: DataTypes.DATEONLY,
     tp_contrato: DataTypes.STRING,
     ds_categoria_cargo: DataTypes.STRING,
+    id_cargo_setor: DataTypes.INTEGER,
   },
   {
     sequelize,

@@ -9,17 +9,11 @@ const app = express();
 app.use(express.json());
 
 app.use(login);
-
-//MIDDLEWARE DE AUTENTICAÇÃO
 app.use(verifyToken);
-
 
 routes(app);
 
-//MIDDLEWARE DE ERRO 404
 app.use(manipulador404);
-
-// MIDDLEWARE DE TRATAMENTO DE ERRO PERSONALIZADO
 app.use(manipuladorDeErros);
 
 module.exports = app;
