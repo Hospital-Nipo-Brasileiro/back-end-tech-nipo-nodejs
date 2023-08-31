@@ -1,32 +1,35 @@
-
 /* eslint-disable no-unused-vars */
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("TN_T_LOGIN", {
+    await queryInterface.createTable("TN_T_PESSOA", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_pessoa: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: { model: "TN_T_PESSOA", key: "id" }
-      },
       ds_nome: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      ds_email: {
-        allowNull: true,
+      nr_cpf: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      ds_password: {
-        type: Sequelize.STRING,
+      dt_admissao: {
         allowNull: false,
+        type: Sequelize.DATEONLY
+      },
+      dt_nascimento: {
+        type: Sequelize.DATEONLY
+      },
+      tp_contrato: {
+        type: Sequelize.STRING
+      },
+      ds_categoria_cargo: {
+        type: Sequelize.STRING
       },
       dt_created: {
         allowNull: false,
@@ -44,6 +47,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_LOGIN");
+    await queryInterface.dropTable("TN_T_PESSOA");
   }
 };

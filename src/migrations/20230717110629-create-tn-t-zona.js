@@ -1,34 +1,20 @@
-/* eslint-disable no-unused-vars */
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("TN_T_PESSOA", {
+    await queryInterface.createTable("TN_T_ZONA", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      id_estoque: {
+        type: Sequelize.INTEGER,
+        references: { model: "TN_T_ESTOQUE", key: "id" }
+      },
       ds_nome: {
         allowNull: false,
-        type: Sequelize.STRING,        
-      },
-      nr_cpf:{
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      dt_admissao: {
-        allowNull: false,
-        type: Sequelize.DATEONLY
-      },
-      dt_nascimento:{
-        type: Sequelize.DATEONLY
-      },
-      tp_contrato:{
-        type: Sequelize.STRING
-      },
-      ds_categoria_cargo:{
         type: Sequelize.STRING
       },
       dt_created: {
@@ -38,11 +24,15 @@ module.exports = {
       dt_updated: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      dt_deleted: {
+        allowNull: true,
+        type: Sequelize.DATE
       }
     });
   },
-  
+  // eslint-disable-next-line no-unused-vars
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_PESSOA");
+    await queryInterface.dropTable("TN_T_ZONA");
   }
 };

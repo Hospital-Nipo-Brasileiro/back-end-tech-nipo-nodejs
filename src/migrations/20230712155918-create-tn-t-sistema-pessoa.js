@@ -3,22 +3,30 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("TN_T_CARGO_SETOR", {
+    await queryInterface.createTable("TN_T_SISTEMA_PESSOA", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_cargo: {
+      id_sistema: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: "TN_T_CARGO", key: "id"}
+        references: { model: "TN_T_SISTEMA", key: "id" }
       },
-      id_setor: {
+      id_pessoa: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: "TN_T_SETOR", key: "id"}
+        references: { model: "TN_T_PESSOA", key: "id" }
+      },
+      ds_usuario: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      ds_senha: {
+        allowNull: true,
+        type: Sequelize.STRING
       },
       dt_created: {
         allowNull: false,
@@ -31,10 +39,10 @@ module.exports = {
       dt_deleted: {
         allowNull: true,
         type: Sequelize.DATE
-      }
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_CARGO_SETOR");
+    await queryInterface.dropTable("TN_T_SISTEMA_PESSOA");
   }
 };

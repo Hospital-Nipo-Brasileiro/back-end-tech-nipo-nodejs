@@ -2,33 +2,31 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("TN_T_ITEM_GUARDADO", {
+    await queryInterface.createTable("TN_T_BAU", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_item: {
-        type: Sequelize.INTEGER
+      id_zona: {
+        type: Sequelize.INTEGER,
+        references: { model: "TN_T_ZONA", key: "id" }
       },
-      id_prateleira: {
-        type: Sequelize.INTEGER
-      },
-      id_bau: {
-        type: Sequelize.INTEGER
-      },
-      qt_item: {
-        type: Sequelize.INTEGER
-      },
-      nr_tic: {
-        type: Sequelize.INTEGER
-      },
-      nr_patrimonio: {
-        type: Sequelize.INTEGER
-      },
-      nr_serie: {
+      ds_nome: {
+        allowNull: false,
         type: Sequelize.STRING
+      },
+      ds_tipo: {
+        allowNull: true,
+        type: Sequelize.STRING,
+        validate: {
+          validateType: function validateType(params) {
+            if (params !== "CX" || params !== "EF") {
+              throw new Error("A descrição do tipo deve ser ou caixa \"CX\" ou  espaço físico \"EF\" ");
+            }
+          }
+        }
       },
       dt_created: {
         allowNull: false,
@@ -46,6 +44,6 @@ module.exports = {
   },
   // eslint-disable-next-line no-unused-vars
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_ITEM_GUARDADO");
+    await queryInterface.dropTable("TN_T_BAU");
   }
 };
