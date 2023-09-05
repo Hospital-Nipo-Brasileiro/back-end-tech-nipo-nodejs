@@ -30,12 +30,10 @@ class AdmissaoCsvService {
 
     await new Promise((resolve, reject) => {
       const parser = csv({ headers: expectedHeaders })
-        .on("data", (data) => {
-
-          
-      
+        .on("data", (data) => {     
           async function formatarCPFUsuario(cpf) {
-            const cpfFormatado = cpf.replace(/\D/g, ""); //REMOVER O QUE NÃO FOR NÚMERO
+            //REMOVER O QUE NÃO FOR NÚMERO
+            const cpfFormatado = cpf.replace(/\D/g, ""); 
             return cpfFormatado.slice(0, 8);
           }
       
@@ -65,8 +63,6 @@ class AdmissaoCsvService {
       
               const usuario = `${localCode[local]}${tipoContratoCode[tipoContrato]}${cpf}`;
               usuarios.push(usuario);
-
-              
               results.push(data);
 
             }
