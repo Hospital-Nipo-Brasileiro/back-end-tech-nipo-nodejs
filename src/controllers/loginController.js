@@ -7,8 +7,8 @@ const ErroBase = require("../errors/ErroBase");
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
     const loginsEncontrados = await database.TN_T_LOGIN.findAll();
-    try{
-      if(!loginsEncontrados){
+    try {
+      if (!loginsEncontrados) {
         next(new NaoEncontrado("Não existe nenhum login encontrado no banco"));
       }
       res.status(200).send(loginsEncontrados);
@@ -18,15 +18,15 @@ class LoginController {
   }
 
   static async buscaLoginPorId(req, res, next) {
-    const {id} = req.params;
-    const loginEncontrado = await database.TN_T_LOGIN.findOne({where : {id: Number(id)}});
-    try{
-      if(loginEncontrado){
+    const { id } = req.params;
+    const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+    try {
+      if (loginEncontrado) {
         res.status(200).send(loginEncontrado);
       } else {
         next(new NaoEncontrado(`ID ${id} de login não encontrado na busca.`));
       }
-    }catch (err) {
+    } catch (err) {
       next(err);
     }
   }
@@ -44,22 +44,23 @@ class LoginController {
     };
 
     try {
+      console.log("cheguei");
       if (!pessoaEncontrada) {
+        console.log("pessoa nao enc");
         next(new NaoEncontrado("Pessoa não encontrada"));
-      } else {
-        const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);
-        res.status(201).send(novoLogin);
       }
-      
-      
+      console.log("cai aqui");
+      const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);
+      res.status(201).send(novoLogin);
     } catch (err) {
+      console.log(err);
       next(err);
     }
   }
 
   static async login(req, res, next) {
     const { ds_username, ds_password } = req.body;
-    const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username } });
+    const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username: ds_username } });
 
     try {
       if (!usuarioExistente) {
