@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 "use strict";
 const {
   Model
@@ -7,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TN_T_PESSOA.belongsTo(models.TN_T_CARGO_SETOR, { foreignKey: "id" });
       TN_T_PESSOA.belongsTo(models.TN_T_SISTEMA_PESSOA, { foreignKey: "id" });
-      TN_T_PESSOA.hasOne(models.TN_T_LOGIN, { foreignKey: "id" });
+      TN_T_PESSOA.hasOne(models.TN_T_LOGIN, { foreignKey: "id_pessoa" });
     }
   }
   TN_T_PESSOA.init({
@@ -17,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     dt_nascimento: DataTypes.DATEONLY,
     tp_contrato: DataTypes.STRING,
     ds_categoria_cargo: DataTypes.STRING,
-    id_cargo_setor: DataTypes.INTEGER,
   },
     {
       sequelize,
