@@ -90,8 +90,6 @@ class DeskManagerController {
 
       for (const body of usuarios) {
         try {
-
-          console.log("Eu chego até aqui");
           
           const usuarioCriado = await axios.put(url, body, headers);
 
