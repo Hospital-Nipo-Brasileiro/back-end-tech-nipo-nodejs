@@ -19,7 +19,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(login);
-app.use(verifyToken);
+// app.use(verifyToken);
 
 routes(app);
 
