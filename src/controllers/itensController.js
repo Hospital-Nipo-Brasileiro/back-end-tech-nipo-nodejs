@@ -75,7 +75,7 @@ class ItemsController {
               include: [
                 {
                   model: database.TN_T_ZONA,
-                  where: { estoqueId: estoqueEncontrado.id }
+                  where: { id_estoque: estoqueEncontrado.id }
                 }
               ]
             }
@@ -86,7 +86,7 @@ class ItemsController {
           include: [
             {
               model: database.TN_T_ZONA,
-              where: { estoqueId: estoqueEncontrado.id }
+              where: { id_estoque: estoqueEncontrado.id }
             }
           ]
         }
