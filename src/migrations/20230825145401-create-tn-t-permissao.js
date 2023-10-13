@@ -27,7 +27,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       dt_deleted: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       },
 

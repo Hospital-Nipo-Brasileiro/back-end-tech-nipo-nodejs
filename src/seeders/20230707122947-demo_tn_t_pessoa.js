@@ -12,6 +12,16 @@ module.exports = {
         dt_created: new Date(),
         dt_updated: new Date()
       },
+      {
+        ds_nome: "Manuel Fernandes Andrade",
+        nr_cpf: "12345678911",
+        dt_admissao: "11/07/2022",
+        dt_nascimento: "24/05/1998",
+        tp_contrato: "CLT",
+        ds_categoria_cargo: "Administrativo",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
 
     ], {});
   },
