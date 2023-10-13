@@ -16,12 +16,12 @@ const admissaoCSV = require("./AdmissaoRoute.js");
 const login = require("./LoginRoute.js");
 const papeis = require("./papelRoute.js");
 const permissao = require("./permissaoRoute.js");
-const papeisPermissoes  = require("./PapelPermissaoRoute.js");
+const papeisPermissoes = require("./PapelPermissaoRoute.js");
 
 const routes = (app) => {
   app.use(
     express.json(),
-    express.Router("/", (req, res) => { res.status(200).json("TechNipo"); }),
+    express.Router("/", (req, res) => { res.status(200).send("TechNipo"); }),
     pessoas,
     cargos,
     setores,

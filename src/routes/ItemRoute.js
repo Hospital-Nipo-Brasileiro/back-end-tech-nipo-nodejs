@@ -6,7 +6,7 @@ const router = express.Router();
 router
   .get("/itens", ItemController.buscaTodosItens)
   .get("/itens/:id", ItemController.buscaItemPorId)
-  .get("/estoques/:estoqueId/itens", ItemController.buscaItemPorEstoque)
+  .get("/estoques/:estoqueId/itens", ItemController.buscaItemPorEstoqueByGPT)
   .post("/itens", ItemController.criaUmItem)
   .post("/itens/:id/restaurar", ItemController.restauraUmItem)
   .put("/itens/:id", ItemController.atualizaUmItem)
