@@ -57,49 +57,46 @@ class ItemsController {
   }
 
   static async buscaItemPorEstoqueByGPT(req, res, next) {
-
-    const { estoqueId } = req.params;
-    const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: { id: Number(estoqueId) } });
-
-    if (!estoqueEncontrado) {
-      next(new NaoEncontrado("Estoque não encontrado"));
-    }
-
-    const itensEncontradosEmEstoque = await database.TN_T_ITEM_GUARDADO.findAll({
-      include: [
-        {
-          model: database.TN_T_PRATELEIRA,
-          include: [
-            {
-              model: database.TN_T_ARMARIO,
-              include: [
-                {
-                  model: database.TN_T_ZONA,
-                  where: { id_estoque: estoqueEncontrado.id }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          model: database.TN_T_BAU,
-          include: [
-            {
-              model: database.TN_T_ZONA,
-              where: { id_estoque: estoqueEncontrado.id }
-            }
-          ]
-        }
-      ]
-    });
-
     try {
+      const { estoqueId } = req.params;
+      const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: { id: Number(estoqueId) } });
+
+      if (!estoqueEncontrado) {
+        return next(new NaoEncontrado("Estoque não encontrado"));
+      }
+
+      const itensEncontradosEmEstoque = await database.TN_T_ITEM_GUARDADO.findAll({
+        include: [
+          {
+            model: database.TN_T_PRATELEIRA,
+            include: [
+              {
+                model: database.TN_T_ARMARIO,
+                include: [
+                  {
+                    model: database.TN_T_ZONA,
+                  }
+                ],
+                where: { "$TN_T_ZONA.id_estoque$": estoqueId },
+              }
+            ]
+          },
+          {
+            model: database.TN_T_BAU,
+            include: [
+              {
+                model: database.TN_T_ZONA,
+              }
+            ],
+          }
+        ]
+      });
+
       res.status(200).send(itensEncontradosEmEstoque);
     } catch (err) {
       next(err);
     }
   }
-
 
   static async criaUmItem(req, res, next) {
     const novoItem = {

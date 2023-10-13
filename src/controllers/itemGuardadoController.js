@@ -47,11 +47,9 @@ class ItemGuardadoController {
       dt_updated: new Date(),
     };
 
-    const buscaItemGuardado = await database.TN_T_ITEM.findOne({ where: { id: Number(novoItem.id_item) } });
+    const itemEncontrado = await database.TN_T_ITEM.findOne({ where: { id: Number(novoItem.id_item) } });
     try {
-
-
-      if (!buscaItemGuardado) {
+      if (!itemEncontrado) {
         next(new NaoEncontrado("ID do item não encontrado"));
       } else if (req.body.id_prateleira && req.body.id_bau) {
         next(new ErroBase("Não é possível guardar um produto no baú e na prateleira ao mesmo tempo", 400));
