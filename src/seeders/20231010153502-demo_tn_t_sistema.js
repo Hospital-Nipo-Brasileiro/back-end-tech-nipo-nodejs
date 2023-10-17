@@ -4,6 +4,7 @@ module.exports = {
     return queryInterface.bulkInsert("TN_T_CARGO_SETOR", [
       {
         id_cargo: 1,
+        id_setor: 1,
         dt_created: new Date(),
         dt_updated: new Date()
       },

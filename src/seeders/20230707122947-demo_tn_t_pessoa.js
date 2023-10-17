@@ -5,8 +5,8 @@ module.exports = {
       {
         ds_nome: "Gustavo de Souza Fonseca",
         nr_cpf: "51132013836",
-        dt_admissao: "09/01/2022",
-        dt_nascimento: "11/14/2002",
+        dt_admissao: "2022-09-01",
+        dt_nascimento: "2002-11-14",
         tp_contrato: "CLT",
         ds_categoria_cargo: "Administrativo",
         dt_created: new Date(),
@@ -15,14 +15,13 @@ module.exports = {
       {
         ds_nome: "Manuel Fernandes Andrade",
         nr_cpf: "12345678911",
-        dt_admissao: "11/07/2022",
-        dt_nascimento: "24/05/1998",
+        dt_admissao: "2022-11-07",
+        dt_nascimento: "1998-05-24",
         tp_contrato: "CLT",
         ds_categoria_cargo: "Administrativo",
         dt_created: new Date(),
         dt_updated: new Date()
-      },
-
+      }
     ], {});
   },
 

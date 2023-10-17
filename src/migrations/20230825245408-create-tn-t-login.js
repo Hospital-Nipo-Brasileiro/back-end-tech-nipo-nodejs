@@ -15,11 +15,15 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: "TN_T_PESSOA", key: "id" }
       },
-      ds_nome: {
+      ds_username: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      ds_descricao: {
+      ds_email: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      ds_password: {
         allowNull: false,
         type: Sequelize.STRING
       },
