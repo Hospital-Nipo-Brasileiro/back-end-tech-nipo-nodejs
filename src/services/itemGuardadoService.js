@@ -1,21 +1,11 @@
-const Sequelize = require("sequelize");
-const config = require("../config/config.json");
-
-const sequelize = new Sequelize(
-  config.development.database,
-  config.development.username,
-  config.development.password,
-  {
-    dialect: config.development.dialect,
-    logging: config.development.logging,
-  }
-);
+const db = require("../models");
 
 class ItemGuardadoService {
   static async buscaItensPorEstoque(estoqueId) {
     // eslint-disable-next-line no-useless-catch
     try {
-      const resultado = await sequelize.query(`
+      console.log("cheguei 4. 1")
+      const resultado = await db.sequelize.query(`
             SELECT 
               TN_T_ESTOQUE.id, 
               TN_T_ESTOQUE.ds_nome AS ESTOQUE, 
@@ -73,13 +63,13 @@ class ItemGuardadoService {
           `,  
       {
         replacements: { estoqueId }, // Define o valor do parâmetro aqui
-        type: sequelize.QueryTypes.SELECT,
+        type: db.sequelize.QueryTypes.SELECT,
       });
-      
+      console.log("cheguei 4. 2")
       return resultado;
       
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      console.error(err);
     }
   }
 }

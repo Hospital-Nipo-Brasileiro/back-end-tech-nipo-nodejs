@@ -35,17 +35,19 @@ class ItemGuardadoController {
   }
 
   static async buscaItemPorEstoque(req, res, next) {
+    console.log("cheguei")
+    const { estoqueId } = req.params;
     try {
-      const { estoqueId } = req.params;
-      
+      console.log("cheguei 2")
       const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: { id: Number(estoqueId) } });
-  
+      console.log("cheguei 3")
       if (!estoqueEncontrado) {
+        console.log("entrei no sem estoque")
         next(new NaoEncontrado("ID de estoque não encontrado"));
       }
-  
+      console.log("cheguei 4")
       const itemEncontradoNoEstoque = await ItemGuardadoService.buscaItensPorEstoque(estoqueId);
-  
+      console.log("cheguei 5")
       console.log(itemEncontradoNoEstoque);
       res.status(200).send(itemEncontradoNoEstoque);
     } catch (err) {
