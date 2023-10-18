@@ -39,10 +39,8 @@ class DeskManagerController {
       
       const usuarios = await DeskManagerService.readCSV(file, res);
       
-      // Armazena os usuários na requisição para uso posterior
       req.fileData = usuarios; 
       
-      // Aqui você pode retornar uma resposta HTTP com os usuários encontrados
       res.send(usuarios);
       
     } catch (error) {
@@ -52,17 +50,13 @@ class DeskManagerController {
     
   }
 
-  static async visualizaUsuarios(req, res, next) {    
-
+  static async visualizaUsuarios(req, res, next) {
     const file = req.file.path; 
 
     try {
       const usuarios = await DeskManagerService.readCSV(file, res);
-
-      // Armazena os usuários na requisição para uso posterior
       req.fileData = usuarios;
       next();
-
     } catch (error) {
       next("Erro ao visualizar usuários.");
     }
@@ -70,46 +64,30 @@ class DeskManagerController {
   }
 
   static async criaUsuarios(req, res, next) {
-
     const url = "https://api.desk.ms/Usuarios";
     
     try {
-      // Perform authentication to get the token
       const token = req.access_token;
-
-      const usuarios = req.fileData;
-      
+      const usuarios = req.fileData;      
       if (!token) {
         next("Erro na autenticação. Token não obtido.", 400);
       }
-
-      // Prepare the headers with the authorization token
-      const headers = { headers: { Authorization: token } };
+      const headers = { headers: { Authorization: token }};      
       
-      const usuariosCriados = [];
-
       for (const body of usuarios) {
         try {
-          
           const usuarioCriado = await axios.put(url, body, headers);
-
-          if (usuarioCriado instanceof Error) {
-            next(`Erro server DeskManager ${Error.message}`, 404);
-          }
-
+          
           if (usuarioCriado.status >= 400) {
             next(`Erro server DeskManager: ${usuarioCriado.statusText}`, usuarioCriado.status);
-            return;
           }
-
-          usuariosCriados.push(usuarioCriado);
-
+        
         } catch (error) {
           next(`Erro ao salvar usuário: ${error.message}`, 500);
         }
       }
   
-      res.status(200).send(usuariosCriados);
+      res.status(200).send("Usuários criados");
       
 
     } catch (error) {
