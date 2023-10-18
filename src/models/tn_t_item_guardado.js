@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TN_T_ITEM_GUARDADO.belongsTo(models.TN_T_BAU, {foreignKey: "id_bau"});
       TN_T_ITEM_GUARDADO.belongsTo(models.TN_T_PRATELEIRA, {foreignKey: "id_prateleira"});
+      TN_T_ITEM_GUARDADO.belongsTo(models.TN_T_ITEM, { foreignKey: "id_item" });
     }
   }
   TN_T_ITEM_GUARDADO.init({

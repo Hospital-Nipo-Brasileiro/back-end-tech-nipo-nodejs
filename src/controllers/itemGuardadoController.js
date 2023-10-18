@@ -1,6 +1,8 @@
 const ErroBase = require("../errors/ErroBase.js");
 const NaoEncontrado = require("../errors/NaoEncontrado.js");
 const database = require("../models");
+const ItemGuardadoService = require("../services/itemGuardadoService.js");
+
 
 
 class ItemGuardadoController {
@@ -33,94 +35,26 @@ class ItemGuardadoController {
   }
 
   static async buscaItemPorEstoque(req, res, next) {
-    const { estoqueId } = req.params;
-    const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: { id: Number(estoqueId) } });
-    const zonaEncontrado = await database.TN_T_ZONA.findAll({ where: { id_estoque: Number(estoqueId) } });
-    const armarioEncontrado = await database.TN_T_ARMARIO.findAll({ where: { id_zona: Number(zonaEncontrado.id) } });
-    const prateleiraEncontrada = await database.TN_T_PRATELEIRA.findAll({ where: { id_armario: Number(armarioEncontrado.id) } });
-    const bauEncontrado = await database.TN_T_BAU.findAll({ where: { id_zona: Number(zonaEncontrado.id) } });
-
-    if (!estoqueEncontrado) {
-      next(new NaoEncontrado("Estoque não encontrado"));
-    }
-    if (!zonaEncontrado) {
-      next(new NaoEncontrado("Zona não encontrada"));
-    }
-    if (!armarioEncontrado) {
-      next(new NaoEncontrado("Armário não encontrado"));
-    }
-    if (!prateleiraEncontrada) {
-      next(new NaoEncontrado("Prateleira não encontrada"));
-    }
-    if (!bauEncontrado) {
-      next(new NaoEncontrado("Bau não encontado"));
-    }
-
     try {
-      res.status(200).send(armarioEncontrado);
-    } catch (err) {
-      next(err);
-    }
-
-  }
-
-  static async buscaItemPorEstoqueByGPT(req, res, next) {
-
-    const { estoqueId } = req.params;
-    const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: { id: Number(estoqueId) } });
-
-    if (!estoqueEncontrado) {
-      next(new NaoEncontrado("Estoque não encontrado"));
-    }
-
-    const itensEncontradosEmEstoque = await database.TN_T_ITEM_GUARDADO.findAll({
-      include: [
-        {
-          model: database.TN_T_PRATELEIRA,
-          include: [
-            {
-              model: database.TN_T_ARMARIO,
-              include: [
-                {
-                  model: database.TN_T_ZONA,
-                  include: [
-                    {
-                      model: database.TN_T_ESTOQUE,
-                      where: { id: Number(estoqueId) }
-                    }
-                  ]
-                }
-
-              ]
-            }
-          ]
-        },
-        {
-          model: database.TN_T_BAU,
-          include: [
-            {
-              model: database.TN_T_ZONA,
-              include: [
-                {
-                  model: database.TN_T_ESTOQUE,
-                  where: { id: estoqueId }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    });
-    try {
-      res.status(200).send(itensEncontradosEmEstoque);
+      const { estoqueId } = req.params;
+      
+      const estoqueEncontrado = await database.TN_T_ESTOQUE.findOne({ where: { id: Number(estoqueId) } });
+  
+      if (!estoqueEncontrado) {
+        next(new NaoEncontrado("ID de estoque não encontrado"));
+      }
+  
+      const itemEncontradoNoEstoque = await ItemGuardadoService.buscaItensPorEstoque(estoqueId);
+  
+      console.log(itemEncontradoNoEstoque);
+      res.status(200).send(itemEncontradoNoEstoque);
     } catch (err) {
       next(err);
     }
   }
+  
 
   static async guardaUmItem(req, res, next) {
-
-
     const novoItem = {
       id_item: req.body.id_item,
       id_prateleira: req.body.id_prateleira,
