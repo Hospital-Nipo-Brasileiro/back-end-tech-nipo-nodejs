@@ -4,7 +4,6 @@ class ItemGuardadoService {
   static async buscaItensPorEstoque(estoqueId) {
     // eslint-disable-next-line no-useless-catch
     try {
-      console.log("cheguei 4. 1")
       const resultado = await db.sequelize.query(`
             SELECT 
               TN_T_ESTOQUE.id, 
@@ -65,7 +64,6 @@ class ItemGuardadoService {
         replacements: { estoqueId }, // Define o valor do parâmetro aqui
         type: db.sequelize.QueryTypes.SELECT,
       });
-      console.log("cheguei 4. 2")
       return resultado;
       
     } catch (err) {
