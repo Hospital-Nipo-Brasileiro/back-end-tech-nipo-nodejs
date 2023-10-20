@@ -2,7 +2,7 @@ const csv = require("csv-parser");
 const fs = require("fs");
 
 class AdmissaoCsvService {
-  static async processaPlanilhaCSV(file) {
+  static async processaPlanilhaCSV(file, diaAdmissao) {
 
     const results = [];
 
@@ -36,15 +36,24 @@ class AdmissaoCsvService {
             const cpfFormatado = cpf.replace(/\D/g, ""); 
             return cpfFormatado.slice(0, 8);
           }
+
+          async function formatarCPFSenha(cpf) {
+            //REMOVER O QUE NÃO FOR NÚMERO
+            const cpfFormatado = cpf.replace(/\D/g, ""); 
+            return cpfFormatado.slice(0, 3);
+          }
       
-          const usuarios = [];
+          const acessos = [];
       
           data.forEach(async (item) => {
             const local = item["Local"];
+            const admissao = diaAdmissao;
             const tipoContrato = item["Tipo de Contratação"];
-            const cpf = await formatarCPFUsuario(item["Contratados CPF"]);
+            const cpfUser = await formatarCPFUsuario(item["Contratados CPF"]);
+            const cpfPassword = await formatarCPFSenha(item["Contratados CPF"]);
+
       
-            if (local && tipoContrato && cpf) {
+            if (local && admissao && tipoContrato && cpfUser && cpfPassword) {
               const localCode = {
                 HNB: "H",
                 CMD: "L",
@@ -61,13 +70,14 @@ class AdmissaoCsvService {
                 Estagiária: "E"
               };
       
-              const usuario = `${localCode[local]}${tipoContratoCode[tipoContrato]}${cpf}`;
-              usuarios.push(usuario);
+              const usernameFormated = `${localCode[local]}${tipoContratoCode[tipoContrato]}${cpfUser}`;
+              const passwordFormated = `${local}@${cpfPassword}*${admissao}`;
+
+              acessos.push(usernameFormated, passwordFormated);
               results.push(data);
 
             }
           });
-      
           return results;
         })
         .on("end", () => {
