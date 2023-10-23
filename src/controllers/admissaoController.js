@@ -10,9 +10,11 @@ class AdmissaoController {
         next("Arquivo não encontrado na requisição.", 400);
       }
 
-      const response = await AdmissaoService.processaPlanilha(file);
-      console.log(response)
-      res.status(200).send(response);
+      const csvData  = await AdmissaoService.processaPlanilha(file);
+      const users = await AdmissaoService.setUsers(csvData);
+
+      res.status(200).send(users);
+
     } catch (err) {
       next(err);
     }
