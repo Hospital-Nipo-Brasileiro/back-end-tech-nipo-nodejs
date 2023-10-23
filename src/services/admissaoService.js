@@ -1,8 +1,58 @@
-const csv = require("csv-parser");
 const fs = require("fs");
+const XlsxPopulate = require("xlsx-populate");
 
-class AdmissaoCsvService {
-  static async processaPlanilhaCSV(file) {
+class AdmissaoService {
+
+  static async processaPlanilha(file) {
+    try {
+      XlsxPopulate.fromFileAsync(file)
+        .then(workbook => {
+            const cabecalhoRecebido = workbook.sheet(0).range("A1:S1");
+            const values = cabecalhoRecebido.value()
+            const response = '';
+      
+
+            const expectedHeaders = [
+              "Código da vaga",
+              "Área",
+              "Cargo",
+              "Recrutador da vaga",
+              "Criador(a) da Vaga",
+              "Email do Criador(a)",
+              "Nome do contratado",
+              "Conselho Regional",
+              "Contratados CPF",
+              "Tipo de contratação",
+              "No caso de substituição de pessoal, informe o colaborador a ser substituído.",
+              "Quais acessos a sistemas essa pessoa precisa ter?",
+              "Quais equipamentos e programas essa pessoa deve ter acesso?",
+              "Lista de distribuição (e-mail)",
+              "Informar usuário para cópia do perfil",
+              "Horário de trabalho",
+              "Ramal do gestor",
+              "Prestador",
+              "Local"
+            ];
+
+            if (JSON.stringify(values[0]) === JSON.stringify(expectedHeaders)) {
+              response = 'Planilha nos padrões';
+            } else {
+              console.log('O QUE ESTÁ VINDO: ', JSON.stringify(values[0]));
+              console.log('O QUE É ESPERADO: ', JSON.stringify(expectedHeaders));
+              throw new Error('O cabeçalho desta planilha não está correto.');
+            }
+        });
+      
+      
+
+    } catch (error) {
+      console.error(error)
+    }
+    
+   
+  }
+
+  static async proccess(file) {
 
     const results = [];
 
@@ -86,4 +136,4 @@ class AdmissaoCsvService {
   }
 }
 
-module.exports = AdmissaoCsvService;
+module.exports = AdmissaoService;

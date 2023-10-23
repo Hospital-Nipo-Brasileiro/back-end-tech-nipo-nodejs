@@ -3,5 +3,6 @@ node_modules
 config/
 config.json
 uploads/
+uploads-admissoes/
 .vercel
 env/

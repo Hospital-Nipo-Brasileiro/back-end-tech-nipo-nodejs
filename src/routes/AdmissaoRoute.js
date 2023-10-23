@@ -1,9 +1,11 @@
 const express = require("express");
-const AdmissaoCsvController = require("../controllers/admissaoCsvController");
+const AdmissaoController = require("../controllers/admissaoController");
+const multer = require("multer");
 
 const router = express.Router();
+const upload = multer({ dest : "./src/upload-admissoes/"});
 
 router
-  .post("/enviar-admissao", AdmissaoCsvController.previsualizaPlanilhaCSV);
+  .post("/enviar-admissao", upload.single("file"), AdmissaoController.previsualizaPlanilha);
 
 module.exports = router;
