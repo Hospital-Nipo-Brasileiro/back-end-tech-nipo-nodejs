@@ -3,6 +3,7 @@ const csv = require("csv");
 const csvParser = require("csv-parser");
 const fs = require("fs");
 
+
 class AdmissaoService {
   static async writeCSV(data) {
     const options = {
@@ -34,6 +35,24 @@ class AdmissaoService {
   static async formatarCPFSenha(cpf) {
     const cpfFormatado = cpf.replace(/\D/g, ""); //REMOVER O QUE NÃO FOR NÚMERO
     return cpfFormatado.slice(0, 3);
+  }
+
+  static async formatarLocal(local, localCode) {
+    if(local === "HNB") {
+      localCode = "H";
+      return localCode;
+    } 
+    else if (local === "CMD"){
+      localCode = "L";
+      return localCode;
+    }
+    else if (local === "SMA"){
+      localCode = "S";
+      return localCode;
+    }
+    else {
+      throw new Error("Local não identificado!");
+    }
   }
 
   static processaPlanilha(file) {
@@ -84,69 +103,47 @@ class AdmissaoService {
     });
   }
 
-  static async setUsers(file, diaAdmissao) {
-    const results = [];
+  static async setUsers(file, diaAdmissao){
+    return new Promise((resolve, reject) => {
+      const results = [];
 
-    const expectedHeaders = [
-      "Código da vaga",
-      "Área",
-      "Cargo",
-      "Recrutador da vaga",
-      "Criador(a) da Vaga",
-      "Email do Criador(a)",
-      "Nome do contratado",
-      "Conselho Regional",
-      "Contratados CPF",
-      "Tipo de contratação",
-      "No caso de substituição de pessoal, informe o colaborador a ser substituído.",
-      "Quais acessos a sistemas essa pessoa precisa ter?",
-      "Quais equipamentos e programas essa pessoa deve ter acesso?",
-      "Lista de distribuição (e-mail)",
-      "Informar usuário para cópia do perfil",
-      "Horário de trabalho",
-      "Ramal do gestor",
-      "Prestador",
-      "Local"
-    ];
-
-    try {
-      const stream = fs.createReadStream(file);
-      stream.pipe(csvParser({ headers: expectedHeaders }))
+      fs.createReadStream(file)
+        .pipe(csvParser({ separator: ";"}))
         .on("data", async (data) => {
-          console.log("Dado lido:", data);
+
+          console.log("Arquivo lido: ", data);
 
           const acessos = [];
-          const cpfUser = "";
-          const cpfPassword = "";
-          const local = ["Local"];
+          const cpf = data["Contratados CPF"];
+          const local = data["Local"];
           const admissao = diaAdmissao;
           const tipoContrato = data["Tipo de Contratação"];
-          if (data["Contratados CPF"] && typeof data["Contratados CPF"] === "string") {
-            cpfUser = await this.formatarCPFUsuario(data["Contratados CPF"]);
-            cpfPassword = await this.formatarCPFSenha(data["Contratados CPF"]);
+
+          let cpfUser = "";
+          let cpfPassword = "";
+          let localCode = "";
+
+          if (cpf) {
+            cpfUser = await this.formatarCPFUsuario(cpf);
+            cpfPassword = await this.formatarCPFSenha(cpf);
             return cpfUser, cpfPassword;
           }
 
-
-
           if (local && admissao && tipoContrato && cpfUser && cpfPassword) {
-            const localCode = {
-              HNB: "H",
-              CMD: "L",
-              SMA: "S"
-            };
+            
+            const localCodeReceived = await this.formatarLocal(local, localCode);
 
-            const tipoContratoCode = {
-              CLT: "C",
-              Terceiro: "X",
-              Temporário: "T",
-              Temporária: "T",
-              Estágio: "E",
-              Estagiário: "E",
-              Estagiária: "E"
-            };
+            // const tipoContratoCode = {
+            //   CLT: "C",
+            //   Terceiro: "X",
+            //   Temporário: "T",
+            //   Temporária: "T",
+            //   Estágio: "E",
+            //   Estagiário: "E",
+            //   Estagiária: "E"
+            // };
 
-            const usernameFormated = `${localCode[local]}${tipoContratoCode[tipoContrato]}${cpfUser}`;
+            const usernameFormated = `${localCodeReceived}${cpfUser}`;
             console.log(usernameFormated);
 
             const passwordFormated = `${local}@${cpfPassword}*${admissao}`;
@@ -154,26 +151,18 @@ class AdmissaoService {
 
             acessos.push(usernameFormated, passwordFormated);
             results.push(acessos);
-
           }
-
         })
         .on("end", () => {
           console.log("CSV file processado");
           console.log("Este é o resultado: ", results);
-          return results;
+          resolve(results);
         })
         .on("error", (error) => {
-          console.error("Erro ao processar o arquivo CSV:", error);
-          // Aqui, você pode rejeitar a promessa e lidar com o erro
+          reject("Erro ao processar o arquivo CSV:", error);
         });
-
-    } catch (error) {
-      console.error("Erro ao abrir o arquivo:", error);
-      // Aqui, você pode rejeitar a promessa e lidar com o erro
-    }
+    });
   }
 }
-
 
 module.exports = AdmissaoService;

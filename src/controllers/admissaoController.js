@@ -16,12 +16,12 @@ class AdmissaoController {
       }
 
       const csvData = await AdmissaoService.processaPlanilha(file, diaAdmissao);
-      const outputPath = `C:/Users/Fonse/OneDrive/Área de Trabalho/TECH-NIPO/back-end-tech-nipo-nodejs/src/csv-process/${diaAdmissao}-admissao.csv`;
+      const outputPath = `C:/Users/sup.gustavo/Documents/back-end-tech-nipo-nodejs/src/csv-process/${diaAdmissao}-admissao.csv`;
       await writeFileAsync(outputPath, csvData, "utf8");
-      const savedFilePath = outputPath;
-      const users = await AdmissaoService.setUsers(savedFilePath);
+      const users = outputPath;
+      const usersReceived = await AdmissaoService.setUsers(users, diaAdmissao);
 
-      res.status(200).send(users);
+      res.status(200).send(usersReceived);
 
     } catch (err) {
       next(err);
