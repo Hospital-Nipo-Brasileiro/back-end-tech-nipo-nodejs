@@ -20,7 +20,7 @@ class AdmissaoController {
       const outputPathMac = `/Users/gusta/Desktop/TechNipo/back-end-tech-nipo-nodejs/src/csv-process${diaAdmissao}-admissao.csv`;
       await writeFileAsync(outputPathMac, csvData, "utf8");
       const users = outputPathMac;
-      const usersReceived = await AdmissaoService.setUsers(users, diaAdmissao);
+      const usersReceived = await AdmissaoService.criarFormatacaoAcessos(users, diaAdmissao);
 
       res.status(200).send(usersReceived);
 

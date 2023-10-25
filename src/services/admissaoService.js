@@ -3,6 +3,7 @@ const csv = require("csv");
 const csvParser = require("csv-parser");
 const fs = require("fs");
 const diacritics = require("diacritics");
+const { spawn } = require("child_process");
 
 
 class AdmissaoService {
@@ -13,7 +14,6 @@ class AdmissaoService {
     return new Promise((resolve, reject) => {
       csv.stringify(data, options, (err, output) => {
         if (err) {
-          console.log("Deu erro: ", err);
           reject(err);
         } else {
           resolve(output);
@@ -127,7 +127,7 @@ class AdmissaoService {
     });
   }
 
-  static async setUsers(file, diaAdmissao){
+  static async criarFormatacaoAcessos(file, diaAdmissao){
     return new Promise((resolve, reject) => {
       const results = [];
 
@@ -135,9 +135,8 @@ class AdmissaoService {
         .pipe(csvParser({ separator: ";"}))
         .on("data", async (data) => {
 
-          console.log("Arquivo lido: ", data);
+          const novaPessoa = {};
 
-          const acessosUsuario = [];
           const nome = data["Nome do contratado"];
           const cpf = data["Contratados CPF"];
           const local = data["Local"];
@@ -149,7 +148,7 @@ class AdmissaoService {
           let cpfPassword = "";
           let localCode = "";
           let tipoContratoCode = "";
-          let emailDomain = "";
+          let dominioEmail = "";
           let email = "";
 
           if(acessos && cpf && local && admissao && tipoContrato){
@@ -157,43 +156,44 @@ class AdmissaoService {
             cpfPassword = await this.formatarCPFSenha(cpf);
             const localCodeRecebido = await this.formatarLocal(local, localCode);
             const tipoContratoRecebido = await this.formatarTipoContrato(tipoContrato, tipoContratoCode)
-            const allAccess = acessos.split(", ");
+            const todosAcessos = acessos.split(", ");
 
-            if (allAccess.includes("DeskManager") || allAccess.includes("Conta de e-mail")) {
-              if (allAccess.includes("Email")) {
-                emailDomain = "@hnipo.org.br";
+            const usuarioFormatado = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
+            const senhaFormatada = `${local}@${cpfPassword}*${admissao}`;
+
+            novaPessoa.acessos = acessos;
+            novaPessoa.nome = nome;
+            novaPessoa.usuario = usuarioFormatado;
+            novaPessoa.senha = senhaFormatada;
+
+            if (todosAcessos.includes("DeskManager") || todosAcessos.includes("Conta de e-mail")) {
+              if (todosAcessos.includes("Email")) {
+                dominioEmail = "@hnipo.org.br";
               } else {
-                emailDomain = "@desk.ms";
+                dominioEmail = "@desk.ms";
               }
 
               // Remover acentuações do nome
-              const nameWithoutDiacritics = diacritics.remove(nome);
+              const nomeSemAcentuacao = diacritics.remove(nome);
     
               // Separar o nome em partes
-              const partsOfName = nameWithoutDiacritics.trim().split(" ");
-              const firstName = partsOfName[0].trim();
-              const lastName = partsOfName[partsOfName.length - 1].trim();
+              const NomePicotado = nomeSemAcentuacao.trim().split(" ");
+              const primeiroNome = NomePicotado[0].trim();
+              const ultimoNome = NomePicotado[NomePicotado.length - 1].trim();
 
               // Criação das novas variáveis com os nomes em letras minúsculas
-              const firstNameEmail = firstName.toLowerCase().trim();
-              const lastNameEmail = lastName.toLowerCase().trim();
+              const primeiroNomeEmail = primeiroNome.toLowerCase().trim();
+              const ultimoNomeEmail = ultimoNome.toLowerCase().trim();
 
-              const email = `${firstNameEmail}.${lastNameEmail}${emailDomain}`;
+              const email = `${primeiroNomeEmail}.${ultimoNomeEmail}${dominioEmail}`;
 
-              acessosUsuario.push(email);
-              results.push(acessosUsuario);
+              novaPessoa.email = email;
             }
-            const usernameFormated = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
 
-            const passwordFormated = `${local}@${cpfPassword}*${admissao}`;
-
-            acessosUsuario.push(acessos, nome, usernameFormated, passwordFormated);
-            results.push(acessosUsuario);
+            results.push(novaPessoa)
           }
         })
         .on("end", () => {
-          console.log("CSV file processado");
-          console.log("Este é o resultado: ", results);
           resolve(results);
         })
         .on("error", (error) => {
@@ -201,6 +201,52 @@ class AdmissaoService {
         });
     });
   }
+
+  static async gerarDocumentoPython(name, access, email, username, password) {
+    return new Promise((resolve, reject) => {
+      const pythonScript = '../../python/documentation-docx.py'; // Substitua pelo caminho real do seu script Python
+
+      const pythonProcess = spawn('python', [pythonScript, name, access, email, username, password]);
+
+      pythonProcess.stdout.on('data', (data) => {
+        console.log(`Saída do script Python: ${data}`);
+      });
+
+      pythonProcess.stderr.on('data', (data) => {
+        console.error(`Erro do script Python: ${data}`);
+        reject(data);
+      });
+
+      pythonProcess.on('close', (code) => {
+        if (code === 0) {
+          console.log('Script Python concluído com sucesso.');
+          resolve();
+        } else {
+          reject(`Script Python retornou um código de saída não zero: ${code}`);
+        }
+      });
+    });
+  }
+
+  static async criarDocumentoWord(file, name, access, email, username, password) {
+    return new Promise((resolve, reject) => {
+      const results = [];
+
+      fs.createReadStream(file)
+        .pipe(csvParser({ separator: ";"}))
+        .on("data", async (data) => {
+          await gerarDocumentoPython(name, access, email, username, password)
+          .then(() => {
+            console.log('Documento Python gerado com sucesso.');
+          })
+          .catch((err) => {
+            console.error(`Erro ao gerar documento Python: ${err}`);
+          });
+        })
+    })
+  }
+
+
 }
 
 module.exports = AdmissaoService;
