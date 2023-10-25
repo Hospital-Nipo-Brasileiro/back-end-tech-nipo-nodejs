@@ -184,10 +184,8 @@ class AdmissaoService {
               results.push(acessosUsuario);
             }
             const usernameFormated = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
-            console.log(usernameFormated);
 
             const passwordFormated = `${local}@${cpfPassword}*${admissao}`;
-            console.log(passwordFormated);
 
             acessosUsuario.push(acessos, nome, usernameFormated, passwordFormated);
             results.push(acessosUsuario);
