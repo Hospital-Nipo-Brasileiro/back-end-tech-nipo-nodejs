@@ -4,6 +4,7 @@ const csvParser = require("csv-parser");
 const fs = require("fs");
 const diacritics = require("diacritics");
 const { spawn } = require("child_process");
+const path = require("path");
 
 
 class AdmissaoService {
@@ -58,30 +59,55 @@ class AdmissaoService {
 
   static async formatarTipoContrato(tipoContrato, tipoContratoCode) {
     if(tipoContrato === "CLT") {
-      tipoContratoCode = "C"
-      return tipoContratoCode
+      tipoContratoCode = "C";
+      return tipoContratoCode;
     } else if (tipoContrato === "Terceiro") {
-      tipoContratoCode = "X"
-      return tipoContratoCode
+      tipoContratoCode = "X";
+      return tipoContratoCode;
     } else if (tipoContrato === "Temporário") {
-      tipoContratoCode = "T"
-      return tipoContratoCode
+      tipoContratoCode = "T";
+      return tipoContratoCode;
     } else if (tipoContrato === "Temporária") {
-      tipoContratoCode = "T"
-      return tipoContratoCode
+      tipoContratoCode = "T";
+      return tipoContratoCode;
     } else if (tipoContrato === "Estágio") {
-      tipoContratoCode = "E"
-      return tipoContratoCode
+      tipoContratoCode = "E";
+      return tipoContratoCode;
     } else if (tipoContrato === "Estagiário") {
-      tipoContratoCode = "E"
-      return tipoContratoCode
+      tipoContratoCode = "E";
+      return tipoContratoCode;
     } else if (tipoContrato === "Estagiária") {
-      tipoContratoCode = "E"
-      return tipoContratoCode
+      tipoContratoCode = "E";
+      return tipoContratoCode;
     } else {
       throw new Error("Local não identificado!");
     }
-  };
+  }
+
+  static async formatarAcessos(acessos) {
+    const acessosARemover = [
+      "Administrador",
+      "Bird Solution (Bsprint)",
+      "PACS - Mobilemed",
+      "Padrão",
+      "Portal Fuji",
+      "Terarecon",
+      "Voice",
+      "Avaya ACCS Agent",
+      "Avaya ACCS Supervisor",
+      "Avaya Communicator (Softphone)",
+      "Docusign",
+      "RM",
+      "PACS - Synapse 3D",
+      "PACS - Vitrea"
+    ];
+  
+    const acessosFormatados = acessos.filter(acesso => !acessosARemover.includes(acesso));
+
+    
+  
+    return acessosFormatados;
+  }
 
 
   static processaPlanilha(file) {
@@ -142,20 +168,19 @@ class AdmissaoService {
           const local = data["Local"];
           const admissao = diaAdmissao;
           const tipoContrato = data["Tipo de contratação"];
-          const acessos = data["Quais acessos a sistemas essa pessoa precisa ter?"]
+          const acessos = data["Quais acessos a sistemas essa pessoa precisa ter?"];
 
           let cpfUser = "";
           let cpfPassword = "";
           let localCode = "";
           let tipoContratoCode = "";
           let dominioEmail = "";
-          let email = "";
 
           if(acessos && cpf && local && admissao && tipoContrato){
             cpfUser = await this.formatarCPFUsuario(cpf);
             cpfPassword = await this.formatarCPFSenha(cpf);
             const localCodeRecebido = await this.formatarLocal(local, localCode);
-            const tipoContratoRecebido = await this.formatarTipoContrato(tipoContrato, tipoContratoCode)
+            const tipoContratoRecebido = await this.formatarTipoContrato(tipoContrato, tipoContratoCode);
             const todosAcessos = acessos.split(", ");
 
             const usuarioFormatado = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
@@ -190,7 +215,7 @@ class AdmissaoService {
               novaPessoa.email = email;
             }
 
-            results.push(novaPessoa)
+            results.push(novaPessoa);
           }
         })
         .on("end", () => {
@@ -204,22 +229,22 @@ class AdmissaoService {
 
   static async gerarDocumentoPython(name, access, email, username, password) {
     return new Promise((resolve, reject) => {
-      const pythonScript = '../../python/documentation-docx.py'; // Substitua pelo caminho real do seu script Python
+      
+      const pythonScript = path.join(__dirname, "../../python/__init__.py");
 
-      const pythonProcess = spawn('python', [pythonScript, name, access, email, username, password]);
+      const pythonProcess = spawn("python", [pythonScript, name, access, email, username, password]);
 
-      pythonProcess.stdout.on('data', (data) => {
+      pythonProcess.stdout.on("data", (data) => {
         console.log(`Saída do script Python: ${data}`);
       });
 
-      pythonProcess.stderr.on('data', (data) => {
+      pythonProcess.stderr.on("error", (data) => {
         console.error(`Erro do script Python: ${data}`);
-        reject(data);
       });
 
-      pythonProcess.on('close', (code) => {
+      pythonProcess.on("close", (code) => {
         if (code === 0) {
-          console.log('Script Python concluído com sucesso.');
+          console.log("Script Python concluído com sucesso.");
           resolve();
         } else {
           reject(`Script Python retornou um código de saída não zero: ${code}`);
@@ -228,25 +253,8 @@ class AdmissaoService {
     });
   }
 
-  static async criarDocumentoWord(file, name, access, email, username, password) {
-    return new Promise((resolve, reject) => {
-      const results = [];
-
-      fs.createReadStream(file)
-        .pipe(csvParser({ separator: ";"}))
-        .on("data", async (data) => {
-          await gerarDocumentoPython(name, access, email, username, password)
-          .then(() => {
-            console.log('Documento Python gerado com sucesso.');
-          })
-          .catch((err) => {
-            console.error(`Erro ao gerar documento Python: ${err}`);
-          });
-        })
-    })
-  }
-
-
 }
+
+
 
 module.exports = AdmissaoService;
