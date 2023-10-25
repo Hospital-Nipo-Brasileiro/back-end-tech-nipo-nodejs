@@ -2,6 +2,7 @@ const XlsxPopulate = require("xlsx-populate");
 const csv = require("csv");
 const csvParser = require("csv-parser");
 const fs = require("fs");
+const diacritics = require("diacritics");
 
 
 class AdmissaoService {
@@ -55,6 +56,34 @@ class AdmissaoService {
     }
   }
 
+  static async formatarTipoContrato(tipoContrato, tipoContratoCode) {
+    if(tipoContrato === "CLT") {
+      tipoContratoCode = "C"
+      return tipoContratoCode
+    } else if (tipoContrato === "Terceiro") {
+      tipoContratoCode = "X"
+      return tipoContratoCode
+    } else if (tipoContrato === "Temporário") {
+      tipoContratoCode = "T"
+      return tipoContratoCode
+    } else if (tipoContrato === "Temporária") {
+      tipoContratoCode = "T"
+      return tipoContratoCode
+    } else if (tipoContrato === "Estágio") {
+      tipoContratoCode = "E"
+      return tipoContratoCode
+    } else if (tipoContrato === "Estagiário") {
+      tipoContratoCode = "E"
+      return tipoContratoCode
+    } else if (tipoContrato === "Estagiária") {
+      tipoContratoCode = "E"
+      return tipoContratoCode
+    } else {
+      throw new Error("Local não identificado!");
+    }
+  };
+
+
   static processaPlanilha(file) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
@@ -86,15 +115,10 @@ class AdmissaoService {
         ];
 
         if (JSON.stringify(values[0]) !== JSON.stringify(expectedHeaders)) {
-          console.log("O QUE ESTÁ VINDO: ", JSON.stringify(values[0]));
-          console.log("O QUE É ESPERADO: ", JSON.stringify(expectedHeaders));
           reject("O cabeçalho desta planilha não está correto.");
         }
 
-        console.log("O QUE ESTÁ VINDO: ", JSON.stringify(values[0]));
-        console.log("O QUE É ESPERADO: ", JSON.stringify(expectedHeaders));
         const csvData = await this.convertToCSV(workbook.sheet(0));
-        console.log("cheguei 7: ", csvData);
         resolve(csvData);
 
       } catch (error) {
@@ -113,44 +137,66 @@ class AdmissaoService {
 
           console.log("Arquivo lido: ", data);
 
-          const acessos = [];
+          const acessosUsuario = [];
+          const nome = data["Nome do contratado"];
           const cpf = data["Contratados CPF"];
           const local = data["Local"];
           const admissao = diaAdmissao;
-          const tipoContrato = data["Tipo de Contratação"];
+          const tipoContrato = data["Tipo de contratação"];
+          const acessos = data["Quais acessos a sistemas essa pessoa precisa ter?"]
 
           let cpfUser = "";
           let cpfPassword = "";
           let localCode = "";
+          let tipoContratoCode = "";
+          let emailDomain = "";
+          let email = "";
 
-          if (cpf) {
+          console.log(`acessos: ${acessos}, cpf: ${cpf}, local: ${local}, admissao: ${admissao}, tipoContrato: ${tipoContrato}`)
+          if(acessos && cpf && local && admissao && tipoContrato){
             cpfUser = await this.formatarCPFUsuario(cpf);
             cpfPassword = await this.formatarCPFSenha(cpf);
-            return cpfUser, cpfPassword;
-          }
+            const localCodeRecebido = await this.formatarLocal(local, localCode);
+            const tipoContratoRecebido = await this.formatarTipoContrato(tipoContrato, tipoContratoCode)
+            const allAccess = acessos.split(", ");
 
-          if (local && admissao && tipoContrato && cpfUser && cpfPassword) {
-            
-            const localCodeReceived = await this.formatarLocal(local, localCode);
+            if (allAccess.includes("DeskManager") || allAccess.includes("Conta de e-mail")) {
+              if (allAccess.includes("Email")) {
+                emailDomain = "@hnipo.org.br";
+              } else {
+                emailDomain = "@desk.ms";
+              }
 
-            // const tipoContratoCode = {
-            //   CLT: "C",
-            //   Terceiro: "X",
-            //   Temporário: "T",
-            //   Temporária: "T",
-            //   Estágio: "E",
-            //   Estagiário: "E",
-            //   Estagiária: "E"
-            // };
+              // Remover acentuações do nome
+              const nameWithoutDiacritics = diacritics.remove(nome);
+    
+              // Separar o nome em partes
+              const partsOfName = nameWithoutDiacritics.trim().split(" ");
+              const firstName = partsOfName[0].trim();
+              const lastName = partsOfName[partsOfName.length - 1].trim();
 
-            const usernameFormated = `${localCodeReceived}${cpfUser}`;
+              // Criação das novas variáveis com os nomes em letras minúsculas
+              const firstNameEmail = firstName.toLowerCase().trim();
+              const lastNameEmail = lastName.toLowerCase().trim();
+
+              const email = `${firstNameEmail}.${lastNameEmail}${emailDomain}`;
+              const usernameFormated = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
+              console.log(usernameFormated);
+
+              const passwordFormated = `${local}@${cpfPassword}*${admissao}`;
+              console.log(passwordFormated);
+
+              acessosUsuario.push(email);
+              results.push(acessosUsuario);
+            }
+            const usernameFormated = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
             console.log(usernameFormated);
 
             const passwordFormated = `${local}@${cpfPassword}*${admissao}`;
             console.log(passwordFormated);
 
-            acessos.push(usernameFormated, passwordFormated);
-            results.push(acessos);
+            acessosUsuario.push(acessos, nome, usernameFormated, passwordFormated);
+            results.push(acessosUsuario);
           }
         })
         .on("end", () => {
