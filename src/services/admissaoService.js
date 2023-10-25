@@ -152,7 +152,6 @@ class AdmissaoService {
           let emailDomain = "";
           let email = "";
 
-          console.log(`acessos: ${acessos}, cpf: ${cpf}, local: ${local}, admissao: ${admissao}, tipoContrato: ${tipoContrato}`)
           if(acessos && cpf && local && admissao && tipoContrato){
             cpfUser = await this.formatarCPFUsuario(cpf);
             cpfPassword = await this.formatarCPFSenha(cpf);
@@ -180,11 +179,6 @@ class AdmissaoService {
               const lastNameEmail = lastName.toLowerCase().trim();
 
               const email = `${firstNameEmail}.${lastNameEmail}${emailDomain}`;
-              const usernameFormated = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
-              console.log(usernameFormated);
-
-              const passwordFormated = `${local}@${cpfPassword}*${admissao}`;
-              console.log(passwordFormated);
 
               acessosUsuario.push(email);
               results.push(acessosUsuario);
