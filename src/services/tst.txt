@@ -1,45 +1,23 @@
-Administrador
-
-Bird Solution (Bsprint)
-
-PACS - Mobilemed
-
-Padrão
-
-Portal Fuji
-
-Terarecon
-
-Voice
-
-Avaya ACCS Agent
-
-Avaya ACCS Supervisor
-
-Avaya Communicator (Softphone)
-
+    Administrador
+    Bird Solution (Bsprint)
+    PACS - Mobilemed
+    Padrão
+    Portal Fuji
+    Terarecon
+    Voice
+    Avaya ACCS Agent
+    Avaya ACCS Supervisor
+    Avaya Communicator (Softphone)
 Blip_Desk
-
 Blip_Portal
-
 PACS - CWM
-
 Desk_Manager
-
-Docusign
-
-Email
-
+    Docusign
+Conta de e-mail
 Neovero
-
 Rede
-
-RM
-
+    RM
 PACS - Synapse
-
-PACS - Synapse 3D
-
-PACS - Vitrea
-
+    PACS - Synapse 3D
+    PACS - Vitrea
 NA

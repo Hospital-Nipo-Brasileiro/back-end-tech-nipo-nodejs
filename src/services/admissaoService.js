@@ -57,6 +57,25 @@ class AdmissaoService {
     }
   }
 
+  static async formatarLocalSenha(local, localCode) {
+    if(local === "HNB") {
+      localCode = "Hnb";
+      return localCode;
+    } 
+    else if (local === "CMD"){
+      localCode = "Cmd";
+      return localCode;
+    }
+    else if (local === "SMA"){
+      localCode = "Sma";
+      return localCode;
+    }
+    else {
+      throw new Error("Local não identificado!");
+    }
+  }
+  
+
   static async formatarTipoContrato(tipoContrato, tipoContratoCode) {
     if(tipoContrato === "CLT") {
       tipoContratoCode = "C";
@@ -85,6 +104,28 @@ class AdmissaoService {
   }
 
   static async formatarAcessos(acessos) {
+    const acessosSeparados = acessos.split(", ");
+
+    const acessosSubstituidos = acessosSeparados.map(acesso => {
+      if (acesso === "Blip_Desk") {
+        return "Blip Desk";
+      } else if (acesso === "Blip_Portal") {
+        return "Blip Portal";
+      } else if (acesso === "PACS - CWM") {
+        return "CWM";
+      } else if (acesso === "Desk_Manager") {
+        return "DeskManager";
+      } else if (acesso === "Conta de e-mail") {
+        return "Email";
+      } else if (acesso === "Neovero") {
+        return "DeskManager";
+      } else if (acesso === "PACS - Synapse") {
+        return "Synapse";
+      } else {
+        return acesso;
+      }
+    });
+
     const acessosARemover = [
       "Administrador",
       "Bird Solution (Bsprint)",
@@ -102,9 +143,10 @@ class AdmissaoService {
       "PACS - Vitrea"
     ];
   
-    const acessosFormatados = acessos.filter(acesso => !acessosARemover.includes(acesso));
+    const acessoObrigatorio = "Interact";
 
-    
+    acessosSubstituidos.push(acessoObrigatorio);
+    const acessosFormatados = acessosSubstituidos.filter(acesso => !acessosARemover.includes(acesso));
   
     return acessosFormatados;
   }
@@ -163,7 +205,7 @@ class AdmissaoService {
 
           const novaPessoa = {};
 
-          const nome = data["Nome do contratado"];
+          const nome = data["Nome do contratado"].trim();
           const cpf = data["Contratados CPF"];
           const local = data["Local"];
           const admissao = diaAdmissao;
@@ -179,20 +221,22 @@ class AdmissaoService {
           if(acessos && cpf && local && admissao && tipoContrato){
             cpfUser = await this.formatarCPFUsuario(cpf);
             cpfPassword = await this.formatarCPFSenha(cpf);
+            const acessoRecebido = await this.formatarAcessos(acessos);
+            console.log(acessoRecebido);
             const localCodeRecebido = await this.formatarLocal(local, localCode);
+            const localSenhaRecebida = await this.formatarLocalSenha(local, localCode);
             const tipoContratoRecebido = await this.formatarTipoContrato(tipoContrato, tipoContratoCode);
-            const todosAcessos = acessos.split(", ");
 
             const usuarioFormatado = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
-            const senhaFormatada = `${local}@${cpfPassword}*${admissao}`;
+            const senhaFormatada = `${localSenhaRecebida}@${cpfPassword}*${admissao}`;
 
-            novaPessoa.acessos = acessos;
+            novaPessoa.acessos = acessoRecebido;
             novaPessoa.nome = nome;
             novaPessoa.usuario = usuarioFormatado;
             novaPessoa.senha = senhaFormatada;
 
-            if (todosAcessos.includes("DeskManager") || todosAcessos.includes("Conta de e-mail")) {
-              if (todosAcessos.includes("Email")) {
+            if (acessoRecebido.includes("DeskManager") || acessoRecebido.includes("Email")) {
+              if (acessoRecebido.includes("Email")) {
                 dominioEmail = "@hnipo.org.br";
               } else {
                 dominioEmail = "@desk.ms";

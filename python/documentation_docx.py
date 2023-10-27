@@ -34,28 +34,38 @@ def createDoc(name, access, email, username, password):
 
 
         def formatar_acessos_por_email(acessos):
-            acessos = acessos.split(", ")
-        
-            if "DeskManager" in acessos and "Conta de e-mail" not in acessos:
+            acessos = acessos.split(",")
+
+            if "DeskManager" in acessos and "Email" not in acessos:
                 acessos = "DeskManager"
                 return acessos
-            elif "Conta de e-mail" in acessos and "DeskManager" not in acessos:
+            elif "Email" in acessos and "DeskManager" not in acessos:
                 acessos = "Email"
                 return acessos
-            elif "DeskManager" in acessos and "Conta de e-mail" in acessos:
+            elif "DeskManager" in acessos and "Email" in acessos:
                 acessos = "DeskManager, Email"
                 return acessos
             return "Acesso não especificado"
 
         def formatar_acessos_por_usuario(acessos):
-            acessos = acessos.split(", ")
+            acessos = acessos.split(",")
 
-            if "DeskManager" in acessos:
+            if "DeskManager" in acessos and "Email" not in acessos:
                 acessos.remove("DeskManager")
-                return acessos
-            if "Conta de e-mail" in acessos:
-                acessos.remove("Conta de e-mail")
-                return acessos
+                acessosFormatados = ', '.join(acessos)
+                return acessosFormatados
+            elif "Email" in acessos and "DeskManager" not in acessos:
+                acessos.remove("Email")
+                acessosFormatados = ', '.join(acessos)
+                return acessosFormatados
+            elif "DeskManager" in acessos and "Email" in acessos:
+                acessos.remove("DeskManager")
+                acessos.remove("Email")
+                acessosFormatados = ', '.join(acessos)
+                return acessosFormatados
+            else:
+                acessosFormatados = ', '.join(acessos)
+                return acessosFormatados
 
 
 
