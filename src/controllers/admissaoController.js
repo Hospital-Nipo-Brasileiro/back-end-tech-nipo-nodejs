@@ -96,6 +96,7 @@ class AdmissaoController {
       }
       
       const headers = { headers: { Authorization: token }};  
+      const emails = [];
       
       for (const body of deskUser) {
         try {
@@ -104,13 +105,15 @@ class AdmissaoController {
           if (usuarioCriado.status >= 400) {
             next(`Erro server DeskManager: ${usuarioCriado.statusText}`, usuarioCriado.status);
           }
+
+          emails.push(body.Email);
         
         } catch (err) {
           next(`Erro ao salvar usuário: ${err.message}`, 500);
         }
       }
 
-      res.status(200).send("Usuários criados");
+      res.status(200).send("Usuários criados: ", emails);
 
     } catch (err) {
       next(`Erro ao salvar solicitante: ${err.message}`, 500);

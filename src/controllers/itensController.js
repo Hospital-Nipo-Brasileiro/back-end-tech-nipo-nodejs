@@ -42,8 +42,9 @@ class ItemsController {
     };
 
     try {
-      const novoItemCriada = await database.TN_T_ITEM.create(novoItem);
-      res.status(201).send(novoItemCriada);
+      const itemCriado = await database.TN_T_ITEM.create(novoItem);
+      req.body.id_item = itemCriado.id;
+      next();
     } catch (err) {
       next(new ErroBase(err));
     }

@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "node --watch server.js",
     "build": "node",
     "start": "node dist/server.js",
-    "test": "mocha src/tests/*.test.js"
+    "test": "node --test src/tests/*.test.js"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +27,6 @@
     "jsonwebtoken": "^9.0.1",
     "mssql": "^9.1.1",
     "multer": "^1.4.5-lts.1",
-    "nodemon": "^2.0.22",
     "path": "^0.12.7",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.1",
@@ -35,7 +34,6 @@
     "xlsx-populate": "^1.21.0"
   },
   "devDependencies": {
-    "eslint": "^8.44.0",
-    "mocha": "^10.2.0"
+    "eslint": "^8.44.0"
   }
 }

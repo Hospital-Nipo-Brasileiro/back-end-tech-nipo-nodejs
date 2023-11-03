@@ -80,6 +80,27 @@ class ItemGuardadoController {
     }
   }
 
+  static async guardaNaTriagem(req, res, next) {
+    const novoItem = {
+      id_item: req.body.id_item,
+      id_bau: 3,
+      dt_created: new Date(),
+      dt_updated: new Date(),
+    };
+
+    const itemEncontrado = await database.TN_T_ITEM.findOne({ where: { id: Number(novoItem.id_item) } });
+    try {
+      if (!itemEncontrado) {
+        next(new NaoEncontrado("ID do item não recebido"));
+      } else {
+        const novoItemGuardado = await database.TN_T_ITEM_GUARDADO.create(novoItem);
+        res.status(201).send(novoItemGuardado);
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async atualizaUmItemGuardado(req, res, next) {
     const { id } = req.params;
     const itemGuardadoEncontrado = await database.TN_T_ITEM_GUARDADO.findOne({ where: { id: Number(id) } });
