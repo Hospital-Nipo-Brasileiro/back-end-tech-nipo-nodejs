@@ -204,7 +204,8 @@ class AdmissaoService {
       "Docusign",
       "RM",
       "PACS - Synapse 3D",
-      "PACS - Vitrea"
+      "PACS - Vitrea",
+      "NA"
     ];
   
     const acessoObrigatorio = "Interact";
