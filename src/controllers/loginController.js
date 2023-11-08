@@ -125,9 +125,7 @@ class LoginController {
     console.log("teste");
   
     try {
-      console.log(id);
       const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: Number(id)}});
-      console.log(usuarioExistente);
       if (!usuarioExistente) {
         next(new NaoEncontrado("Usuário não encontrado"));
         return;
