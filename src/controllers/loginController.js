@@ -61,29 +61,92 @@ class LoginController {
   static async login(req, res, next) {
     const { ds_username, ds_password } = req.body;
     const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username: ds_username } });
-
+  
     try {
       if (!usuarioExistente) {
         next(new NaoEncontrado("Usuário não encontrado"));
       }
-
+  
       const validaSenha = await bcrypt.compare(ds_password, usuarioExistente.ds_password);
-
+  
       if (validaSenha !== true) {
         next(new ErroBase("Senha incorreta, por favor insira novamente", 401));
       }
       const token = jwt.sign({ userId: usuarioExistente.id }, "seuSegredoToken", {
-        expiresIn: "1h"
+        expiresIn: "5h"
       });
-
+  
       if (validaSenha === true) {
-        res.status(200).send(token);
+        res.status(200).send({ token, userId: usuarioExistente.id });
       }
     } catch (err) {
       console.error("Erro ao logar: ", err);
       next(err);
     }
+  }
+  
 
+  static async alteraSenha(req, res, next) {
+    const { id } = req.params;
+    const { senhaAtual, novaSenha, confirmaNovaSenha } = req.body;
+  
+    try {
+      if(novaSenha === confirmaNovaSenha) {
+        const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+    
+        if (!usuarioExistente) {
+          next(new NaoEncontrado("Usuário não encontrado"));
+          return;
+        }
+    
+        const senhaCorrespondente = await bcrypt.compare(senhaAtual, usuarioExistente.ds_password);
+    
+        if (!senhaCorrespondente) {
+          next(new ErroBase("Senha atual incorreta. Não é possível alterar a senha.", 401));
+          return;
+        }
+    
+        const senhaEncriptada = await bcrypt.hash(novaSenha, 10);
+    
+        await database.TN_T_LOGIN.update({ ds_password: senhaEncriptada }, { where: { id: id } });
+    
+        res.status(200).send("Senha alterada com sucesso.");
+      } else {
+        next(new ErroBase("Senhas divergentes!"), 404);
+      }
+    } catch (err) {
+      console.error("Erro ao alterar senha: ", err);
+      next(err);
+    }
+  }
+
+  static async resetaSenha(req, res, next) {
+    const {id} = req.params;
+    console.log("teste");
+  
+    try {
+      console.log(id);
+      const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: Number(id)}});
+      console.log(usuarioExistente);
+      if (!usuarioExistente) {
+        next(new NaoEncontrado("Usuário não encontrado"));
+        return;
+      }
+
+      const novaSenha = "Hospital@2023";
+  
+      if (novaSenha !== null) {
+        const senhaEncriptada = await bcrypt.hash(novaSenha, 10);
+        await database.TN_T_LOGIN.update({ ds_password: senhaEncriptada }, { where: { id: Number(id) } });
+      } else {
+        await database.TN_T_LOGIN.update({ ds_password: novaSenha }, { where: { id: Number(id)}});
+      }
+  
+      res.status(200).send("Senha redefinida com sucesso.");
+    } catch (err) {
+      console.error("Erro ao redefinir senha: ", err);
+      next(err);
+    }
   }
 
 }

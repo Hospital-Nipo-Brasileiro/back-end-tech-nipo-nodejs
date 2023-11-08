@@ -1,14 +1,14 @@
 const database = require("../models");
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const ErroBase = require("../errors/ErroBase");
-// const validaPermissao = require("../middlewares/permissionador");
+const validaPermissao = require("../middlewares/permissionador");
 
 class EstoqueController {
 
   static async buscaTodosEstoques(req, res, next) {
-    // const validaLeituraEstoque = validaPermissao("leitura_estoque");
+    const validaLeituraEstoque = validaPermissao("leitura_estoque");
 
-    // validaLeituraEstoque(req, res, next);
+    validaLeituraEstoque(req, res, next);
     const estoquesEncontrados = await database.TN_T_ESTOQUE.findAll();
     try {
       if (estoquesEncontrados.length !== 0) {

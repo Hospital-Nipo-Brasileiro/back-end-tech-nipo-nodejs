@@ -3,17 +3,7 @@ from docx.shared import Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Pt
 from docx.oxml import OxmlElement
-import sys
 import os
-
-# name = sys.argv[1]
-# access = sys.argv[2]
-# email = sys.argv[3]
-# username = sys.argv[4]
-# password = sys.argv[5]
-
-
-
 
 def createDoc(name, access, email, username, password):
     print(f'''
@@ -176,7 +166,7 @@ def createDoc(name, access, email, username, password):
             run.font.size = Pt(10)
 
 
-        doc.save(f"./ACESSOS/{name}.docx")
+        doc.save(f"./ACESSOS/.doc/{name}.docx")
         
     except Exception as e:
         print(f"Ocorreu um erro: {e}")
