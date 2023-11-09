@@ -11,9 +11,11 @@ router
     const userId = req.userId;
     res.json({ message: "Rota protegida acessada com sucesso!", userId });
   })
+  .get("/login/:id/infos", LoginController.buscaPessoaPorLogin)
   .post("/login/cria", LoginController.criaLogin)
   .post("/login", LoginController.login)
   .put("/login/:id", LoginController.alteraSenha)
-  .put("/login/:id/reset", LoginController.resetaSenha);
+  .put("/login/:id/reset", LoginController.resetaSenha)
+  .delete("/login/:id", LoginController.desativaLogin);
 
 module.exports = router;

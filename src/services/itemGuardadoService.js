@@ -23,7 +23,7 @@ class ItemGuardadoService {
                 JOIN TN_T_ITEM_GUARDADO ON TN_T_ITEM_GUARDADO.id_bau = TN_T_BAU.id
                 JOIN TN_T_ITEM ON TN_T_ITEM.id = TN_T_ITEM_GUARDADO.id_item
             WHERE 
-                TN_T_ESTOQUE.id = 1 
+                TN_T_ESTOQUE.id = ${estoqueId} 
             AND TN_T_ZONA.dt_deleted IS NULL 
             AND TN_T_BAU.dt_deleted IS NULL 
             AND TN_T_ITEM_GUARDADO.dt_deleted IS NULL
@@ -58,7 +58,7 @@ class ItemGuardadoService {
                 JOIN TN_T_ITEM_GUARDADO ON TN_T_ITEM_GUARDADO.id_prateleira = TN_T_PRATELEIRA.id
                 JOIN TN_T_ITEM ON TN_T_ITEM.id = TN_T_ITEM_GUARDADO.id_item
             WHERE 
-                TN_T_ESTOQUE.id = 1 
+                TN_T_ESTOQUE.id = ${estoqueId} 
             AND TN_T_ZONA.dt_deleted IS NULL 
             AND TN_T_ARMARIO.dt_deleted IS NULL 
             AND TN_T_PRATELEIRA.dt_deleted IS NULL

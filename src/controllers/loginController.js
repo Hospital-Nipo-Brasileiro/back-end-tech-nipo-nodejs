@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
 const ErroBase = require("../errors/ErroBase");
+const LoginService = require("../services/loginService");
 
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
@@ -31,6 +32,28 @@ class LoginController {
     }
   }
 
+  static async buscaPessoaPorLogin(req, res, next) {
+    const { id } = req.params;
+
+    try {
+      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: {id : Number(id)}});
+
+      if(!loginEncontrado) {
+        next(new NaoEncontrado("Login não localizado!"));
+      }
+
+      const resultado = await LoginService.buscaPessoaPorLogin(id);
+
+      if(resultado){
+        res.status(200).send(resultado);
+      } else {
+        next("Erro na busca");
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async criaLogin(req, res, next) {
     const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: Number(req.body.id_pessoa) } });
 
@@ -38,7 +61,7 @@ class LoginController {
       id_pessoa: req.body.id_pessoa,
       ds_username: req.body.ds_username,
       ds_email: req.body.ds_email,
-      ds_password: req.body.ds_password,
+      ds_password: await bcrypt.hash(req.body.ds_password, 10),
       dt_created: new Date(),
       dt_updated: new Date()
     };
@@ -143,6 +166,24 @@ class LoginController {
       res.status(200).send("Senha redefinida com sucesso.");
     } catch (err) {
       console.error("Erro ao redefinir senha: ", err);
+      next(err);
+    }
+  }
+
+  static async desativaLogin(req, res, next) {
+    const { id } = req.params;
+
+    try {
+      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id : Number(id)}});
+
+      if(!loginEncontrado) {
+        next(new NaoEncontrado("Id de login não encontrado"));
+      }
+
+      await database.TN_T_LOGIN.destroy(loginEncontrado);
+      res.status(200).send(`Usuário de ID ${id} desativado com sucesso!`);
+      
+    } catch (err) {
       next(err);
     }
   }
