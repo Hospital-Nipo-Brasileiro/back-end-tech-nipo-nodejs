@@ -6,20 +6,23 @@ const validaPermissao = require("../middlewares/permissionador");
 class EstoqueController {
 
   static async buscaTodosEstoques(req, res, next) {
-    const validaLeituraEstoque = validaPermissao("leitura_estoque");
-
-    validaLeituraEstoque(req, res, next);
-    const estoquesEncontrados = await database.TN_T_ESTOQUE.findAll();
+    const validaLeituraEstoque = validaPermissao("leitura-estoque");
+  
     try {
+      await validaLeituraEstoque(req, res, next);
+  
+      const estoquesEncontrados = await database.TN_T_ESTOQUE.findAll();
+  
       if (estoquesEncontrados.length !== 0) {
         res.status(200).send(estoquesEncontrados);
       } else {
-        next(new NaoEncontrado("Nenhum estoque cadastrado."));
+        throw new NaoEncontrado("Nenhum estoque cadastrado.");
       }
     } catch (err) {
       next(err);
     }
   }
+  
 
   static async buscaEstoquePorId(req, res, next) {
     const { id } = req.params;

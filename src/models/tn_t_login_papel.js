@@ -7,12 +7,10 @@ module.exports = (sequelize, DataTypes) => {
   class TN_T_LOGIN_PAPEL extends Model {
     static associate(models) {
       TN_T_LOGIN_PAPEL.belongsTo(models.TN_T_LOGIN, {foreignKey: "id_login"});
-      TN_T_LOGIN_PAPEL.belongsTo(models.TN_T_PAPEL, {foreignKey: "id_papel"});
+      TN_T_LOGIN_PAPEL.belongsTo(models.TN_T_PAPEL_PERMISSAO, {foreignKey: "id_papel_permissao"});
     }
   }
   TN_T_LOGIN_PAPEL.init({
-    ds_usuario: DataTypes.STRING,
-    ds_senha: DataTypes.STRING
   },
   {
     sequelize,
