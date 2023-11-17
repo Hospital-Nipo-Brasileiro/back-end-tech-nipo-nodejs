@@ -10,11 +10,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_permissao: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: { model: "TN_T_PERMISSAO", key: "id" }
-      },
       ds_nome: {
         allowNull: false,
         type: Sequelize.STRING,

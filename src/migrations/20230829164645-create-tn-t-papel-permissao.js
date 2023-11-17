@@ -13,12 +13,12 @@ module.exports = {
       id_papel: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: "TN_T_PAPEL", key: "id"}
+        references: { model: "TN_T_PAPEL", key: "id" }
       },
       id_permissao: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: "TN_T_PERMISSAO", key: "id"}
+        references: { model: "TN_T_PERMISSAO", key: "id" }
       },
       dt_created: {
         allowNull: false,
