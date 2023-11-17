@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 
 "use strict";
 const {
@@ -16,12 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     ds_email: DataTypes.STRING,
     ds_password: {
       type: DataTypes.STRING,
-      allowNull: false,
-      set(value) {
-        const saltRounds = 10; // Número de saltos para o hash
-        const hashedPassword = bcrypt.hashSync(value, saltRounds);
-        this.setDataValue("ds_password", hashedPassword);
-      }
+      allowNull: false
     }
   }, {
     sequelize,

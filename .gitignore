@@ -6,3 +6,4 @@ config.json
 uploads/
 uploads-admissoes/
 .vercel
+env/
