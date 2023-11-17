@@ -1,8 +1,6 @@
 node_modules
 env
 .env
-config/
-config.json
 uploads/
 uploads-admissoes/
 .vercel
