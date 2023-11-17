@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const { default: axios } = require("axios");
 const AdmissaoService = require("../services/admissaoService.js");
-const DeskManagerService = require("../services/deskManagerService.js");
+const DeskManagerService = require("../services/DeskManagerService.js");
 
 require("dotenv").config();
 
@@ -51,7 +51,6 @@ class AdmissaoController {
       const usersReceived = await AdmissaoService.criarFormatacaoAcessos(users, diaAdmissao);
 
       req.fileUsers = usersReceived;
-      console.log(usersReceived);
       next();
       
     } catch (err) {

@@ -4,4 +4,5 @@ env
 uploads/
 uploads-admissoes/
 .vercel
+__pycache__/
 env/

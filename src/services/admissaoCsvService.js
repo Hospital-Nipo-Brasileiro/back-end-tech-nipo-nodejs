@@ -81,7 +81,6 @@ class AdmissaoCsvService {
           return results;
         })
         .on("end", () => {
-          console.log("CSV file processed:", results);
           resolve();
         })
         .on("error", (error) => {

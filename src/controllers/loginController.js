@@ -67,16 +67,12 @@ class LoginController {
     };
 
     try {
-      console.log("cheguei");
       if (!pessoaEncontrada) {
-        console.log("pessoa nao enc");
         next(new NaoEncontrado("Pessoa não encontrada"));
       }
-      console.log("cai aqui");
       const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);
       res.status(201).send(novoLogin);
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
@@ -145,7 +141,6 @@ class LoginController {
 
   static async resetaSenha(req, res, next) {
     const {id} = req.params;
-    console.log("teste");
   
     try {
       const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: Number(id)}});
