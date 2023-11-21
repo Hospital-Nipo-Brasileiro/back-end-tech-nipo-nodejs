@@ -1,9 +1,9 @@
 require("dotenv").config();
 
 const development = {
-  database: process.env.DB_DATABASE_DEV,
-  username: process.env.DB_USERNAME_DEV,
-  password: process.env.DB_PASSWORD_DEV,
+  database: "db_technipo_dev",
+  username: "DBATN",
+  password: "dbatn@2023",
   dialect: "mssql",
   logging: true
 };
