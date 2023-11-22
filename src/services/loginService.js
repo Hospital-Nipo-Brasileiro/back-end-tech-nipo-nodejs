@@ -15,7 +15,7 @@ class LoginService {
             TN_T_PESSOA.tp_contrato AS TIPO_DE_CONTRATO,
             TN_T_PESSOA.ds_categoria_cargo AS CATEGORIA,
             TN_T_SETOR.ds_nome AS SETOR,
-          TN_T_CARGO.ds_nome as CARGO
+            TN_T_CARGO.ds_nome as CARGO
         FROM TN_T_LOGIN
             JOIN TN_T_PESSOA ON TN_T_LOGIN.id_pessoa = TN_T_PESSOA.id
                 LEFT JOIN TN_T_PESSOA_CARGO ON TN_T_PESSOA_CARGO.id_pessoa = TN_T_PESSOA.id
