@@ -21,8 +21,10 @@ class PapelPermissaoController {
 
     try {
       if(!papelPermissaoEncontrado){
-        next(new NaoEncontrado(`ID ${id} de papel vinculado a permissão não enconstrado`));
+        next(new NaoEncontrado(`ID ${id} de papel vinculado a permissão não encontrado`));
       }
+
+      res.status(200).send(papelPermissaoEncontrado);
     } catch (err) {
       next(err);        
     }
@@ -43,7 +45,9 @@ class PapelPermissaoController {
         const papelPermissaoCriado = await database.TN_T_PAPEL_PERMISSAO.create(novoPapelPermissao);
         res.status(201).send(papelPermissaoCriado);
       } else if (papelEncontrado && !permissaoEncontrada) {
-        next(new NaoEncontrado(`ID ${novoPapelPermissao.id_permissao} de permissão não econstrada`));
+        next(new NaoEncontrado(`ID ${novoPapelPermissao.id_permissao} de permissão não encontrada`));
+      }  else if (!papelEncontrado && permissaoEncontrada) {
+        next(new NaoEncontrado(`ID ${papelEncontrado} de papel não encontrado`));
       }
     } catch (err) {
       next(err);
