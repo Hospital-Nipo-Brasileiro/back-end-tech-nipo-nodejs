@@ -61,6 +61,62 @@ class SistemaPessoaController {
     }
   }
 
+  static async atualizaUmSistemaVinculadoAUmaPessoa(req, res, next) {
+    const { id } = req.params;
+    const idPessoa  = req.body.id_pessoa;
+    const idSistema = req.body.id_sistema;
+
+    const novoSistemaPorPessoa = {
+      id_pessoa: idPessoa,
+      id_sistema: idSistema,
+      ds_usuario: req.body.ds_usuario,
+      ds_senha: req.body.ds_senha,
+      dt_updated: new Date(),
+    };
+    
+    try {
+      const sistemaPorPessoa = await database.TN_T_SISTEMA_PESSOA.findOne({ where: { id: Number(id)}});
+
+      if(sistemaPorPessoa){
+        await database.TN_T_SISTEMA_PESSOA.update(novoSistemaPorPessoa, {where: { id: Number(id)}});
+        const sistemaPorPessoaAtualizada = await database.TN_T_SISTEMA_PESSOA.findOne({ where: { id: Number(id)}});
+        res.status(200).send(sistemaPorPessoaAtualizada);
+      } else {
+        next(new NaoEncontrado("Não encontrado sistema vinculado a pessoa"));
+      }
+    
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async desvinculaUmSistemaAUmaPessoa(req, res, next) {
+    const { id } = req.params;
+    const sistemaPorPessoaEncontrado = await database.TN_T_SISTEMA_PESSOA.findOne({ where: { id: Number(id)}});
+
+    try {
+      if(sistemaPorPessoaEncontrado) {
+        await database.TN_T_SISTEMA_PESSOA.destroy({ where: { id: Number(id)}});
+        res.status(200).send({ message: "Sistema desvinculado da pessoa"});
+      } else {
+        next(new NaoEncontrado(`ID ${id} de sistema vinculado a pessoa não encontrado`));
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async restauraUmSistemaDesvinculadoPorPessoa(req, res, next) {
+    const { id } = req.params;
+    try{
+      await database.TN_T_SISTEMA_PESSOA.restore({ where: { id: Number(id)}});
+      const sistemaPorPessoaRestaurado = await database.TN_T_SISTEMA_PESSOA.findOne({ where: { id: Number(id)}});
+      res.status(200).send({message: `ID ${id} restaurado.`}, sistemaPorPessoaRestaurado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
 
 module.exports = SistemaPessoaController;

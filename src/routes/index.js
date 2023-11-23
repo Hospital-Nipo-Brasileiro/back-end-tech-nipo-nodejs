@@ -18,6 +18,7 @@ const papeis = require("./papelRoute.js");
 const permissao = require("./permissaoRoute.js");
 const papeisPermissoes = require("./PapelPermissaoRoute.js");
 const loginPapel = require("./LoginPapelRoute.js");
+const sistemaPessoa = require("./SistemaPessoaRoute.js");
 
 const routes = (app) => {
   app.use(
@@ -41,7 +42,8 @@ const routes = (app) => {
     papeis,
     permissao,
     papeisPermissoes,
-    loginPapel
+    loginPapel,
+    sistemaPessoa
   );
 };
 
