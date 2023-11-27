@@ -8,7 +8,7 @@ const development = {
   logging: true
 };
 
-const semiProd = {
+const homologation = {
   database: process.env.DB_DATABASE,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
@@ -32,5 +32,5 @@ const developmentAzure = {
 };
 
 module.exports = {
-  development, developmentAzure, semiProd
+  development, developmentAzure, homologation
 };

@@ -6,3 +6,4 @@ uploads-admissoes/
 .vercel
 __pycache__/
 env/
+csv-process/
