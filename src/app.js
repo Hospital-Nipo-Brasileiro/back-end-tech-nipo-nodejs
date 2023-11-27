@@ -11,10 +11,10 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost:3000", // Defina as origens permitidas
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Defina os métodos HTTP permitidos
-  credentials: true, // Permitir envio de cookies (se aplicável)
-  optionsSuccessStatus: 204, // Defina o código de status de sucesso para opções pré-voo
+  origin: ["http://10.10.204.54:3000", "http://10.10.204.54:8080"], 
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, 
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));

@@ -1,7 +1,7 @@
 const { describe, before, after, it } = require("node:test");
 const { deepStrictEqual, ok } = require("node:assert");
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://10.10.204.54:8080";
 
 describe("Deve ser passado todas as validações de login", () => {
 
