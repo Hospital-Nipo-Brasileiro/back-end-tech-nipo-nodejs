@@ -4,7 +4,6 @@ const PessoasController = require("../controllers/pessoasController");
 const router = express.Router();
 
 router
-  .get("/pessoas/sistemas", PessoasController.buscaSistemaPorTodasPessoa)
   .get("/pessoas", PessoasController.buscaTodasPessoas)
   .get("/pessoas/:id", PessoasController.buscaPessoaPorId)
   .post("/pessoas", PessoasController.criaUmaPessoa)
