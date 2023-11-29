@@ -165,7 +165,6 @@ def createDoc(name, access, email, username, password):
             run.bold = True
             run.font.size = Pt(10)
 
-
         doc.save(f"./ACESSOS/.doc/{name}.docx")
         
     except Exception as e:
