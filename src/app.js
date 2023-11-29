@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: ["http://10.10.204.54:3000", "http://10.10.204.54:8080"], 
+  origin: "*", 
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, 
   optionsSuccessStatus: 204,
