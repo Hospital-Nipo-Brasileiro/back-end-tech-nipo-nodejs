@@ -4,10 +4,10 @@ const SistemaPessoaController = require("../controllers/sistemaPessoaController"
 const router = express.Router();
 
 router
-  .get("/pessoas/sistema", SistemaPessoaController.buscaTodosSistemasPorPessoa)
+  .get("/sistemas/pessoas", SistemaPessoaController.buscaTodosSistemasPorPessoa)
+  .get("/sistemas/pessoas/filtra", SistemaPessoaController.filtraSistemasPorUsuarios)
   .get("/sistemas/pessoas/:id", SistemaPessoaController.buscaSistemaPorIdPessoa)
-  // .get("/sistema/pessoa", SistemaPessoaController.buscaSistemaPorTodasPessoas)
-  // .get("/sistemas/pessoa/:id", SistemaPessoaController.buscaSistemaPorPessoaId)
+  .get("/sistemas/pessoas/:id/filtra", SistemaPessoaController.filtraSistemasPorIdDeUsuarios)
   .post("/sistemas/pessoas", SistemaPessoaController.vinculaSistemaAUmaPessoa)
   .post("/sistemas/pessoas/:id/restaurar", SistemaPessoaController.restauraUmSistemaDesvinculadoPorPessoa)
   .delete("/sistemas/pessoas/:id", SistemaPessoaController.desvinculaUmSistemaAUmaPessoa);

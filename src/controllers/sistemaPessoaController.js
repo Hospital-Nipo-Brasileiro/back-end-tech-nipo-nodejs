@@ -1,32 +1,12 @@
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
-// const { buscaSistemaPorPessoa, buscaSistemaPorPessoaId } = require("../services/pessoaService.js");
+const { buscaSistemaPorPessoa, buscaSistemaPorPessoaId } = require("../services/pessoaService.js");
 
 class SistemaPessoaController {
-
-  // static async buscaSistemaPorTodasPessoas (req, res, next) {
-  //   try {
-  //     const sistemaPorPessoa = await buscaSistemaPorPessoa();
-  //     res.status(200).send(sistemaPorPessoa);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
-
-  // static async buscaSistemaPorPessoaId(req, res, next){
-  //   const { id } = req.params;
-  //   try {
-  //     const sistemaPorPessoa = await buscaSistemaPorPessoaId(id);
-  //     res.status(200).send(sistemaPorPessoa);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
-
   static async buscaTodosSistemasPorPessoa(req, res, next) {
     console.log("entrando");
+    const sistemasPorPessoas = await database.TN_T_SISTEMA_PESSOA.findAll();
     try {
-      const sistemasPorPessoas = await database.TN_T_SISTEMA_PESSOA.findAll();
       if(sistemasPorPessoas.length !== 0) {
         res.status(200).send(sistemasPorPessoas);
       } else {
@@ -38,8 +18,8 @@ class SistemaPessoaController {
   }
 
   static async buscaSistemaPorIdPessoa (req, res, next) {
-    const idPessoa  = req.body.id_pessoa;
-    const sistemaPorPessoa = await database.TN_T_SISTEMA_PESSOA.findAll({ where: {id_pessoa: Number(idPessoa)}});
+    const { id }  = req.params;
+    const sistemaPorPessoa = await database.TN_T_SISTEMA_PESSOA.findAll({ where: {id_pessoa: Number(id)}});
 
     try {
       if(!sistemaPorPessoa){
@@ -48,7 +28,26 @@ class SistemaPessoaController {
 
       res.status(200).send(sistemaPorPessoa);
     } catch (err) {
-      next(err);        
+      next(err);
+    }
+  }
+  
+  static async filtraSistemasPorUsuarios (req, res, next) {
+    try {
+      const sistemaPorPessoa = await buscaSistemaPorPessoa();
+      res.status(200).send(sistemaPorPessoa);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async filtraSistemasPorIdDeUsuarios(req, res, next){
+    const { id } = req.params;
+    try {
+      const sistemaPorPessoa = await buscaSistemaPorPessoaId(id);
+      res.status(200).send(sistemaPorPessoa);
+    } catch (err) {
+      next(err);
     }
   }
 

@@ -11,7 +11,6 @@ const prateleiras = require("./PrateleirasRoute.js");
 const baus = require("./BauRoute.js");
 const itens = require("./ItemRoute.js");
 const itemGuardado = require("./ItemGuardadoRoute.js");
-const deskManager = require("./DeskManagerRoute.js");
 const admissaoCSV = require("./AdmissaoRoute.js");
 const login = require("./LoginRoute.js");
 const papeis = require("./papelRoute.js");
@@ -27,6 +26,7 @@ const routes = (app) => {
     pessoas,
     cargos,
     setores,
+    sistemaPessoa,
     sistemas,
     cargoSetor,
     estoques,
@@ -36,14 +36,12 @@ const routes = (app) => {
     baus,
     itens,
     itemGuardado,
-    deskManager,
     admissaoCSV,
     login,
     papeis,
     permissao,
     papeisPermissoes,
     loginPapel,
-    sistemaPessoa
   );
 };
 
