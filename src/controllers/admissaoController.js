@@ -106,14 +106,14 @@ class AdmissaoController {
             next(`Erro server DeskManager: ${usuarioCriado.statusText}`, usuarioCriado.status);
           }
 
-          emails.push(body.Email);
+          emails.push(body.TUsuario.Email);
         
         } catch (err) {
           next(`Erro ao salvar usuário: ${err.message}`, 500);
         }
       }
 
-      res.status(200).send("Usuários criados: ", emails);
+      res.status(200).send(`Usuários criados: ${emails}`);
 
     } catch (err) {
       next(`Erro ao salvar solicitante: ${err.message}`, 500);
