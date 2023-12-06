@@ -12,7 +12,7 @@ class PessoaService {
         LEFT JOIN TN_T_SISTEMA_PESSOA ON TN_T_SISTEMA_PESSOA.id_pessoa = TN_T_PESSOA.id
         LEFT JOIN TN_T_SISTEMA ON TN_T_SISTEMA.id = TN_T_SISTEMA_PESSOA.id_sistema
       WHERE 
-        COALESCE(TN_T_SISTEMA_PESSOA.dt_deleted, TN_T_SISTEMA.dt_deleted) IS NULL
+        COALESCE(TN_T_PESSOA.dt_deleted, TN_T_SISTEMA_PESSOA.dt_deleted, TN_T_SISTEMA.dt_deleted) IS NULL
       GROUP BY TN_T_PESSOA.id, TN_T_PESSOA.ds_nome
 
       `);
