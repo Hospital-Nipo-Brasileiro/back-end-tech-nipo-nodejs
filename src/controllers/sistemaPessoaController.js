@@ -53,13 +53,13 @@ class SistemaPessoaController {
 
   static async vinculaSistemaAUmaPessoa(req, res, next) {
     const idPessoa  = req.body.id_pessoa;
-    const idSistema = req.body.id_sistema;
+    const nomeSistema = req.body.ds_nome;
     const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: {id: Number(idPessoa)}});
-    const SistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: {id: Number(idSistema)}});
+    const SistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: {ds_nome: nomeSistema}});
 
     const novoSistemaPorPessoa = {
       id_pessoa: idPessoa,
-      id_sistema: idSistema,
+      id_sistema: SistemaEncontrado.id,
       ds_usuario: req.body.ds_usuario,
       ds_senha: req.body.ds_senha,
       dt_created: new Date(),
@@ -71,7 +71,7 @@ class SistemaPessoaController {
         next(new NaoEncontrado(`ID ${idPessoa} de pessoa não encontrado`));
       }
       if(!SistemaEncontrado) {
-        next(new NaoEncontrado(`ID ${idSistema} de sistema não encontrado`));
+        next(new NaoEncontrado(`Nome de sistema ${nomeSistema} não encontrado`));
       }
 
       const sistemaPorPessoaVinculado = await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
