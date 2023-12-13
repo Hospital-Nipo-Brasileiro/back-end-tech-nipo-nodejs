@@ -84,12 +84,8 @@ class SistemaPessoaController {
 
   static async atualizaUmSistemaVinculadoAUmaPessoa(req, res, next) {
     const { id } = req.params;
-    const idPessoa  = req.body.id_pessoa;
-    const idSistema = req.body.id_sistema;
 
     const novoSistemaPorPessoa = {
-      id_pessoa: idPessoa,
-      id_sistema: idSistema,
       ds_usuario: req.body.ds_usuario,
       ds_senha: req.body.ds_senha,
       dt_updated: new Date(),

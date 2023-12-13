@@ -30,6 +30,7 @@ class PessoaService {
           TN_T_PESSOA.id as ID,
           TN_T_PESSOA.ds_nome AS NOME,
           TN_T_SISTEMA.ds_nome as SISTEMA,
+          TN_T_SISTEMA_PESSOA.id as ID_SISTEMA_PESSOA,
           TN_T_SISTEMA_PESSOA.ds_usuario as USERNAME,
           TN_T_SISTEMA_PESSOA.ds_senha as SENHA
         FROM TN_T_PESSOA
@@ -42,6 +43,7 @@ class PessoaService {
           TN_T_PESSOA.id,
           TN_T_PESSOA.ds_nome,
           TN_T_SISTEMA.ds_nome,
+          TN_T_SISTEMA_PESSOA.id,
           TN_T_SISTEMA_PESSOA.ds_usuario,
           TN_T_SISTEMA_PESSOA.ds_senha
       `);
