@@ -339,12 +339,12 @@ class AdmissaoService {
     });
   }
 
-  static async gerarDocumentoPython(name, access, email, username, password) {
+  static async gerarDocumentoPython(name, access, email, username, password, userFromRequest) {
     return new Promise((resolve, reject) => {
       
       const pythonScript = path.join(__dirname, "../../python/__init__.py");
 
-      const pythonProcess = spawn("python", [pythonScript, name, access, email, username, password]);
+      const pythonProcess = spawn("python", [pythonScript, name, access, email, username, password, userFromRequest]);
 
       pythonProcess.stdout.on("data", (data) => {
         console.log(`Saída do script Python: ${data}`);
