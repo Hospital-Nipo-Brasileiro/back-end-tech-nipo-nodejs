@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "version": 2,
   "builds": [
     {
@@ -21,3 +22,25 @@
     }
   }
 }
+=======
+    "version": 2,
+    "builds": [
+        {
+          "src": "server.js", 
+          "use": "@vercel/node"
+        }
+      ],
+      "routes": [
+        {
+          "src": "/(.*)",
+          "dest": "server.js"  
+        }
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "projectSettings": {
+        "framework": "express"
+      }
+}
+>>>>>>> 08960cdccd4592e901aa4c046c20908e881ff8f7

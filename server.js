@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 const app = require("./src/app.js");
 
-const port = 8080;
+const PORT = process.env.PORT || 8080;
 
-app.listen(port, () => {
-  console.log(`Servidor escutando em http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Servidor escutando em http://localhost:${PORT}`);
 });
