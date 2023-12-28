@@ -20,13 +20,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(login);
-// Middleware para obter informações do usuário da rede
-app.use((req, res, next) => {
-  const userFromRequest = req.get("HSRVWVH00028");  // Substitua pelo cabeçalho correto usado pelo seu servidor
-  req.userFromRequest = userFromRequest;
-  next();
-});
-
 app.use(verifyToken);
 app.use(extractUserId);
 
