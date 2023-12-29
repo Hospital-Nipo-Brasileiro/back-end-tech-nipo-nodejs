@@ -1,3 +1,4 @@
+const ErroBase = require("../errors/ErroBase.js");
 const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
 const { buscaSistemaPorPessoa, buscaSistemaPorPessoaId } = require("../services/pessoaService.js");
@@ -52,14 +53,15 @@ class SistemaPessoaController {
   }
 
   static async vinculaSistemaAUmaPessoa(req, res, next) {
+    console.log("teste");
     const idPessoa  = req.body.id_pessoa;
     const nomeSistema = req.body.ds_nome;
     const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: {id: Number(idPessoa)}});
-    const SistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: {ds_nome: nomeSistema}});
+    const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: {ds_nome: nomeSistema}});
 
     const novoSistemaPorPessoa = {
       id_pessoa: idPessoa,
-      id_sistema: SistemaEncontrado.id,
+      id_sistema: sistemaEncontrado.id,
       ds_usuario: req.body.ds_usuario,
       ds_senha: req.body.ds_senha,
       dt_created: new Date(),
@@ -70,13 +72,26 @@ class SistemaPessoaController {
       if(!pessoaEncontrada){
         next(new NaoEncontrado(`ID ${idPessoa} de pessoa não encontrado`));
       }
-      if(!SistemaEncontrado) {
+      if(!sistemaEncontrado) {
         next(new NaoEncontrado(`Nome de sistema ${nomeSistema} não encontrado`));
       }
 
-      const sistemaPorPessoaVinculado = await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
-      res.status(200).send(sistemaPorPessoaVinculado);
-      
+      const sistemaExistente = await database.TN_T_SISTEMA_PESSOA.findOne({
+        where: {
+          id_pessoa: Number(idPessoa),
+          id_sistema: Number(sistemaEncontrado.id)
+        }
+      });
+
+      console.log(sistemaExistente);
+      if (sistemaExistente) {
+        console.log("esntrei");
+        next(new ErroBase("Já existe um sistema vinculado a esta pessoa com este sistema", 409));
+      } else {
+        const sistemaPorPessoaVinculado = await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
+        res.status(200).send(sistemaPorPessoaVinculado);
+      }
+
     } catch (err) {
       next(err);
     }
