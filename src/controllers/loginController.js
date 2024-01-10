@@ -55,7 +55,9 @@ class LoginController {
   }
 
   static async criaLogin(req, res, next) {
-    const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: Number(req.body.id_pessoa) } });
+    const idPessoa = req.body.id_pessoa;
+    const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: Number(idPessoa) } });
+    const validaLoginExistente = await database.TN_T_LOGIN.findOne({ where: {id_pessoa: Number(idPessoa)}});
 
     const novaPessoa = {
       id_pessoa: req.body.id_pessoa,
@@ -67,12 +69,13 @@ class LoginController {
     };
 
     try {
-      console.log("cheguei");
       if (!pessoaEncontrada) {
-        console.log("pessoa nao enc");
         next(new NaoEncontrado("Pessoa não encontrada"));
       }
-      console.log("cai aqui");
+
+      if(validaLoginExistente) {
+        next(new ErroBase(`${pessoaEncontrada.ds_nome} já tem login vinculado, username: ${validaLoginExistente.ds_username}`, 409));
+      }
       const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);
       res.status(201).send(novoLogin);
     } catch (err) {
@@ -143,6 +146,24 @@ class LoginController {
     }
   }
 
+  static async ativaUsuario(req, res, next) {
+    const {id} = req.params;
+
+    try {
+      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id : Number(id)}});
+
+      if(!loginEncontrado) {
+        await database.TN_T_LOGIN.restore({ where: {id: Number(id)}});
+        res.status(200).send(`Usuário de ID ${id} restaurado com sucesso!`);
+      }
+      
+      next(new ErroBase("Id de login está ativo", 400));
+    } catch (err) {
+      next(err);
+    }
+
+  }
+
   static async resetaSenha(req, res, next) {
     const {id} = req.params;
     console.log("teste");
@@ -180,7 +201,7 @@ class LoginController {
         next(new NaoEncontrado("Id de login não encontrado"));
       }
 
-      await database.TN_T_LOGIN.destroy(loginEncontrado);
+      await database.TN_T_LOGIN.destroy({ where: {id: Number(id)}});
       res.status(200).send(`Usuário de ID ${id} desativado com sucesso!`);
       
     } catch (err) {

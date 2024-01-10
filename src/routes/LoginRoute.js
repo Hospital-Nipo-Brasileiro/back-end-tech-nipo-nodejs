@@ -16,6 +16,7 @@ router
   .post("/login", LoginController.login)
   .put("/login/:id", LoginController.alteraSenha)
   .put("/login/:id/reset", LoginController.resetaSenha)
+  .put("/login/:id/ativa", LoginController.ativaUsuario)
   .delete("/login/:id", LoginController.desativaLogin);
 
 module.exports = router;
