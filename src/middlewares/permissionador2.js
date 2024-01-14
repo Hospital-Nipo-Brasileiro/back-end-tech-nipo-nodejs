@@ -9,23 +9,21 @@ const validaPermissao = (permission) =>  {
       const existePermissao = await database.TN_T_LOGIN_PAPEL.findOne({ 
         where : {
           id_login: userId,
+          "$TN_T_PAPEL.TN_T_PAPEL_PERMISSAO.TN_T_PERMISSAO.ds_nome$": permission,
         },
         include: [{
-          model: database.TN_T_PAPEL_PERMISSAO,
-          include: [database.TN_T_PERMISSAO],
-          where: {
-            "$TN_T_PERMISSAO.ds_nome$": permission,
-          }
+          model: database.TN_T_PAPEL,
+          include: [[database.TN_T_PAPEL_PERMISSAO],[database.TN_T_PERMISSAO]]
         }],
       });
 
       if (existePermissao) {
-        return next(); 
+        return;
       } else {
-        return next(new AcessoNaoAutorizado()); 
+        next(new AcessoNaoAutorizado());
       }
     } catch (err) {
-      return next(err);
+      next(err);
     }
   };
 };

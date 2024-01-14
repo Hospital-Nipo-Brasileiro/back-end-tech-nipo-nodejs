@@ -32,6 +32,21 @@ class PapelController {
     }
   }
 
+  static async buscaPermissaoPorPapel(req, res, next) {
+    const { id } = req.params;
+    const papelEncontrado = await database.TN_T_PAPEL.findOne({ where: { id: Number(id)}});
+    try {
+      if(!papelEncontrado) {
+        next(new NaoEncontrado(`O papel de id ${id} não foi encontrado`));
+      }
+
+      const permissoesEncontradasPorPapel = await database.TN_T_PAPEL_PERMISSAO.findAll({ where: {id_papel: Number(id)}});
+      res.status(200).send(permissoesEncontradasPorPapel);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async criaUmPapel(req, res, next) {
     const novoPapel = {
       ds_nome: req.body.ds_nome,

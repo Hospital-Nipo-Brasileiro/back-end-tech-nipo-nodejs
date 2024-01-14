@@ -3,10 +3,10 @@ const database = require("../models");
 
 class LoginPapelController {
 
-  static async buscaTodosLoginsPapeis (req, res, next) {
+  static async buscaTodosLoginsPapeis(req, res, next) {
     const loginsPapeisEncontrados = await database.TN_T_LOGIN_PAPEL.findAll();
     try {
-      if(loginsPapeisEncontrados.length !== 0) {
+      if (loginsPapeisEncontrados.length !== 0) {
         res.status(200).send(loginsPapeisEncontrados);
       } else {
         next(new NaoEncontrado("Nenhum logins-papeis vinculados encontrado"));
@@ -16,41 +16,41 @@ class LoginPapelController {
     }
   }
 
-  static async buscaLoginPapelPorIdLogin (req, res, next) {
-    const {id} = req.params;
-    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: {id: Number(id)}});
+  static async buscaLoginPapelPorIdLogin(req, res, next) {
+    const { id } = req.params;
+    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: { id: Number(id) } });
 
     try {
-      if(!loginPapelEncontrado){
+      if (!loginPapelEncontrado) {
         next(new NaoEncontrado(`ID ${id} de papel vinculado a permissão não enconstrado`));
       }
     } catch (err) {
-      next(err);        
+      next(err);
     }
   }
 
-  static async vinculaPapelLogin(req, res, next) {
+  static async vinculaLoginAUmPapel(req, res, next) {
     const { id } = req.params;
     const novoLoginPapel = {
       id_login: id,
-      id_papel_permissao: req.body.id_papel_permissao,
+      id_papel: req.body.id_papel,
       dt_created: new Date(),
       dt_updated: new Date(),
     };
-  
+
     const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
-  
+
     try {
       if (loginEncontrado) {
-        const papelEncontrado = await database.TN_T_PAPEL_PERMISSAO.findOne({
-          where: { id: novoLoginPapel.id_papel_permissao },
+        const papelEncontrado = await database.TN_T_PAPEL.findOne({
+          where: { id: novoLoginPapel.id_papel },
         });
-  
+
         if (papelEncontrado) {
           const loginPapelCriado = await database.TN_T_LOGIN_PAPEL.create(novoLoginPapel);
           res.status(201).send(loginPapelCriado);
         } else {
-          next(new NaoEncontrado(`ID ${novoLoginPapel.id_papel_permissao} de papel não encontrado`));
+          next(new NaoEncontrado(`ID ${novoLoginPapel.id_papel} de papel não encontrado`));
         }
       } else {
         next(new NaoEncontrado(`ID ${id} de login não encontrado`));
@@ -60,13 +60,13 @@ class LoginPapelController {
     }
   }
 
-  static async removePapelDeLogin (req, res, next) {
-    const {id} = req.params;
-    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: {id: Number(id)}});
-    try{
-      if(loginPapelEncontrado){
-        await database.TN_T_LOGIN_PAPEL.destroy({where: {id: Number(id)}});
-        res.status(200).send({message: `Papel Permissao de ID ${id} excluído.`});
+  static async removePapelDeLogin(req, res, next) {
+    const { id } = req.params;
+    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: { id: Number(id) } });
+    try {
+      if (loginPapelEncontrado) {
+        await database.TN_T_LOGIN_PAPEL.destroy({ where: { id: Number(id) } });
+        res.status(200).send({ message: `Papel Permissao de ID ${id} excluído.` });
       } else {
         next(new NaoEncontrado(`ID ${id} de papel permissao não encontrado para excluir.`));
       }
@@ -77,14 +77,14 @@ class LoginPapelController {
 
   static async restauraUmLoginPapel(req, res, next) {
     const { id } = req.params;
-    try{
-      await database.TN_T_LOGIN_PAPEL.restore({where : {id : Number(id)}});
-      res.status(200).send({message: `ID ${id} restaurado.`});
+    try {
+      await database.TN_T_LOGIN_PAPEL.restore({ where: { id: Number(id) } });
+      res.status(200).send({ message: `ID ${id} restaurado.` });
     } catch (err) {
       next(err);
     }
   }
-  
+
 }
 
 module.exports = LoginPapelController;

@@ -32,9 +32,11 @@ class PessoasController {
   }
 
   static async criaUmaPessoa(req, res, next) {
+    const cpf = req.body.nr_cpf;
+
     const novaPessoa = {
       ds_nome: req.body.ds_nome,
-      nr_cpf: req.body.nr_cpf,
+      nr_cpf: cpf,
       dt_admissao: req.body.dt_admissao,
       dt_nascimento: req.body.dt_nascimento,
       tp_contrato: req.body.tp_contrato,
@@ -45,6 +47,12 @@ class PessoasController {
     };
 
     try {
+      const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: {nr_cpf: Number(cpf)}});
+
+      if (pessoaEncontrada) {
+        next(new ErroBase(`Já existe uma pessoa com este cpf ${cpf}`, 409));
+      }
+      
       const novaPessoaCriada = await database.TN_T_PESSOA.create(novaPessoa);
       res.status(201).send(novaPessoaCriada);
     } catch (err) {

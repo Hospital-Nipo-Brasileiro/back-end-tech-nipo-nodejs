@@ -4,8 +4,8 @@ const manipulador404 = require("./middlewares/manipulador404.js");
 const manipuladorDeErros = require("./middlewares/manipuladorDeErros.js");
 const verifyToken = require("./middlewares/autenticador.js");
 const extractUserId = require("./middlewares/autenticador.js");
-const login = require("../src/routes/LoginRoute.js");
 const cors = require("cors");
+const LoginController = require("./controllers/loginController.js");
 
 const app = express();
 app.use(express.json());
@@ -19,7 +19,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(login);
+app.use(express.Router().post("/login", LoginController.login));
 app.use(verifyToken);
 app.use(extractUserId);
 

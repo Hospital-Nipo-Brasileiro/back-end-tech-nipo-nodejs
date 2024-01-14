@@ -7,16 +7,21 @@ const LoginService = require("../services/loginService");
 
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
-    const loginsEncontrados = await database.TN_T_LOGIN.findAll();
+    
     try {
-      if (!loginsEncontrados) {
-        next(new NaoEncontrado("Não existe nenhum login encontrado no banco"));
+
+      const loginsEncontrados = await database.TN_T_LOGIN.findAll();
+
+      if (!loginsEncontrados || loginsEncontrados.length === 0) {
+        return next(new NaoEncontrado("Não existe nenhum login encontrado no banco"));
       }
+
       res.status(200).send(loginsEncontrados);
     } catch (err) {
       next(err);
     }
   }
+
 
   static async buscaLoginPorId(req, res, next) {
     const { id } = req.params;
@@ -58,6 +63,8 @@ class LoginController {
     const idPessoa = req.body.id_pessoa;
     const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: Number(idPessoa) } });
     const validaLoginExistente = await database.TN_T_LOGIN.findOne({ where: {id_pessoa: Number(idPessoa)}});
+    const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username: req.body.ds_username } });
+
 
     const novaPessoa = {
       id_pessoa: req.body.id_pessoa,
@@ -76,6 +83,11 @@ class LoginController {
       if(validaLoginExistente) {
         next(new ErroBase(`${pessoaEncontrada.ds_nome} já tem login vinculado, username: ${validaLoginExistente.ds_username}`, 409));
       }
+
+      if (usuarioExistente) {
+        next(new ErroBase("Não possível cadastrar um usuário já cadastrado", 409));
+      }
+
       const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);
       res.status(201).send(novoLogin);
     } catch (err) {
@@ -146,7 +158,7 @@ class LoginController {
     }
   }
 
-  static async ativaUsuario(req, res, next) {
+  static async restauraUsuario(req, res, next) {
     const {id} = req.params;
 
     try {
