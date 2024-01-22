@@ -5,10 +5,46 @@ const database = require("../models");
 const ErroBase = require("../errors/ErroBase");
 const LoginService = require("../services/loginService");
 
+
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
-    
+    const userId = req.userId;
+    const permissaoNecessaria = "R-ADMIN";
+
+    console.log("TESTE");
+
     try {
+      // 1. Consultar o banco de dados para obter os papéis do usuário
+      const roles = await database.TN_T_LOGIN_PAPEL.findAll({
+        where: {
+          loginId: Number(userId),
+        },
+        include: [
+          {
+            model: database.TN_T_PAPEL,
+            include: [
+              {
+                model: database.TN_T_PAPEL_PERMISSAO,
+                include: [database.TN_T_PERMISSAO],
+              },
+            ],
+          },
+        ],
+      });
+
+      console.log(roles);
+
+      // 2. Verificar se pelo menos um papel possui a permissão necessária
+      const hasPermission = roles.some(role => {
+        const hasRequiredPermission = role.TN_T_PAPEL.TN_T_PAPEL_PERMISSAO.some(permission => {
+          return permission.TN_T_PERMISSAO.nome === permissaoNecessaria;
+        });
+        return hasRequiredPermission;
+      });
+
+      if (!hasPermission) {
+        return next(new ErroBase("Usuário não tem permissão necessária"), 403);
+      }
 
       const loginsEncontrados = await database.TN_T_LOGIN.findAll();
 
