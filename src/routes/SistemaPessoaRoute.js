@@ -6,7 +6,6 @@ const router = express.Router();
 router
   .get("/sistemas-pessoas", SistemaPessoaController.buscaTodosSistemasPorPessoa)
   .get("/sistemas-pessoas/filtra", SistemaPessoaController.filtraSistemasPorUsuarios)
-  .get("/sistemas-pessoas/:id", SistemaPessoaController.buscaSistemaPorIdPessoa)
   .get("/sistemas-pessoas/:id/filtra", SistemaPessoaController.filtraSistemasPorIdDeUsuarios)
   .post("/sistemas-pessoas", SistemaPessoaController.vinculaSistemaAUmaPessoa)
   .post("/sistemas-pessoas/:id/restaurar", SistemaPessoaController.restauraUmSistemaDesvinculadoPorPessoa)
