@@ -5,7 +5,7 @@ const verifyToken = require("../middlewares/autenticador.js");
 const router = express.Router();
 
 router
-  .get("/login", verifyToken, LoginController.buscaTodosLogins)
+  .get("/login", LoginController.buscaTodosLogins)
   .get("/login/:id", LoginController.buscaLoginPorId)
   .get("/rotaProtegida", verifyToken, (req, res) => {
     const userId = req.userId;

@@ -7,18 +7,14 @@ const development = {
     options: {
       encrypt: true,
       trustServerCertificate: false,
-      connectionTimeout: 30000, 
+      connectionTimeout: 30000,
     },
   },
   host: "srv-technipo.database.windows.net",
   database: "db-technipo-dev",
   username: "dbatn",
-  password: "Technipo@2023", 
+  password: "Technipo@2023",
   logging: true,
-};
-
-module.exports = {
-  development,
 };
 
 const x = {
