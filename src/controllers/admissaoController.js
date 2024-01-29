@@ -2,6 +2,7 @@
 const { default: axios } = require("axios");
 const AdmissaoService = require("../services/admissaoService.js");
 const DeskManagerService = require("../services/deskManagerService.js");
+const os = require("os");
 
 require("dotenv").config();
 
@@ -122,6 +123,7 @@ class AdmissaoController {
 
   static async concluirAdmissao(req, res, next) {
     const usersReceived = req.fileUsers;
+    const usuarioDeRede = os.userInfo().username;
     
     try {
       for (const user of usersReceived) {
@@ -130,7 +132,7 @@ class AdmissaoController {
         const email = user.email;
         const usuario = user.usuario;
         const senha = user.senha;
-        await AdmissaoService.gerarDocumentoPython(nome, acesso, email, usuario, senha);
+        await AdmissaoService.gerarDocumentoPython(nome, acesso, email, usuario, senha, usuarioDeRede);
       }
   
       res.status(200).send("Acessos criados e enviados para o servidor");

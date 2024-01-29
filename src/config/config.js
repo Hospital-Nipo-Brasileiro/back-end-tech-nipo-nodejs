@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const development = {
+const development_home = {
   dialect: "mssql",
   dialectOptions: {
     driver: "ODBC Driver 18 for SQL Server",
@@ -17,14 +17,14 @@ const development = {
   logging: true,
 };
 
-const x = {
+const development = {
   database: "db_technipo_dev",
   username: "DBATN",
-  password: "dbatn@2023",
-  dialect: "mysql",
+  password: "123456",
+  dialect: "mssql",
   logging: true
 };
 
 module.exports = {
-  development, x
+  development, development_home
 };
