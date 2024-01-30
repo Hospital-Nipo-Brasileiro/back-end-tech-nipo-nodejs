@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const development_home = {
   dialect: "mssql",
   dialectOptions: {

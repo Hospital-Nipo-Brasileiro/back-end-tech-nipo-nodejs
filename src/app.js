@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const routes = require("./routes/index.js");
 const manipulador404 = require("./middlewares/manipulador404.js");
@@ -7,12 +8,13 @@ const extractUserId = require("./middlewares/autenticador.js");
 const permissionador = require("./middlewares/permissionador.js");
 const cors = require("cors");
 const LoginController = require("./controllers/loginController.js");
+const { BASE_URL, PORT } = require("../server.js");
 
 const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: ["http://hsrvwvh00028:3000", "http://localhost:3000"],
+  origin: `${BASE_URL}:${PORT}`,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204
