@@ -8,13 +8,12 @@ const extractUserId = require("./middlewares/autenticador.js");
 const permissionador = require("./middlewares/permissionador.js");
 const cors = require("cors");
 const LoginController = require("./controllers/loginController.js");
-const { BASE_URL, PORT } = require("../server.js");
 
 const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: `${BASE_URL}:${PORT}`,
+  origin: ["http://hsrvwvh00028:3000", "http://localhost:3000"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204

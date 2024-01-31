@@ -11,11 +11,13 @@ class LoginController {
   static async buscaTodosLogins(req, res, next) {
     const permissaoNecessaria = "R-ADMIN";
     const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
-
+    console.log("entrei");
     try {
       await validaPermissaoNecessaria(req, res, next);
 
       const loginsEncontrados = await database.TN_T_LOGIN.findAll();
+
+      console.log(loginsEncontrados);
 
       if (!loginsEncontrados || loginsEncontrados.length === 0) {
         next(new NaoEncontrado("Não existe nenhum login encontrado no banco"));
