@@ -29,6 +29,11 @@ class AdmissaoService {
     return csvData;
   }
 
+  static async formataCPFpadrao(cpf) {
+    const cpfFormatado = cpf.replace(/\D/g, "");
+    return cpfFormatado;
+  }
+
   static async formatarCPFUsuario(cpf) {
     const cpfFormatado = cpf.replace(/\D/g, ""); //REMOVER O QUE NÃO FOR NÚMERO
     return cpfFormatado.slice(0, 8);
@@ -40,15 +45,15 @@ class AdmissaoService {
   }
 
   static async formatarLocal(local, localCode) {
-    if(local === "HNB") {
+    if (local === "HNB") {
       localCode = "H";
       return localCode;
-    } 
-    else if (local === "CMD"){
+    }
+    else if (local === "CMD") {
       localCode = "L";
       return localCode;
     }
-    else if (local === "SMA"){
+    else if (local === "SMA") {
       localCode = "S";
       return localCode;
     }
@@ -58,15 +63,15 @@ class AdmissaoService {
   }
 
   static async formatarLocalSenha(local, localCode) {
-    if(local === "HNB") {
+    if (local === "HNB") {
       localCode = "Hnb";
       return localCode;
-    } 
-    else if (local === "CMD"){
+    }
+    else if (local === "CMD") {
       localCode = "Cmd";
       return localCode;
     }
-    else if (local === "SMA"){
+    else if (local === "SMA") {
       localCode = "Sma";
       return localCode;
     }
@@ -96,7 +101,7 @@ class AdmissaoService {
   static async criarBodyUsuarioDesk(codCliente, senha, email, nome, area, local) {
     // Remover acentuações do nome
     const nomeSemAcentuacao = diacritics.remove(nome);
-    
+
     // Separar o nome em partes
     const nomePicotado = nomeSemAcentuacao.trim().split(" ");
     const primeiroNome = nomePicotado[0].trim();
@@ -141,7 +146,7 @@ class AdmissaoService {
   }
 
   static async formatarTipoContrato(tipoContrato, tipoContratoCode) {
-    if(tipoContrato === "CLT") {
+    if (tipoContrato === "CLT") {
       tipoContratoCode = "C";
       return tipoContratoCode;
     } else if (tipoContrato === "Terceiro") {
@@ -185,6 +190,8 @@ class AdmissaoService {
         return "DeskManager";
       } else if (acesso === "PACS - Synapse") {
         return "Synapse";
+      } else if (acesso === "MV") {
+        return "Soul MV";
       } else {
         return acesso;
       }
@@ -207,16 +214,136 @@ class AdmissaoService {
       "PACS - Vitrea",
       "NA"
     ];
-  
+
     const acessoObrigatorio = "Interact";
 
     acessosSubstituidos.push(acessoObrigatorio);
-    
+
     const acessosFormatados = acessosSubstituidos.filter(acesso => !acessosARemover.includes(acesso));
-  
+
     return acessosFormatados;
   }
 
+  static async processaPlanilhaRegistrosCSV(file) {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        const workbook = await XlsxPopulate.fromFileAsync(file);
+        const cabecalhoRecebido = workbook.sheet(0).range("A1:S1");
+        const values = cabecalhoRecebido.value();
+
+        const expectedHeaders = [
+          "Local",
+          "Nome",
+          "Usuario",
+          "Email funcionario",
+          "Senha",
+          "Area",
+          "Cargo",
+          "Categoria",
+          "CPF",
+          "Tipo contrato",
+          "Usuario_copia",
+          "E-mail Coordenador",
+          "Conselho Regional",
+          "Acessos",
+          "Dia admissao",
+          "Mes admissao",
+          "Status",
+          "Data",
+          "Obs",
+          "FirstName",
+          "LastName"
+        ];
+
+        if (JSON.stringify(values[0]) !== JSON.stringify(expectedHeaders)) {
+          reject("O cabeçalho desta planilha não está correto.");
+        }
+
+        const csvData = await this.convertToCSV(workbook.sheet(0));
+        resolve(csvData);
+
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  static async formataPlanilhaRegistrosCSV(file) {
+    return new Promise((resolve, reject) => {
+      const results = [];
+
+      fs.createReadStream(file)
+        .pipe(csvParser({ separator: ";" }))
+        .on("data", async (data) => {
+
+          const novaPessoa = {};
+
+          const local = data["Local"];
+          const nome = data["Nome"];
+          const usuario = data["Usuario"];
+          const email = data["E-mail Funcionario"];
+          const senha = data["Senha"];
+          const area = data["Area"];
+          const cargo = data["Auxiliar de Enfermagem"];
+          const categoria = data["Categoria"];
+          const cpf = data["CPF"];
+          const tipoContrato = data["Tipo contrato"];
+          const concelhoRegional = data["Conselho Regional"];
+          const acessos = data["Acessos"];
+          const dataAdmissao = new Date();
+
+          let dominioEmail = "";
+
+          novaPessoa.local = local;
+          novaPessoa.nome = nome;
+          novaPessoa.usuario = usuario;
+          novaPessoa.email = email;
+          novaPessoa.senha = senha;
+          novaPessoa.area = area;
+          novaPessoa.cargo = cargo;
+          novaPessoa.categoria = categoria;
+          novaPessoa.cpf = cpf;
+          novaPessoa.tipoContrato = tipoContrato;
+          novaPessoa.concelhoRegional = concelhoRegional;
+          novaPessoa.acessos = acessos;
+          novaPessoa.dataAdmissao = dataAdmissao;
+
+          if (acessos.includes("DeskManager") || acessos.includes("Email")) {
+            if (acessos.includes("Email")) {
+              dominioEmail = "@hnipo.org.br";
+            } else {
+              dominioEmail = "@desk.ms";
+            }
+
+            // Remover acentuações do nome
+            const nomeSemAcentuacao = diacritics.remove(nome);
+
+            // Separar o nome em partes
+            const NomePicotado = nomeSemAcentuacao.trim().split(" ");
+            const primeiroNome = NomePicotado[0].trim();
+            const ultimoNome = NomePicotado[NomePicotado.length - 1].trim();
+
+            // Criação das novas variáveis com os nomes em letras minúsculas
+            const primeiroNomeEmail = primeiroNome.toLowerCase().trim();
+            const ultimoNomeEmail = ultimoNome.toLowerCase().trim();
+
+            const usuarioEmail = `${primeiroNomeEmail}.${ultimoNomeEmail}${dominioEmail}`;
+
+            novaPessoa.usuarioEmail = usuarioEmail;
+          }
+
+          results.push(novaPessoa);
+          
+        })
+        .on("end", () => {
+          resolve(results);
+        })
+        .on("error", (error) => {
+          reject("Erro ao processar o arquivo CSV:", error);
+        });
+    });
+  }
 
   static async processaPlanilha(file) {
     // eslint-disable-next-line no-async-promise-executor
@@ -261,12 +388,12 @@ class AdmissaoService {
     });
   }
 
-  static async criarFormatacaoAcessos(file, diaAdmissao){
+  static async criarFormatacaoAcessos(file, diaAdmissao) {
     return new Promise((resolve, reject) => {
       const results = [];
 
       fs.createReadStream(file)
-        .pipe(csvParser({ separator: ";"}))
+        .pipe(csvParser({ separator: ";" }))
         .on("data", async (data) => {
 
           const novaPessoa = {};
@@ -285,18 +412,22 @@ class AdmissaoService {
           let tipoContratoCode = "";
           let dominioEmail = "";
 
-          if(acessos && cpf && local && admissao && tipoContrato){
+          if (acessos && cpf && local && admissao && tipoContrato) {
             cpfUser = await this.formatarCPFUsuario(cpf);
             cpfPassword = await this.formatarCPFSenha(cpf);
             const acessoRecebido = await this.formatarAcessos(acessos);
             const localCodeRecebido = await this.formatarLocal(local, localCode);
             const localSenhaRecebida = await this.formatarLocalSenha(local, localCode);
             const tipoContratoRecebido = await this.formatarTipoContrato(tipoContrato, tipoContratoCode);
+            const cpfFormatado = await this.formataCPFpadrao(cpf);
 
             const usuarioFormatado = `${localCodeRecebido}${tipoContratoRecebido}${cpfUser}`;
             const senhaFormatada = `${localSenhaRecebida}@${cpfPassword}*${admissao}`;
 
             novaPessoa.acessos = acessoRecebido;
+            novaPessoa.cpf = cpfFormatado;
+            novaPessoa.dataAdmissao = admissao;
+            novaPessoa.tipoContrato = tipoContrato;
             novaPessoa.nome = nome;
             novaPessoa.usuario = usuarioFormatado;
             novaPessoa.senha = senhaFormatada;
@@ -312,7 +443,7 @@ class AdmissaoService {
 
               // Remover acentuações do nome
               const nomeSemAcentuacao = diacritics.remove(nome);
-    
+
               // Separar o nome em partes
               const NomePicotado = nomeSemAcentuacao.trim().split(" ");
               const primeiroNome = NomePicotado[0].trim();
@@ -341,7 +472,7 @@ class AdmissaoService {
 
   static async gerarDocumentoPython(name, access, email, username, password, userFromRequest) {
     return new Promise((resolve, reject) => {
-      
+
       const pythonScript = path.join(__dirname, "../../python/__init__.py");
 
       const pythonProcess = spawn("python", [pythonScript, name, access, email, username, password, userFromRequest]);
