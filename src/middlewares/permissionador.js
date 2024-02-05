@@ -25,7 +25,7 @@ const validaPermissao = (permission) => {
       });
 
       if (existePermissao.length > 0) {
-        return true;
+        next();
       } else {
         next(new AcessoNaoAutorizado());
       }

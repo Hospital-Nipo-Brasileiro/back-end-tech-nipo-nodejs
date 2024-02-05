@@ -12,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TN_T_LOGIN.init({
-    ds_username: DataTypes.STRING,
+    ds_username: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     ds_email: DataTypes.STRING,
     ds_password: {
       type: DataTypes.STRING,
