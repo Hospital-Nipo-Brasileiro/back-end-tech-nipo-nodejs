@@ -2,7 +2,6 @@
 const { default: axios } = require("axios");
 const AdmissaoService = require("../services/admissaoService.js");
 const DeskManagerService = require("../services/deskManagerService.js");
-const PessoasController = require("../controllers/pessoasController.js");
 const database = require("../models");
 const os = require("os");
 
@@ -11,7 +10,6 @@ require("dotenv").config();
 const fs = require("fs");
 const { promisify } = require("util");
 const ErroBase = require("../errors/ErroBase.js");
-const SistemaPessoaController = require("./sistemaPessoaController.js");
 const NaoEncontrado = require("../errors/NaoEncontrado.js");
 const writeFileAsync = promisify(fs.writeFile);
 
@@ -161,16 +159,29 @@ class AdmissaoController {
                 next(new NaoEncontrado(`Acesso não encontrado pelo nome ${sistema}.`));
               }
             } else {
-              const novoSistemaPorPessoa = {
-                id_pessoa: novaPessoaCriada.id,
-                id_sistema: idSistema.id,
-                ds_usuario: user.usuario,
-                ds_senha: user.senha,
-                dt_created: new Date(),
-                dt_updated: new Date(),
-              };
-  
-              await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
+              if(sistema === "DeskManager" || sistema === "Email") {
+                const novoSistemaPorPessoa = {
+                  id_pessoa: novaPessoaCriada.id,
+                  id_sistema: idSistema.id,
+                  ds_usuario: user.email,
+                  ds_senha: user.senha,
+                  dt_created: new Date(),
+                  dt_updated: new Date(),
+                };
+    
+                await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
+              } else {
+                const novoSistemaPorPessoa = {
+                  id_pessoa: novaPessoaCriada.id,
+                  id_sistema: idSistema.id,
+                  ds_usuario: user.usuario,
+                  ds_senha: user.senha,
+                  dt_created: new Date(),
+                  dt_updated: new Date(),
+                };
+    
+                await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
+              }
             }
           }
         } catch (err) {

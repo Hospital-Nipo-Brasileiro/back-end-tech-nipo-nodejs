@@ -175,7 +175,7 @@ class AdmissaoService {
   static async formatarAcessos(acessos) {
     const acessosSeparados = acessos.split(", ");
 
-    const acessosSubstituidos = acessosSeparados.map(acesso => {
+    const acessosSubstituidos = await acessosSeparados.map(acesso => {
       if (acesso === "Blip_Desk") {
         return "Blip Desk";
       } else if (acesso === "Blip_Portal") {
@@ -190,7 +190,7 @@ class AdmissaoService {
         return "DeskManager";
       } else if (acesso === "PACS - Synapse") {
         return "Synapse";
-      } else if (acesso === "MV") {
+      } else if (acesso === "MV" || acesso === "SoulMV") {
         return "Soul MV";
       } else {
         return acesso;
@@ -215,11 +215,11 @@ class AdmissaoService {
       "NA"
     ];
 
-    const acessoObrigatorio = "Interact";
-
-    acessosSubstituidos.push(acessoObrigatorio);
-
     const acessosFormatados = acessosSubstituidos.filter(acesso => !acessosARemover.includes(acesso));
+    
+    const acessoObrigatorio = "Interact";
+    
+    acessosSubstituidos.push(acessoObrigatorio);
 
     return acessosFormatados;
   }
@@ -227,16 +227,17 @@ class AdmissaoService {
   static async processaPlanilhaRegistrosCSV(file) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
+      console.log("entrei");
       try {
         const workbook = await XlsxPopulate.fromFileAsync(file);
-        const cabecalhoRecebido = workbook.sheet(0).range("A1:S1");
+        const cabecalhoRecebido = workbook.sheet(0).range("A1:U1");
         const values = cabecalhoRecebido.value();
 
         const expectedHeaders = [
           "Local",
           "Nome",
           "Usuario",
-          "Email funcionario",
+          "E-mail Funcionario",
           "Senha",
           "Area",
           "Cargo",
@@ -257,6 +258,7 @@ class AdmissaoService {
         ];
 
         if (JSON.stringify(values[0]) !== JSON.stringify(expectedHeaders)) {
+          console.error("O cabeçalho desta planilha não está correto.");
           reject("O cabeçalho desta planilha não está correto.");
         }
 
@@ -264,6 +266,7 @@ class AdmissaoService {
         resolve(csvData);
 
       } catch (error) {
+        console.error(error);
         reject(error);
       }
     });
@@ -295,6 +298,8 @@ class AdmissaoService {
 
           let dominioEmail = "";
 
+          const acessosFormatados = await this.formatarAcessos(acessos);
+
           novaPessoa.local = local;
           novaPessoa.nome = nome;
           novaPessoa.usuario = usuario;
@@ -306,11 +311,11 @@ class AdmissaoService {
           novaPessoa.cpf = cpf;
           novaPessoa.tipoContrato = tipoContrato;
           novaPessoa.concelhoRegional = concelhoRegional;
-          novaPessoa.acessos = acessos;
+          novaPessoa.acessos = acessosFormatados;
           novaPessoa.dataAdmissao = dataAdmissao;
 
-          if (acessos.includes("DeskManager") || acessos.includes("Email")) {
-            if (acessos.includes("Email")) {
+          if (acessosFormatados.includes("DeskManager") || acessosFormatados.includes("Email")) {
+            if (acessosFormatados.includes("Email")) {
               dominioEmail = "@hnipo.org.br";
             } else {
               dominioEmail = "@desk.ms";
