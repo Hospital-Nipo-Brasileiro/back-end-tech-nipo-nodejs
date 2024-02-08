@@ -5,8 +5,16 @@ const database = require("../models");
 class PessoasController {
 
   static async buscaTodasPessoas(req, res, next) {
-    const pessoasEncontradas = await database.TN_T_PESSOA.findAll();
+    const pagina = req.query.pagina || 1; // Verifica se foi especificada uma página, caso contrário, assume a primeira página
+    const limitePorPagina = 20;
+    const offset = (pagina - 1) * limitePorPagina;
+  
     try {
+      const pessoasEncontradas = await database.TN_T_PESSOA.findAll({
+        limit: limitePorPagina,
+        offset: offset
+      });
+  
       if (pessoasEncontradas.length !== 0) {
         res.status(200).send(pessoasEncontradas);
       } else {
