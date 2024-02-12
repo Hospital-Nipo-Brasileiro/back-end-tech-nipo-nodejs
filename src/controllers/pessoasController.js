@@ -50,6 +50,8 @@ class PessoasController {
       tp_contrato: req.body.tp_contrato,
       ds_categoria_cargo: req.body.ds_categoria_cargo,
       id_cargo_setor: req.body.id_cargo_setor,
+      id_login: req.userId,
+      id_login_last_update: req.userId,
       dt_created: new Date(),
       dt_updated: new Date(),
     };
@@ -78,6 +80,7 @@ class PessoasController {
       dt_nascimento: req.body.dt_nascimento,
       tp_contrato: req.body.tp_contrato,
       ds_categoria_cargo: req.body.tp_categoria_cargo,
+      id_login_last_update: req.userId,
       dt_updated: new Date(),
     };
     try {
