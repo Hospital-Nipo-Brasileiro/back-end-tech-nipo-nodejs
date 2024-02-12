@@ -12,7 +12,7 @@ module.exports = {
       },
       id_login: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: { model: "TN_T_LOGIN", key: "id" }
       },
       id_papel: {

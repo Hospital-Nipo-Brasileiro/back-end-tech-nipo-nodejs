@@ -18,7 +18,7 @@ module.exports = {
       },
       id_pessoa: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: { model: "TN_T_PESSOA", key: "id" }
       },
       ds_usuario: {
