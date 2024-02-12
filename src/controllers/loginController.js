@@ -9,10 +9,10 @@ const validaPermissao = require("../middlewares/permissionador");
 
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
-    const permissaoNecessaria = "R-ADMIN";
-    const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
+    // const permissaoNecessaria = "R-ADMIN";
+    // const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      await validaPermissaoNecessaria(req, res, next);
+      // await validaPermissaoNecessaria(req, res, next);
 
       const loginsEncontrados = await database.TN_T_LOGIN.findAll();
 
@@ -50,10 +50,10 @@ class LoginController {
   static async buscaPessoaPorLogin(req, res, next) {
     const { id } = req.params;
 
-    const permissaoNecessaria = "R-ADMIN";
-    const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
+    // const permissaoNecessaria = "R-ADMIN";
+    // const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      await validaPermissaoNecessaria(req, res, next);
+      // await validaPermissaoNecessaria(req, res, next);
 
       const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
 
@@ -75,8 +75,8 @@ class LoginController {
 
   static async criaLogin(req, res, next) {
     const idPessoa = req.body.id_pessoa;
-    const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: Number(idPessoa) } });
-    const validaLoginExistente = await database.TN_T_LOGIN.findOne({ where: { id_pessoa: Number(idPessoa) } });
+    const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: idPessoa } });
+    const validaLoginExistente = await database.TN_T_LOGIN.findOne({ where: { id_pessoa: idPessoa } });
     const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username: req.body.ds_username } });
 
 
@@ -89,21 +89,21 @@ class LoginController {
       dt_updated: new Date()
     };
 
-    const permissaoNecessaria = "W-ADMIN";
-    const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
+    // const permissaoNecessaria = "W-ADMIN";
+    // const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      await validaPermissaoNecessaria(req, res, next);
+      // await validaPermissaoNecessaria(req, res, next);
 
       if (!pessoaEncontrada) {
-        next(new NaoEncontrado("Pessoa não encontrada"));
+        return next(new NaoEncontrado("Pessoa não encontrada"));
       }
 
       if (validaLoginExistente) {
-        next(new ErroBase(`${pessoaEncontrada.ds_nome} já tem login vinculado, username: ${validaLoginExistente.ds_username}`, 409));
+        return next(new ErroBase(`${pessoaEncontrada.ds_nome} já tem login vinculado, username: ${validaLoginExistente.ds_username}`, 409));
       }
 
       if (usuarioExistente) {
-        next(new ErroBase("Não possível cadastrar um usuário já cadastrado", 409));
+        return next(new ErroBase("Não possível cadastrar um usuário já cadastrado", 409));
       }
 
       const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);

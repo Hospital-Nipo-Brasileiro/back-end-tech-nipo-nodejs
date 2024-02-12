@@ -5,7 +5,6 @@ const { buscaSistemaPorPessoa, buscaSistemaPorPessoaId } = require("../services/
 
 class SistemaPessoaController {
   static async buscaTodosSistemasPorPessoa(req, res, next) {
-    console.log("entrando");
     const sistemasPorPessoas = await database.TN_T_SISTEMA_PESSOA.findAll();
     try {
       if (sistemasPorPessoas.length !== 0) {
@@ -40,7 +39,7 @@ class SistemaPessoaController {
   static async vinculaSistemaAUmaPessoa(req, res, next) {
     const idPessoa = req.body.id_pessoa;
     const nomeSistema = req.body.ds_nome;
-    const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: Number(idPessoa) } });
+    const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: { id: idPessoa } });
     const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: nomeSistema } });
 
     const novoSistemaPorPessoa = {

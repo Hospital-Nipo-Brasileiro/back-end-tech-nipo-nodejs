@@ -23,7 +23,7 @@ class LoginService {
                 LEFT JOIN TN_T_SETOR ON TN_T_SETOR.id = TN_T_CARGO_SETOR.id_setor
             LEFT JOIN TN_T_CARGO ON TN_T_CARGO.id = TN_T_CARGO_SETOR.id_cargo
             WHERE
-                TN_T_LOGIN.id = ${loginId}
+                TN_T_LOGIN.id = :loginId
             AND TN_T_PESSOA.dt_deleted IS NULL
           AND TN_T_CARGO_SETOR.dt_deleted IS NULL
           AND TN_T_CARGO_SETOR.dt_deleted IS NULL
@@ -42,7 +42,10 @@ class LoginService {
                 TN_T_PESSOA.ds_categoria_cargo,
                 TN_T_SETOR.ds_nome,
                 TN_T_CARGO.ds_nome
-        `);
+        `, {
+        replacements: { loginId }, 
+        type: db.sequelize.QueryTypes.SELECT
+      });
 
       return resultado;
     } catch (err) {

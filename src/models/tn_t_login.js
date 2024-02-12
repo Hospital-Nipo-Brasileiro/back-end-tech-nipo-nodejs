@@ -1,6 +1,7 @@
 // const bcrypt = require("bcrypt");
-
 "use strict";
+const { v4: uuidv4 } = require("uuid");
+
 const {
   Model
 } = require("sequelize");
@@ -12,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TN_T_LOGIN.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: () => uuidv4(),
+    },
     ds_username: {
       type: DataTypes.STRING,
       allowNull: false
