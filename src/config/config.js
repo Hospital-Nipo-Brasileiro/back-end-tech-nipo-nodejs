@@ -1,4 +1,4 @@
-const development_home = {
+const az_config_dev = {
   dialect: "mssql",
   dialectOptions: {
     driver: "ODBC Driver 18 for SQL Server",
@@ -15,6 +15,14 @@ const development_home = {
   logging: true,
 };
 
+const test = {
+  database: "db_technipo_test",
+  username: "DBATN",
+  password: "123456",
+  dialect: "mssql",
+  logging: true
+};
+
 const development = {
   database: "db_technipo_dev",
   username: "DBATN",
@@ -24,5 +32,5 @@ const development = {
 };
 
 module.exports = {
-  development, development_home
+  development, test, az_config_dev
 };
