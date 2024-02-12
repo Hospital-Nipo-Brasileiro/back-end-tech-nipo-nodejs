@@ -1,5 +1,7 @@
 /* eslint-disable indent */
 "use strict";
+const { v4: uuidv4 } = require("uuid");
+
 const {
   Model
 } = require("sequelize");
@@ -8,10 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TN_T_PESSOA.belongsTo(models.TN_T_CARGO_SETOR, { foreignKey: "id" });
       TN_T_PESSOA.belongsTo(models.TN_T_SISTEMA_PESSOA, { foreignKey: "id" });
+      TN_T_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login"});
+      TN_T_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_update"});
       TN_T_PESSOA.hasOne(models.TN_T_LOGIN, { foreignKey: "id_pessoa" });
     }
   }
   TN_T_PESSOA.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: () => uuidv4(),
+    },
     ds_nome: DataTypes.STRING,
     nr_cpf: DataTypes.STRING,
     dt_admissao: DataTypes.DATEONLY,
