@@ -35,7 +35,7 @@ class LoginController {
     try {
       await validaPermissaoNecessaria(req, res, next);
 
-      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (loginEncontrado) {
         res.status(200).send(loginEncontrado);
@@ -55,7 +55,7 @@ class LoginController {
     try {
       // await validaPermissaoNecessaria(req, res, next);
 
-      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (!loginEncontrado) {
         next(new NaoEncontrado("Login não localizado!"));
@@ -116,6 +116,7 @@ class LoginController {
 
   static async login(req, res, next) {
     const { ds_username, ds_password } = req.body;
+    console.log(ds_username, ds_password);
     const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username: ds_username } });
 
     try {
@@ -151,7 +152,7 @@ class LoginController {
       await permissaoNecessaria(req, res, next);
 
       if (novaSenha === confirmaNovaSenha) {
-        const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+        const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
         if (!usuarioExistente) {
           next(new NaoEncontrado("Usuário não encontrado"));
@@ -187,10 +188,10 @@ class LoginController {
     try {
       await validaPermissaoNecessaria(req, res, next);
 
-      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (!loginEncontrado) {
-        await database.TN_T_LOGIN.restore({ where: { id: Number(id) } });
+        await database.TN_T_LOGIN.restore({ where: { id: id } });
         res.status(200).send(`Usuário de ID ${id} restaurado com sucesso!`);
       }
 
@@ -205,7 +206,7 @@ class LoginController {
     const { id } = req.params;
 
     try {
-      const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+      const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: id } });
       if (!usuarioExistente) {
         next(new NaoEncontrado("Usuário não encontrado"));
         return;
@@ -215,9 +216,9 @@ class LoginController {
 
       if (novaSenha !== null) {
         const senhaEncriptada = await bcrypt.hash(novaSenha, 10);
-        await database.TN_T_LOGIN.update({ ds_password: senhaEncriptada }, { where: { id: Number(id) } });
+        await database.TN_T_LOGIN.update({ ds_password: senhaEncriptada }, { where: { id: id } });
       } else {
-        await database.TN_T_LOGIN.update({ ds_password: novaSenha }, { where: { id: Number(id) } });
+        await database.TN_T_LOGIN.update({ ds_password: novaSenha }, { where: { id: id } });
       }
 
       res.status(200).send("Senha redefinida com sucesso.");
@@ -235,13 +236,13 @@ class LoginController {
     try {
       await validaPermissaoNecessaria(req, res, next);
 
-      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+      const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (!loginEncontrado) {
         next(new NaoEncontrado("Id de login não encontrado"));
       }
 
-      await database.TN_T_LOGIN.destroy({ where: { id: Number(id) } });
+      await database.TN_T_LOGIN.destroy({ where: { id: id } });
       res.status(200).send(`Usuário de ID ${id} desativado com sucesso!`);
 
     } catch (err) {

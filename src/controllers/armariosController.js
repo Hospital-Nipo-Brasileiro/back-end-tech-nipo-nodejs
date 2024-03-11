@@ -108,8 +108,10 @@ class ArmarioController {
 
   static async restauraArmario(req, res, next) {
     const { id } = req.params;
+
     try{
-      await database.TN_T_ARMARIO.restore({where : {id : Number(id)}});
+      await database.TN_T_ARMARIO.restore({where: {id: Number(id)}});
+      await database.TN_T_ARMARIO.update({ dt_updated: new Date()}, {where: {id : Number(id)}});
       res.status(200).send({message: `Armario de ID ${id} restaurado.`});
     } catch (err) {
       next(err);

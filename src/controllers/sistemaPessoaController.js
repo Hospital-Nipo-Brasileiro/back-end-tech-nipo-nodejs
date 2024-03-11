@@ -61,8 +61,8 @@ class SistemaPessoaController {
 
       const sistemaExistente = await database.TN_T_SISTEMA_PESSOA.findOne({
         where: {
-          id_pessoa: Number(idPessoa),
-          id_sistema: Number(sistemaEncontrado.id)
+          id_pessoa: idPessoa,
+          id_sistema: sistemaEncontrado.id
         }
       });
 

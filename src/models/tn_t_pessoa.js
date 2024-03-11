@@ -39,5 +39,60 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: "dt_deleted", // Nome da coluna para data de desativação
     underscored: true, // Usa o padrão snake_case para os nomes das colunas
   });
+
+  TN_T_PESSOA.afterCreate(async (pessoa, options) => {
+    console.log("After create hook triggered for pessoa:", pessoa.id);
+
+    const { TN_AUDIT_PESSOA } = sequelize.models;
+
+    try {
+      await TN_AUDIT_PESSOA.create({
+        ds_nome: pessoa.ds_nome,
+        nr_cpf: pessoa.nr_cpf,
+        dt_admissao: pessoa.dt_admissao,
+        dt_nascimento: pessoa.dt_nascimento,
+        tp_contrato: pessoa.tp_contrato,
+        ds_categoria_cargo: pessoa.ds_categoria_cargo,
+        ds_action: "create",
+        id_login: pessoa.id_login,
+        id_login_last_update: pessoa.id_login_last_update, 
+        dt_created: pessoa.dt_created,
+        dt_updated: pessoa.dt_updated,
+      }, { transaction: options.transaction });
+  
+      console.log("Audit log created successfully.");
+    } catch (error) {
+      console.error("Error creating audit log:", error);
+    }
+  });
+
+  TN_T_PESSOA.afterUpdate(async (pessoa, options) => {
+    console.log("After update hook triggered for pessoa");
+    const { TN_AUDIT_PESSOA } = sequelize.models;
+    const transaction = options.transaction || await sequelize.transaction();
+
+    try {
+      await TN_AUDIT_PESSOA.create({
+        ds_nome: pessoa.ds_nome,
+        nr_cpf: pessoa.nr_cpf,
+        dt_admissao: pessoa.dt_admissao,
+        dt_nascimento: pessoa.dt_nascimento,
+        tp_contrato: pessoa.tp_contrato,
+        ds_categoria_cargo: pessoa.ds_categoria_cargo,
+        ds_action: "update",
+        id_login: pessoa.id_login,
+        id_login_last_update: pessoa.id_login_last_update, 
+        dt_created: pessoa.dt_created,
+        dt_updated: pessoa.dt_updated,
+      }, { transaction });
+
+      await transaction.commit();
+      console.log("Audit log created successfully.");
+    } catch (error) {
+      if (transaction) await transaction.rollback();
+      console.error("Error creating audit log:", error);
+    }
+  });
+  
   return TN_T_PESSOA;
 };
