@@ -135,6 +135,8 @@ class AdmissaoController {
           nr_cpf: cpf,
           dt_admissao: new Date(),
           tp_contrato: user.tipoContrato,
+          id_login: req.userId,
+          id_login_last_update: req.userId,
           dt_created: new Date(),
           dt_updated: new Date(),
         };
@@ -149,20 +151,22 @@ class AdmissaoController {
           const novaPessoaCriada = await database.TN_T_PESSOA.create(novaPessoa);
           
           for(const sistema of user.acessos) {
-            const idSistema = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: sistema } });
+            const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: sistema } });
 
-            if(!idSistema) {
-              if (sistema.length > 1) {
-                await database.TN_T_PESSOA.destroy({ where: {id: Number(novaPessoaCriada.id)}});
-                next(new NaoEncontrado(`Acesso não encontrado pelo nome ${sistema}, apagando pessoa pré-criada`));
+            if(!sistemaEncontrado) {
+              const pessoaSistemaExistente = await database.TN_T_SISTEMA_PESSOA.findAll({ where: {id_pessoa: novaPessoaCriada.id}});
+
+              if(pessoaSistemaExistente) {
+                console.log(`Acesso não encontrado pelo nome ${sistema}.`);
               } else {
-                next(new NaoEncontrado(`Acesso não encontrado pelo nome ${sistema}.`));
+                await database.TN_T_PESSOA.destroy({ where: {id: novaPessoaCriada.id}});
+                next(new NaoEncontrado(`Acesso não encontrado pelo nome ${sistema}, apagando pessoa pré-criada`));
               }
             } else {
               if(sistema === "DeskManager" || sistema === "Email") {
                 const novoSistemaPorPessoa = {
                   id_pessoa: novaPessoaCriada.id,
-                  id_sistema: idSistema.id,
+                  id_sistema: sistemaEncontrado.id,
                   ds_usuario: user.email,
                   ds_senha: user.senha,
                   dt_created: new Date(),
@@ -173,7 +177,7 @@ class AdmissaoController {
               } else {
                 const novoSistemaPorPessoa = {
                   id_pessoa: novaPessoaCriada.id,
-                  id_sistema: idSistema.id,
+                  id_sistema: sistemaEncontrado.id,
                   ds_usuario: user.usuario,
                   ds_senha: user.senha,
                   dt_created: new Date(),
