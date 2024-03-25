@@ -8,6 +8,7 @@ const writeFileAsync = promisify(fs.writeFile);
 
 class MovimentacaoRegistrosController {
   static async processaPlanilha(req, _, next) {
+    console.log("entrei");
     try {
       const file = req.file.path;
 

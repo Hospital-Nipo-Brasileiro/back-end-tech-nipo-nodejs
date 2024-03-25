@@ -9,12 +9,8 @@ const validaPermissao = require("../middlewares/permissionador");
 
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
-    // const permissaoNecessaria = "R-ADMIN";
-    // const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      // await validaPermissaoNecessaria(req, res, next);
-
-      const loginsEncontrados = await database.TN_T_LOGIN.findAll();
+      const loginsEncontrados = await LoginService.buscaTodasPessoasELogins();
 
       if (!loginsEncontrados || loginsEncontrados.length === 0) {
         next(new NaoEncontrado("Não existe nenhum login encontrado no banco"));
@@ -130,7 +126,7 @@ class LoginController {
         next(new ErroBase("Senha incorreta, por favor insira novamente", 401));
       }
       const token = jwt.sign({ userId: usuarioExistente.id }, "seuSegredoToken", {
-        expiresIn: "5h"
+        expiresIn: "120h"
       });
 
       if (validaSenha === true) {
@@ -142,6 +138,28 @@ class LoginController {
     }
   }
 
+  static async atualizaUmLogin(req, res, next) {
+    const { id } = req.params;
+
+    let loginEncontrado;
+    if (id) {
+      loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id }});
+    } else {
+      loginEncontrado = new database.TN_T_LOGIN(req.body);
+    }
+
+    if (loginEncontrado) {
+      const atualizacoes = { ...loginEncontrado, ...req.body };
+      atualizacoes.id_login_last_update = req.userId;
+      atualizacoes.dt_updated = new Date();
+
+      await loginEncontrado.update(atualizacoes);
+      const loginAtualizado = await database.TN_T_LOGIN.findOne({ where: { id: loginEncontrado.id }});
+      res.status(200).send(loginAtualizado);
+    } else {
+      next(new NaoEncontrado(`ID ${id} de login não encontrado para atualizar informações.`));
+    }
+  }
 
   static async alteraSenha(req, res, next) {
     const { id } = req.params;
