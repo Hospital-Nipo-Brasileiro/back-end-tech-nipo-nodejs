@@ -1,3 +1,4 @@
+const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado");
 const db = require("../models");
 
 class LoginService {
@@ -94,6 +95,36 @@ class LoginService {
       return resultado;
     } catch (e) {
       throw new Error("Erro ao realizar busca");
+    }
+  }
+
+  static async validaPermissao(user, permission) {
+    try {
+      const resultado = await db.sequelize.query(`
+        SELECT 
+          CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS PossuiPermissao
+        FROM 
+          TN_T_LOGIN AS L
+        INNER JOIN 
+          TN_T_LOGIN_PAPEL AS LP ON L.id = LP.id_login
+        INNER JOIN 
+          TN_T_PAPEL AS P ON LP.id_papel = P.id
+        INNER JOIN 
+          TN_T_PAPEL_PERMISSAO AS PP ON P.id = PP.id_papel
+        INNER JOIN 
+          TN_T_PERMISSAO AS PM ON PP.id_permissao = PM.id
+        WHERE 
+          L.id = '${user}'
+          AND PM.ds_nome = '${permission}';
+      `);
+
+      if(resultado[0][0].PossuiPermissao == "false") {
+        throw new AcessoNaoAutorizado();  
+      } else {
+        return resultado;
+      }
+    } catch (e) {
+      throw new Error(e);
     }
   }
 }
