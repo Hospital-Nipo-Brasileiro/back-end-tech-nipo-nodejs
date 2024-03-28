@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 "use strict";
-const { v4: uuidv4 } = require("uuid");
 
 const {
   Model
@@ -9,15 +8,11 @@ module.exports = (sequelize, DataTypes) => {
   class TN_AUDIT_PESSOA extends Model {
     // eslint-disable-next-line no-unused-vars
     static associate(models) {
-
+      TN_AUDIT_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login"});
+      TN_AUDIT_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_update"});
     }
   }
   TN_AUDIT_PESSOA.init({
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: () => uuidv4(),
-    },
     ds_nome: DataTypes.STRING,
     nr_cpf: DataTypes.STRING,
     dt_admissao: DataTypes.DATEONLY,
@@ -25,8 +20,6 @@ module.exports = (sequelize, DataTypes) => {
     tp_contrato: DataTypes.STRING,
     ds_categoria_cargo: DataTypes.STRING,
     ds_action: DataTypes.STRING,
-    id_login: DataTypes.STRING, 
-    id_login_last_update: DataTypes.STRING, 
     dt_created: DataTypes.DATE, 
     dt_updated: DataTypes.DATE,
   },

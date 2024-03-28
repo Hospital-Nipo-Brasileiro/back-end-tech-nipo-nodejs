@@ -167,6 +167,8 @@ class AdmissaoController {
                 const novoSistemaPorPessoa = {
                   id_pessoa: novaPessoaCriada.id,
                   id_sistema: sistemaEncontrado.id,
+                  id_login: req.userId,
+                  id_login_last_update: req.userId,
                   ds_usuario: user.email,
                   ds_senha: user.senha,
                   dt_created: new Date(),
@@ -180,6 +182,8 @@ class AdmissaoController {
                   id_sistema: sistemaEncontrado.id,
                   ds_usuario: user.usuario,
                   ds_senha: user.senha,
+                  id_login: req.userId,
+                  id_login_last_update: req.userId,
                   dt_created: new Date(),
                   dt_updated: new Date(),
                 };

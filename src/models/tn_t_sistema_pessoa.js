@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_PESSOA, { foreignKey: "id_pessoa" });
       TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_SISTEMA, { foreignKey: "id_sistema" });
+      TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login"});
+      TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_update"});
     }
   }
   TN_T_SISTEMA_PESSOA.init({
@@ -25,5 +27,74 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: "dt_deleted", // Nome da coluna para data de desativação
     underscored: true, // Usa o padrão snake_case para os nomes das colunas
   });
+
+  TN_T_SISTEMA_PESSOA.afterCreate(async (sistema_pessoa, options) => {
+    console.log("After create hook triggered for sistem_pessoa:", sistema_pessoa.id);
+
+    const { TN_AUDIT_SISTEMA_PESSOA } = sequelize.models;
+
+    try {
+      await TN_AUDIT_SISTEMA_PESSOA.create({
+        id_pessoa: sistema_pessoa.id_pessoa,
+        id_sistema: sistema_pessoa.id_sistema,
+        ds_usuario: sistema_pessoa.ds_usuario,
+        ds_senha: sistema_pessoa.ds_senha,
+        ds_action: "create",
+        id_login: sistema_pessoa.id_login,
+        id_login_last_update: sistema_pessoa.id_login_last_update, 
+        dt_created: sistema_pessoa.dt_created,
+        dt_updated: sistema_pessoa.dt_updated,
+      }, { transaction: options.transaction });
+  
+      console.log("Audit log created successfully.");
+    } catch (error) {
+      console.error("Error creating audit log:", error);
+    }
+  });
+
+  TN_T_SISTEMA_PESSOA.afterUpdate(async (sistema_pessoa, options) => {
+    console.log("After update hook triggered for sistem_pessoa");
+    const { TN_AUDIT_SISTEMA_PESSOA } = sequelize.models;
+    const transaction = options.transaction || await sequelize.transaction();
+
+    if(sistema_pessoa.dt_deleted !== null) {
+      try {
+        await TN_AUDIT_SISTEMA_PESSOA.create({
+          id_pessoa: sistema_pessoa.id_pessoa,
+          id_sistema: sistema_pessoa.id_sistema,
+          ds_usuario: sistema_pessoa.ds_usuario,
+          ds_senha: sistema_pessoa.ds_senha,
+          ds_action: "delete",
+          dt_created: sistema_pessoa.dt_created,
+          dt_updated: sistema_pessoa.dt_deleted,
+        }, { transaction });
+  
+        await transaction.commit();
+        console.log("Audit log created successfully.");
+      } catch (error) {
+        if (transaction) await transaction.rollback();
+        console.error("Error creating audit log:", error);
+      }
+    }
+
+    try {
+      await TN_AUDIT_SISTEMA_PESSOA.create({
+        id_pessoa: sistema_pessoa.id_pessoa,
+        id_sistema: sistema_pessoa.id_sistema,
+        ds_usuario: sistema_pessoa.ds_usuario,
+        ds_senha: sistema_pessoa.ds_senha,
+        ds_action: "update",
+        dt_created: sistema_pessoa.dt_created,
+        dt_updated: sistema_pessoa.dt_updated,
+      }, { transaction });
+
+      await transaction.commit();
+      console.log("Audit log created successfully.");
+    } catch (error) {
+      if (transaction) await transaction.rollback();
+      console.error("Error creating audit log:", error);
+    }
+  });
+
   return TN_T_SISTEMA_PESSOA;
 };

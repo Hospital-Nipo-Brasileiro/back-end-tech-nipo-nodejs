@@ -5,11 +5,14 @@ const database = require("../models");
 const ErroBase = require("../errors/ErroBase");
 const LoginService = require("../services/loginService");
 const validaPermissao = require("../middlewares/permissionador");
+const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado");
 
 
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
+    const permissaoNecessaria = "R-ADMIN";
     try {
+      await LoginService.validaPermissao(req.userId, permissaoNecessaria, res);
       const loginsEncontrados = await LoginService.buscaTodasPessoasELogins();
 
       if (!loginsEncontrados || loginsEncontrados.length === 0) {
@@ -18,7 +21,9 @@ class LoginController {
 
       res.status(200).send(loginsEncontrados);
     } catch (err) {
-      console.error(err);
+      if(err == "Error: Error: Você não tem permissões de acesso"){
+        return next(new AcessoNaoAutorizado());
+      }
       next(err);
     }
   }
@@ -27,10 +32,8 @@ class LoginController {
   static async buscaLoginPorId(req, res, next) {
     const { id } = req.params;
     const permissaoNecessaria = "R-ADMIN";
-    const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      await validaPermissaoNecessaria(req, res, next);
-
+      await LoginService.validaPermissao(req.userId, permissaoNecessaria, res);
       const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (loginEncontrado) {
@@ -39,18 +42,16 @@ class LoginController {
         next(new NaoEncontrado(`ID ${id} de login não encontrado na busca.`));
       }
     } catch (err) {
+      if(err == "Error: Error: Você não tem permissões de acesso"){
+        return next(new AcessoNaoAutorizado());
+      }
       next(err);
     }
   }
 
   static async buscaPessoaPorLogin(req, res, next) {
     const { id } = req.params;
-
-    // const permissaoNecessaria = "R-ADMIN";
-    // const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      // await validaPermissaoNecessaria(req, res, next);
-
       const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (!loginEncontrado) {
@@ -65,6 +66,9 @@ class LoginController {
         next("Erro na busca");
       }
     } catch (err) {
+      if(err == "Error: Error: Você não tem permissões de acesso"){
+        return next(new AcessoNaoAutorizado());
+      }
       next(err);
     }
   }
@@ -105,7 +109,9 @@ class LoginController {
       const novoLogin = await database.TN_T_LOGIN.create(novaPessoa);
       res.status(201).send(novoLogin);
     } catch (err) {
-      console.log(err);
+      if(err == "Error: Error: Você não tem permissões de acesso"){
+        return next(new AcessoNaoAutorizado());
+      }
       next(err);
     }
   }
@@ -133,7 +139,9 @@ class LoginController {
         res.status(200).send({ token, userId: usuarioExistente.id });
       }
     } catch (err) {
-      console.error("Erro ao logar: ", err);
+      if(err == "Error: Error: Você não tem permissões de acesso"){
+        return next(new AcessoNaoAutorizado());
+      }
       next(err);
     }
   }

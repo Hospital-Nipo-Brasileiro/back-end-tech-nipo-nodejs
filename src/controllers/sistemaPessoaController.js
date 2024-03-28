@@ -47,6 +47,8 @@ class SistemaPessoaController {
       id_sistema: sistemaEncontrado.id,
       ds_usuario: req.body.ds_usuario,
       ds_senha: req.body.ds_senha,
+      id_login: req.userId,
+      id_login_last_update: req.userId,
       dt_created: new Date(),
       dt_updated: new Date(),
     };
@@ -84,6 +86,7 @@ class SistemaPessoaController {
     const novoSistemaPorPessoa = {
       ds_usuario: req.body.ds_usuario,
       ds_senha: req.body.ds_senha,
+      id_login_last_update: req.userId,
       dt_updated: new Date(),
     };
 
