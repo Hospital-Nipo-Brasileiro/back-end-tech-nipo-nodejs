@@ -37,6 +37,56 @@ module.exports = {
         dt_created: new Date(),
         dt_updated: new Date()
       },
+      {
+        ds_nome: "DeskManager",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Exchange Online (Plan 1)",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Exchange Online (Plan 2)",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Microsoft 365 Apps for Business",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Microsoft 365 Business Standard",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Microsoft Teams Essencials",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Power BI Pro",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Project Plan 3",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Visio Plan 1",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        ds_nome: "Visio Plan 2",
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
 
     ], {});
   },
