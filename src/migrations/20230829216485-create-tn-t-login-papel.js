@@ -1,33 +1,24 @@
-
 /* eslint-disable no-unused-vars */
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("TN_T_SISTEMA_PESSOA", {
+    await queryInterface.createTable("TN_T_LOGIN_PAPEL", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_sistema: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: { model: "TN_T_SISTEMA", key: "id" }
-      },
-      id_pessoa: {
+      id_login: {
         allowNull: false,
         type: Sequelize.UUID,
-        references: { model: "TN_T_PESSOA", key: "id" }
+        references: { model: "TN_T_LOGIN", key: "id" }
       },
-      ds_usuario: {
+      id_papel: {
         allowNull: false,
-        type: Sequelize.STRING
-      },
-      ds_senha: {
-        allowNull: true,
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
+        references: { model: "TN_T_PAPEL", key: "id" }
       },
       dt_created: {
         allowNull: false,
@@ -44,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("TN_T_SISTEMA_PESSOA");
+    await queryInterface.dropTable("TN_T_LOGIN_PAPEL");
   }
 };

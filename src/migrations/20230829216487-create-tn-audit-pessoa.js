@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 "use strict";
-const { v4: uuidv4 } = require("uuid");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,9 +7,9 @@ module.exports = {
     await queryInterface.createTable("TN_AUDIT_PESSOA", {
       id: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: Sequelize.INTEGER
       },
       ds_nome: {
         allowNull: false,
@@ -39,11 +38,11 @@ module.exports = {
       },
       id_login: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       id_login_last_update: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       dt_created: {
         allowNull: false,
