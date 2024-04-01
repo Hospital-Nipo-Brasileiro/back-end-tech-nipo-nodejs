@@ -38,7 +38,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      id_login_last_update: {
+      id_login_last_updated: {
         allowNull: false,
         type: Sequelize.STRING,
       },

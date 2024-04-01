@@ -13,7 +13,7 @@ module.exports = {
         tp_contrato: "CLT",
         ds_categoria_cargo: "Administrativo",
         id_login: "f6fa22c0-93cf-42b9-a58b-01c620d1ea93",
-        id_login_last_update: "f6fa22c0-93cf-42b9-a58b-01c620d1ea93",
+        id_login_last_updated: "f6fa22c0-93cf-42b9-a58b-01c620d1ea93",
         dt_created: new Date(),
         dt_updated: new Date()
       },
@@ -26,7 +26,7 @@ module.exports = {
         tp_contrato: "CLT",
         ds_categoria_cargo: "Administrativo",
         id_login: "f6fa22c0-93cf-42b9-a58b-01c620d1ea93",
-        id_login_last_update: "f6fa22c0-93cf-42b9-a58b-01c620d1ea93",
+        id_login_last_updated: "f6fa22c0-93cf-42b9-a58b-01c620d1ea93",
         dt_created: new Date(),
         dt_updated: new Date()
       }

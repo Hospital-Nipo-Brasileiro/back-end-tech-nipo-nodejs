@@ -10,8 +10,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TN_AUDIT_SISTEMA_PESSOA.belongsTo(models.TN_T_PESSOA, { foreignKey: "id_pessoa" });
       TN_AUDIT_SISTEMA_PESSOA.belongsTo(models.TN_T_SISTEMA, { foreignKey: "id_sistema" });
-      TN_AUDIT_SISTEMA_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login"});
-      TN_AUDIT_SISTEMA_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_update"});
     }
   }
   TN_AUDIT_SISTEMA_PESSOA.init({
@@ -21,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     ds_action: DataTypes.STRING,
     dt_created: DataTypes.DATE, 
     dt_updated: DataTypes.DATE,
+    id_login: DataTypes.STRING,
+    id_login_last_updated: DataTypes.STRING,
   },
   {
     sequelize,

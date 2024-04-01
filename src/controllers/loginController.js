@@ -158,7 +158,7 @@ class LoginController {
 
     if (loginEncontrado) {
       const atualizacoes = { ...loginEncontrado, ...req.body };
-      atualizacoes.id_login_last_update = req.userId;
+      atualizacoes.id_login_last_updated = req.userId;
       atualizacoes.dt_updated = new Date();
 
       await loginEncontrado.update(atualizacoes);

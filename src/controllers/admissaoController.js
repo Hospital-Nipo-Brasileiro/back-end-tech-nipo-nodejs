@@ -136,7 +136,7 @@ class AdmissaoController {
           dt_admissao: new Date(),
           tp_contrato: user.tipoContrato,
           id_login: req.userId,
-          id_login_last_update: req.userId,
+          id_login_last_updated: req.userId,
           dt_created: new Date(),
           dt_updated: new Date(),
         };
@@ -168,7 +168,7 @@ class AdmissaoController {
                   id_pessoa: novaPessoaCriada.id,
                   id_sistema: sistemaEncontrado.id,
                   id_login: req.userId,
-                  id_login_last_update: req.userId,
+                  id_login_last_updated: req.userId,
                   ds_usuario: user.email,
                   ds_senha: user.senha,
                   dt_created: new Date(),
@@ -183,7 +183,7 @@ class AdmissaoController {
                   ds_usuario: user.usuario,
                   ds_senha: user.senha,
                   id_login: req.userId,
-                  id_login_last_update: req.userId,
+                  id_login_last_updated: req.userId,
                   dt_created: new Date(),
                   dt_updated: new Date(),
                 };

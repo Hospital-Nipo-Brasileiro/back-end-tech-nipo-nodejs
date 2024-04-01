@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_PESSOA, { foreignKey: "id_pessoa" });
       TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_SISTEMA, { foreignKey: "id_sistema" });
       TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login"});
-      TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_update"});
+      TN_T_SISTEMA_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_updated"});
     }
   }
   TN_T_SISTEMA_PESSOA.init({
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
         ds_usuario_copia: sistema_pessoa.ds_usuario_copia,
         ds_action: "create",
         id_login: sistema_pessoa.id_login,
-        id_login_last_update: sistema_pessoa.id_login_last_update, 
+        id_login_last_updated: sistema_pessoa.id_login_last_updated, 
         dt_created: sistema_pessoa.dt_created,
         dt_updated: sistema_pessoa.dt_updated,
       }, { transaction: options.transaction });

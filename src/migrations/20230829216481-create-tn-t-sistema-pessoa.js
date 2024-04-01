@@ -29,12 +29,15 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      ds_usuario_copia: {
+        type: Sequelize.STRING
+      },
       id_login: {
         allowNull: false,
         type: Sequelize.UUID,
         references: { model: "TN_T_LOGIN", key: "id" }
       },
-      id_login_last_update: {
+      id_login_last_updated: {
         allowNull: false,
         type: Sequelize.UUID,
         references: { model: "TN_T_LOGIN", key: "id" }

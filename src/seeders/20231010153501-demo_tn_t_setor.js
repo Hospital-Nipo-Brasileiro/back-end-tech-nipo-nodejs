@@ -6,6 +6,7 @@ module.exports = {
         ds_nome: "Tecnologia da Informação",
         sg_local: "TIC",
         ds_local: "casa 16",
+        ds_email_cordenacao: "rodrigo.rios@hnipo.org.br",
         dt_created: new Date(),
         dt_updated: new Date()
       },
@@ -13,6 +14,7 @@ module.exports = {
         ds_nome: "Call Center",
         sg_local: "CAL",
         ds_local: "casa 16",
+        ds_email_cordenacao: "aline.barion@hnipo.org.br",
         dt_created: new Date(),
         dt_updated: new Date()
       },
@@ -20,6 +22,7 @@ module.exports = {
         ds_nome: "SAME",
         sg_local: "SME",
         ds_local: "casa 16",
+        ds_email_cordenacao: "arlete.salles@hnipo.org.br",
         dt_created: new Date(),
         dt_updated: new Date()
       },

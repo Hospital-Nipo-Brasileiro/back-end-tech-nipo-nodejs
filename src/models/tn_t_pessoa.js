@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       TN_T_PESSOA.belongsTo(models.TN_T_CARGO_SETOR, { foreignKey: "id" });
       TN_T_PESSOA.belongsTo(models.TN_T_SISTEMA_PESSOA, { foreignKey: "id" });
       TN_T_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login"});
-      TN_T_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_update"});
+      TN_T_PESSOA.belongsTo(models.TN_T_LOGIN, { foreignKey: "id_login_last_updated"});
       TN_T_PESSOA.hasOne(models.TN_T_LOGIN, { foreignKey: "id_pessoa" });
     }
   }
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         ds_categoria_cargo: pessoa.ds_categoria_cargo,
         ds_action: "create",
         id_login: pessoa.id_login,
-        id_login_last_update: pessoa.id_login_last_update, 
+        id_login_last_updated: pessoa.id_login_last_updated, 
         dt_created: pessoa.dt_created,
         dt_updated: pessoa.dt_updated,
       }, { transaction: options.transaction });
@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
           ds_categoria_cargo: pessoa.ds_categoria_cargo,
           ds_action: "delete",
           id_login: pessoa.id_login,
-          id_login_last_update: pessoa.id_login_last_update, 
+          id_login_last_updated: pessoa.id_login_last_updated, 
           dt_created: pessoa.dt_created,
           dt_updated: pessoa.dt_deleted,
         }, { transaction });
@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
         ds_categoria_cargo: pessoa.ds_categoria_cargo,
         ds_action: "update",
         id_login: pessoa.id_login,
-        id_login_last_update: pessoa.id_login_last_update, 
+        id_login_last_updated: pessoa.id_login_last_updated, 
         dt_created: pessoa.dt_created,
         dt_updated: pessoa.dt_updated,
       }, { transaction });

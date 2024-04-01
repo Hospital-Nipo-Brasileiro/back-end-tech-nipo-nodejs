@@ -51,7 +51,7 @@ class PessoasController {
       ds_categoria_cargo: req.body.ds_categoria_cargo,
       id_cargo_setor: req.body.id_cargo_setor,
       id_login: req.userId,
-      id_login_last_update: req.userId,
+      id_login_last_updated: req.userId,
       dt_created: new Date(),
       dt_updated: new Date(),
     };
@@ -82,7 +82,7 @@ class PessoasController {
 
     if (pessoaEncontrada) {
       const atualizacoes = { ...pessoaEncontrada, ...req.body };
-      atualizacoes.id_login_last_update = req.userId;
+      atualizacoes.id_login_last_updated = req.userId;
       atualizacoes.dt_updated = new Date();
 
       await pessoaEncontrada.update(atualizacoes);
@@ -108,7 +108,7 @@ class PessoasController {
           ds_categoria_cargo: pessoaEncontrada.ds_categoria_cargo,
           ds_action: "delete",
           id_login: pessoaEncontrada.id_login,
-          id_login_last_update: req.userId, 
+          id_login_last_updated: req.userId, 
           dt_created: new Date(),
           dt_updated: new Date(),
         });
