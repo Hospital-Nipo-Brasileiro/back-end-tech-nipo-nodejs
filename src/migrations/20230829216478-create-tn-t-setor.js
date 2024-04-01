@@ -20,6 +20,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      ds_email_cordenacao: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       dt_created: {
         allowNull: false,
         type: Sequelize.DATE

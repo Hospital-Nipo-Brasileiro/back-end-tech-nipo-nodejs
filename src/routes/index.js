@@ -4,13 +4,15 @@ const cargos = require("./CargoRoute.js");
 const setores = require("./SetorRoute.js");
 const sistemas = require("./SistemasRoute.js");
 const cargoSetor = require("./CargoSetorRoute.js");
-const estoques = require("./EstoqueRoute.js");
-const zonas = require("./ZonaRoute.js");
-const armarios = require("./ArmarioRoute.js");
-const prateleiras = require("./PrateleirasRoute.js");
-const baus = require("./BauRoute.js");
-const itens = require("./ItemRoute.js");
-const itemGuardado = require("./ItemGuardadoRoute.js");
+/* 
+  const estoques = require("./EstoqueRoute.js");
+  const zonas = require("./ZonaRoute.js");
+  const armarios = require("./ArmarioRoute.js");
+  const prateleiras = require("./PrateleirasRoute.js");
+  const baus = require("./BauRoute.js");
+  const itens = require("./ItemRoute.js");
+  const itemGuardado = require("./ItemGuardadoRoute.js");
+*/
 const admissaoCSV = require("./AdmissaoRoute.js");
 const login = require("./LoginRoute.js");
 const papeis = require("./papelRoute.js");
@@ -30,13 +32,15 @@ const routes = (app) => {
     sistemaPessoa,
     sistemas,
     cargoSetor,
-    estoques,
-    zonas,
-    armarios,
-    prateleiras,
-    baus,
-    itens,
-    itemGuardado,
+    /*
+      estoques,
+      zonas,
+      armarios,
+      prateleiras,
+      baus,
+      itens,
+      itemGuardado, 
+    */
     admissaoCSV,
     login,
     papeis,

@@ -27,6 +27,9 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      ds_usuario_copia: {
+        type: Sequelize.STRING
+      },
       ds_action: {
         allowNull: false,
         type: Sequelize.STRING,

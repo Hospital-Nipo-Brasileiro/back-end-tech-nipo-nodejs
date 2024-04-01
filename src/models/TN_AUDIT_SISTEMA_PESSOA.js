@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   TN_AUDIT_SISTEMA_PESSOA.init({
     ds_usuario: DataTypes.STRING,
     ds_senha: DataTypes.STRING,
+    ds_usuario_copia: DataTypes.STRING,
     ds_action: DataTypes.STRING,
     dt_created: DataTypes.DATE, 
     dt_updated: DataTypes.DATE,

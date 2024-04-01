@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    ds_local: DataTypes.STRING
+    ds_local: DataTypes.STRING,
+    ds_email_cordenacao: DataTypes.STRING,
   }, {
     sequelize,
     paranoid: true, //Habilita pelo sequelize o soft delete (deletar suave)

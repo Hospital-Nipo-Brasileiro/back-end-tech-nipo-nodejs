@@ -37,6 +37,7 @@ class SetorController {
       ds_nome: req.body.ds_nome,
       sg_local: req.body.sg_local,
       ds_local: req.body.ds_local,
+      ds_email_coordenacao: req.body.ds_email_coordenacao,
       dt_created: new Date(),
       dt_updated: new Date()
     };
@@ -57,6 +58,7 @@ class SetorController {
       ds_nome: req.body.ds_nome,
       sg_local: req.body.sg_local,
       ds_local: req.body.ds_local,
+      ds_email_coordenacao: req.body.ds_email_coordenacao,
       dt_updated: new Date()
     };
 
