@@ -5,6 +5,7 @@ const fs = require("fs");
 const diacritics = require("diacritics");
 const { spawn } = require("child_process");
 const path = require("path");
+const database = require("../models");
 
 
 class AdmissaoService {
@@ -223,6 +224,16 @@ class AdmissaoService {
 
     return acessosFormatados;
   }
+  
+  static async encontraOuCriaTabela(tabela, where, object) {
+    let tabelaEncontrada = await database[tabela].findOne({ where: where});
+
+    if(!tabelaEncontrada) {
+      tabelaEncontrada = await database[tabela].create(object);
+    }
+
+    return tabelaEncontrada;
+  }
 
   static async processaPlanilhaRegistrosCSV(file) {
     // eslint-disable-next-line no-async-promise-executor
@@ -411,6 +422,10 @@ class AdmissaoService {
           const tipoContrato = data["Tipo de contratação"];
           const acessos = data["Quais acessos a sistemas essa pessoa precisa ter?"];
 
+          const cargo = data["Cargo"];
+          const emailCoord = data["Email do Criador(a)"];
+          const usuarioCopia = data["Informar usuário para cópia do perfil"];
+
           let cpfUser = "";
           let cpfPassword = "";
           let localCode = "";
@@ -438,6 +453,9 @@ class AdmissaoService {
             novaPessoa.senha = senhaFormatada;
             novaPessoa.local = local;
             novaPessoa.area = area;
+            novaPessoa.cargo = cargo;
+            novaPessoa.usuarioCopia = usuarioCopia;
+            novaPessoa.emailCoord = emailCoord;
 
             if (acessoRecebido.includes("DeskManager") || acessoRecebido.includes("Email")) {
               if (acessoRecebido.includes("Email")) {
@@ -463,6 +481,7 @@ class AdmissaoService {
               novaPessoa.email = email;
             }
 
+            console.log(novaPessoa);
             results.push(novaPessoa);
           }
         })
