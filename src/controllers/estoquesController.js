@@ -6,7 +6,7 @@ const validaPermissao = require("../middlewares/permissionador");
 class EstoqueController {
 
   static async buscaTodosEstoques(req, res, next) {
-    const validaLeituraEstoque = validaPermissao("leitura-estoque");
+    const validaLeituraEstoque = validaPermissao("L-ESTOQUE");
   
     try {
       await validaLeituraEstoque(req, res, next);
