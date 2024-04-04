@@ -142,14 +142,42 @@ class AdmissaoController {
         };
     
         try {
-          const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: {nr_cpf: Number(cpf)}});
+          const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: {nr_cpf: cpf}});
     
           if (pessoaEncontrada) {
             next(new ErroBase(`Já existe uma pessoa com este cpf ${cpf}`, 409));
           }
           
           const novaPessoaCriada = await database.TN_T_PESSOA.create(novaPessoa);
+
+          const objectCargo = {
+            ds_nome: user.cargo,
+          };
+          const objectSetor = {
+            ds_nome: user.area,
+            ds_local: user.local,
+            ds_email_cordenacao: user.emailCoord
+          };
+
           
+
+          const cargoEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_CARGO", objectCargo, objectCargo);
+          const setorEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_SETOR", { ds_nome: user.area }, objectSetor);
+
+          const objectCargoSetor = {
+            id_cargo: cargoEncontrado.id,
+            id_setor: setorEncontrado.id,
+          };
+
+          const cargoSetorEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_CARGO_SETOR", objectCargoSetor, objectCargoSetor);
+
+          const objectPessoaCargo = {
+            id_pessoa: novaPessoaCriada.id,
+            id_cargo_setor: Number(cargoSetorEncontrado.id)
+          };
+
+          const vinculaCargoAUmaPessoa = await AdmissaoService.encontraOuCriaTabela("TN_T_PESSOA_CARGO", objectPessoaCargo, objectPessoaCargo);
+
           for(const sistema of user.acessos) {
             const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: sistema } });
 
@@ -157,7 +185,7 @@ class AdmissaoController {
               const pessoaSistemaExistente = await database.TN_T_SISTEMA_PESSOA.findAll({ where: {id_pessoa: novaPessoaCriada.id}});
 
               if(pessoaSistemaExistente) {
-                console.log(`Acesso não encontrado pelo nome ${sistema}.`);
+                console.error(`Acesso não encontrado pelo nome ${sistema}.`);
               } else {
                 await database.TN_T_PESSOA.destroy({ where: {id: novaPessoaCriada.id}});
                 next(new NaoEncontrado(`Acesso não encontrado pelo nome ${sistema}, apagando pessoa pré-criada`));
