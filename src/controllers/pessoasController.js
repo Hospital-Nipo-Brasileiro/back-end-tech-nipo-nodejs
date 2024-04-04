@@ -1,6 +1,7 @@
 const ErroBase = require("../errors/ErroBase.js");
 const NaoEncontrado = require("../errors/NaoEncontrado.js");
 const database = require("../models");
+const PessoaService = require("../services/pessoaService.js");
 
 class PessoasController {
 
@@ -31,6 +32,20 @@ class PessoasController {
     try {
       if (pessoaEncontrada) {
         res.status(200).send(pessoaEncontrada);
+      } else {
+        next(new NaoEncontrado(`ID ${id} de pessoa não encontrada na busca.`));
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async buscaInfoDePessoa(req, res, next) {
+    const { id } = req.params;
+    const pessoaEncontrada = await PessoaService.buscaInfosPessoa(id);
+    try {
+      if (pessoaEncontrada) {
+        res.status(200).send(pessoaEncontrada[0]);
       } else {
         next(new NaoEncontrado(`ID ${id} de pessoa não encontrada na busca.`));
       }
