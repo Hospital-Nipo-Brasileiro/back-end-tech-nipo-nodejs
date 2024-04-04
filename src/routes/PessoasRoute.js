@@ -6,6 +6,7 @@ const router = express.Router();
 router
   .get("/pessoas", PessoasController.buscaTodasPessoas)
   .get("/pessoas/:id", PessoasController.buscaPessoaPorId)
+  .get("/pessoas/:id/infos", PessoasController.buscaInfoDePessoa)
   .post("/pessoas", PessoasController.criaUmaPessoa)
   .post("/pessoas/:id/restaurar", PessoasController.restauraUmaPessoa)
   .put("/pessoas/:id", PessoasController.atualizaUmaPessoa)

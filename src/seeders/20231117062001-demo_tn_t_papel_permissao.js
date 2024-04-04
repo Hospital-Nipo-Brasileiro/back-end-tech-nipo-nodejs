@@ -14,6 +14,18 @@ module.exports = {
         dt_created: new Date(),
         dt_updated: new Date()
       },
+      {
+        id_papel: 1,
+        id_permissao: 3,
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
+      {
+        id_papel: 1,
+        id_permissao: 4,
+        dt_created: new Date(),
+        dt_updated: new Date()
+      },
     ], {});
   },
 

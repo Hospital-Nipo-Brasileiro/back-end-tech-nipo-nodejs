@@ -1,29 +1,36 @@
 const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado");
 const database = require("../models");
 
-const validaPermissao = (permission) =>  {
+const validaPermissao = (permission) => {
   return async (req, res, next) => {
     const userId = req.userId;
 
     try {
-      const existePermissao = await database.TN_T_LOGIN_PAPEL.findOne({ 
-        where : {
-          id_login: userId,
-          "$TN_T_PAPEL_PERMISSAO.TN_T_PERMISSAO.ds_nome$": permission,
-        },
-        include: [{
-          model: database.TN_T_PAPEL_PERMISSAO,
-          include: [database.TN_T_PERMISSAO],
-        }],
+      const existePermissao = await database.TN_T_LOGIN_PAPEL.findAll({
+        where: { id_login: Number(userId) },
+        include: [
+          {
+            model: database.TN_T_PAPEL,
+            include: [
+              {
+                model: database.TN_T_PAPEL_PERMISSAO,
+                include: [{
+                  model: database.TN_T_PERMISSAO,
+                  where: { ds_nome: permission },
+                }],
+              },
+            ],
+          },
+        ],
       });
 
-      if (existePermissao) {
-        return;
+      if (existePermissao.length > 0) {
+        next();
       } else {
         next(new AcessoNaoAutorizado());
       }
     } catch (err) {
-      next(err);
+      return next(err);
     }
   };
 };
