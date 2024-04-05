@@ -220,7 +220,7 @@ class AdmissaoService {
     
     const acessoObrigatorio = "Interact";
     
-    acessosSubstituidos.push(acessoObrigatorio);
+    acessosFormatados.push(acessoObrigatorio);
 
     return acessosFormatados;
   }

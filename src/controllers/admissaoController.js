@@ -173,10 +173,17 @@ class AdmissaoController {
 
           const objectPessoaCargo = {
             id_pessoa: novaPessoaCriada.id,
-            id_cargo_setor: Number(cargoSetorEncontrado.id)
+            id_cargo_setor: Number(cargoSetorEncontrado.id),
+            id_login: req.userId,
+            id_login_last_updated: req.userId
           };
 
-          const vinculaCargoAUmaPessoa = await AdmissaoService.encontraOuCriaTabela("TN_T_PESSOA_CARGO", objectPessoaCargo, objectPessoaCargo);
+          console.log(objectPessoaCargo);
+
+          await AdmissaoService.encontraOuCriaTabela("TN_T_PESSOA_CARGO", {
+            id_pessoa: novaPessoaCriada.id,
+            id_cargo_setor: Number(cargoSetorEncontrado.id)
+          }, objectPessoaCargo);
 
           for(const sistema of user.acessos) {
             const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: sistema } });

@@ -1,9 +1,8 @@
 node_modules
 env
 .env
-uploads/
-uploads-admissoes/
 .vercel
 __pycache__/
 env/
-csv-process/
+/src/uploads/admissoes/*
+csv-process/*
