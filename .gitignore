@@ -5,4 +5,4 @@ env
 __pycache__/
 env/
 /src/uploads/admissoes/*
-csv-process/*
+src/csv-process/*
