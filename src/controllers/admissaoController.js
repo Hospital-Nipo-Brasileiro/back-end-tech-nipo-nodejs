@@ -9,10 +9,6 @@ require("dotenv").config();
 
 const fs = require("fs");
 const { promisify } = require("util");
-const ErroBase = require("../errors/ErroBase.js");
-const NaoEncontrado = require("../errors/NaoEncontrado.js");
-const { validaPermissao } = require("../services/loginService.js");
-const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado.js");
 const writeFileAsync = promisify(fs.writeFile);
 
 class AdmissaoController {
@@ -21,17 +17,18 @@ class AdmissaoController {
     try {
       const file = req.file.path;
       const diaAdmissao = req.body.diaAdmissao;
+      const nrOrdem = req.body.nr_ordem;      
 
       if (!file) {
         next("Arquivo não encontrado na requisição.", 400);
       }
 
-      const csvData = await AdmissaoService.processaPlanilha(file, diaAdmissao);
+      const csvData = await AdmissaoService.processaPlanilha(file);
       const outputPathNipo = `C:/Users/sup.gustavo/Documents/back-end-tech-nipo-nodejs/src/csv-process/${diaAdmissao}-admissao.csv`;
       // const outputPathMac = `/Users/gusta/Desktop/TechNipo/back-end-tech-nipo-nodejs/src/csv-process/${diaAdmissao}-admissao.csv`;
       await writeFileAsync(outputPathNipo, csvData, "utf8");
       const users = outputPathNipo;
-      const usersReceived = await AdmissaoService.criarFormatacaoAcessos(users, diaAdmissao);
+      const usersReceived = await AdmissaoService.criarFormatacaoAcessos(users, diaAdmissao, nrOrdem);
       
       res.status(200).send(usersReceived);
     } catch (err) {
@@ -43,24 +40,18 @@ class AdmissaoController {
     try {
       const file = req.file.path;
       const diaAdmissao = req.body.diaAdmissao;
-
-      // const temPermissao = await validaPermissao("W-DESK");
-
-      // if(!temPermissao) {
-      //   next(new AcessoNaoAutorizado());
-      // }
+      const nrOrdem = req.body.nr_ordem;
 
       if (!file) {
         next("Arquivo não encontrado na requisição.", 400);
       }
-
       
-      const csvData = await AdmissaoService.processaPlanilha(file, diaAdmissao);
+      const csvData = await AdmissaoService.processaPlanilha(file, nrOrdem);
       const outputPathNipo = `C:/Users/sup.gustavo/Documents/back-end-tech-nipo-nodejs/src/csv-process/${diaAdmissao}-admissao.csv`;
       // const outputPathMac = `/Users/gusta/Desktop/TechNipo/back-end-tech-nipo-nodejs/src/csv-process/${diaAdmissao}-admissao.csv`;
       await writeFileAsync(outputPathNipo, csvData, "utf8");
       const users = outputPathNipo;
-      const usersReceived = await AdmissaoService.criarFormatacaoAcessos(users, diaAdmissao);
+      const usersReceived = await AdmissaoService.criarFormatacaoAcessos(users, diaAdmissao, nrOrdem);
 
       req.fileUsers = usersReceived;
       next();

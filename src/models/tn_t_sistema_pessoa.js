@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     ds_usuario: DataTypes.STRING,
     ds_senha: DataTypes.STRING,
     ds_usuario_copia: DataTypes.STRING,
+    nr_ordem_servico: DataTypes.INTEGER
   },
   {
     sequelize,
@@ -41,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
         ds_usuario: sistema_pessoa.ds_usuario,
         ds_senha: sistema_pessoa.ds_senha,
         ds_usuario_copia: sistema_pessoa.ds_usuario_copia,
+        nr_ordem_servico: sistema_pessoa.nr_ordem_servico,
         ds_action: "create",
         id_login: sistema_pessoa.id_login,
         id_login_last_updated: sistema_pessoa.id_login_last_updated, 
@@ -67,6 +69,7 @@ module.exports = (sequelize, DataTypes) => {
           ds_usuario: sistema_pessoa.ds_usuario,
           ds_senha: sistema_pessoa.ds_senha,
           ds_usuario_copia:sistema_pessoa.ds_usuario_copia,
+          nr_ordem_servico: sistema_pessoa.nr_ordem_servico,
           ds_action: "delete",
           dt_created: sistema_pessoa.dt_created,
           dt_updated: sistema_pessoa.dt_deleted,
@@ -87,6 +90,7 @@ module.exports = (sequelize, DataTypes) => {
         ds_usuario: sistema_pessoa.ds_usuario,
         ds_senha: sistema_pessoa.ds_senha,
         ds_usuario_copia: sistema_pessoa.ds_usuario_copia,
+        nr_ordem_servico: sistema_pessoa.nr_ordem_servico,
         ds_action: "update",
         dt_created: sistema_pessoa.dt_created,
         dt_updated: sistema_pessoa.dt_updated,

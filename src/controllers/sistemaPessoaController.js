@@ -48,6 +48,7 @@ class SistemaPessoaController {
       ds_usuario: req.body.ds_usuario,
       ds_senha: req.body.ds_senha,
       ds_usuario_copia: req.body.ds_usuario_copia,
+      nr_ordem_servico: req.body.nr_ordem,
       id_login: req.userId,
       id_login_last_updated: req.userId,
       dt_created: new Date(),
@@ -88,6 +89,7 @@ class SistemaPessoaController {
       ds_usuario: req.body.ds_usuario,
       ds_senha: req.body.ds_senha,
       ds_usuario_copia: req.body.ds_usuario_copia,
+      nr_ordem_servico: req.body.nr_ordem,
       id_login_last_updated: req.userId,
       dt_updated: new Date(),
     };

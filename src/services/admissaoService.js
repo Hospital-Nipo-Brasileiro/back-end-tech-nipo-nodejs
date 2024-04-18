@@ -283,7 +283,7 @@ class AdmissaoService {
     });
   }
 
-  static async formataPlanilhaRegistrosCSV(file) {
+  static async formataPlanilhaRegistrosCSV(file, nrOrdem) {
     return new Promise((resolve, reject) => {
       const results = [];
 
@@ -324,6 +324,7 @@ class AdmissaoService {
           novaPessoa.concelhoRegional = concelhoRegional;
           novaPessoa.acessos = acessosFormatados;
           novaPessoa.dataAdmissao = dataAdmissao;
+          nrOrdem;
 
           if (acessosFormatados.includes("DeskManager") || acessosFormatados.includes("Email")) {
             if (acessosFormatados.includes("Email")) {
@@ -404,7 +405,7 @@ class AdmissaoService {
     });
   }
 
-  static async criarFormatacaoAcessos(file, diaAdmissao) {
+  static async criarFormatacaoAcessos(file, diaAdmissao, nrOrdem) {
     return new Promise((resolve, reject) => {
       const results = [];
 
@@ -456,6 +457,7 @@ class AdmissaoService {
             novaPessoa.cargo = cargo;
             novaPessoa.usuarioCopia = usuarioCopia;
             novaPessoa.emailCoord = emailCoord;
+            novaPessoa.ordemServico = nrOrdem;
 
             if (acessoRecebido.includes("DeskManager") || acessoRecebido.includes("Email")) {
               if (acessoRecebido.includes("Email")) {
@@ -577,6 +579,7 @@ class AdmissaoService {
               id_pessoa: user.id,
               id_sistema: sistemaEncontrado.id,
               ds_usuario_copia: user.usuarioCopia,
+              nr_ordem_servico: user.ordemServico,
               id_login: userId,
               id_login_last_updated: userId,
               ds_usuario: user.email,
@@ -591,6 +594,7 @@ class AdmissaoService {
               id_pessoa: user.id,
               id_sistema: sistemaEncontrado.id,
               ds_usuario_copia: user.usuarioCopia,
+              nr_ordem_servico: user.ordemServico,
               ds_usuario: user.usuario,
               ds_senha: user.senha,
               id_login: userId,
