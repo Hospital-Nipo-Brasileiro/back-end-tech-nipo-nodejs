@@ -520,6 +520,98 @@ class AdmissaoService {
     });
   }
 
+  static async vinculaCargoAPessoaExistente({ user, userId}) {
+    try {
+      const objectCargo = {
+        ds_nome: user.cargo,
+      };
+      console.log(objectCargo);
+      const objectSetor = {
+        ds_nome: user.area,
+        ds_local: user.local,
+        ds_email_cordenacao: user.emailCoord
+      };
+      const cargoEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_CARGO", objectCargo, objectCargo);
+      const setorEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_SETOR", { ds_nome: user.area }, objectSetor);
+      const objectCargoSetor = {
+        id_cargo: cargoEncontrado.id,
+        id_setor: setorEncontrado.id,
+      };
+      const cargoSetorEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_CARGO_SETOR", objectCargoSetor, objectCargoSetor);
+      const objectPessoaCargo = {
+        id_pessoa: user.id,
+        id_cargo_setor: Number(cargoSetorEncontrado.id),
+        id_login: userId,
+        id_login_last_updated: userId
+      };
+
+      console.log(objectPessoaCargo);
+
+      await AdmissaoService.encontraOuCriaTabela("TN_T_PESSOA_CARGO", {
+        id_pessoa: user.id,
+        id_cargo_setor: Number(cargoSetorEncontrado.id)
+      }, objectPessoaCargo);
+
+      return user;
+    } catch (e) {
+      return new Error(e);
+    }
+  }
+
+  static async vinculaSistemaAPessoaExistente({user, userId}) {
+    console.log(user.acessos);
+    for(const sistema of user.acessos) {
+      try {
+        const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: sistema } });
+        const pessoaJaTemSistemaVinculado = await database.TN_T_SISTEMA_PESSOA.findOne({ where: { id_pessoa: user.id, id_sistema: sistemaEncontrado.id }});
+
+        if(pessoaJaTemSistemaVinculado) {
+          return user.error = `${sistema} já vinculado`;
+        }
+
+        if(!sistemaEncontrado) {
+          return user.error = `${sistema} não encontrado`;
+        } else {
+          if(sistema === "DeskManager" || sistema === "Email") {
+            const novoSistemaPorPessoa = {
+              id_pessoa: user.id,
+              id_sistema: sistemaEncontrado.id,
+              ds_usuario_copia: user.usuarioCopia,
+              id_login: userId,
+              id_login_last_updated: userId,
+              ds_usuario: user.email,
+              ds_senha: user.senha,
+              dt_created: new Date(),
+              dt_updated: new Date(),
+            };
+
+            await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
+          } else {
+            const novoSistemaPorPessoa = {
+              id_pessoa: user.id,
+              id_sistema: sistemaEncontrado.id,
+              ds_usuario_copia: user.usuarioCopia,
+              ds_usuario: user.usuario,
+              ds_senha: user.senha,
+              id_login: userId,
+              id_login_last_updated: userId,
+              dt_created: new Date(),
+              dt_updated: new Date(),
+            };
+
+            console.log(novoSistemaPorPessoa);
+            console.log(novoSistemaPorPessoa.ds_usuario_copia);
+
+            await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
+          }
+        }
+      } catch (e) {
+        return new Error(e); 
+      }
+    }
+    return user;
+  }
+
 }
 
 

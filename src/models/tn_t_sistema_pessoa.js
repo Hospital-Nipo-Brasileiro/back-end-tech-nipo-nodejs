@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   TN_T_SISTEMA_PESSOA.init({
     ds_usuario: DataTypes.STRING,
-    ds_senha: DataTypes.STRING
+    ds_senha: DataTypes.STRING,
+    ds_usuario_copia: DataTypes.STRING,
   },
   {
     sequelize,

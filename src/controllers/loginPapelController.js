@@ -18,7 +18,7 @@ class LoginPapelController {
 
   static async buscaLoginPapelPorIdLogin(req, res, next) {
     const { id } = req.params;
-    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: { id: Number(id) } });
+    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: { id: id } });
 
     try {
       if (!loginPapelEncontrado) {
@@ -30,15 +30,16 @@ class LoginPapelController {
   }
 
   static async vinculaLoginAUmPapel(req, res, next) {
-    const { id } = req.params;
+    const { id_login, id_papel } = req.body;
+
     const novoLoginPapel = {
-      id_login: id,
-      id_papel: req.body.id_papel,
+      id_login,
+      id_papel,
       dt_created: new Date(),
       dt_updated: new Date(),
     };
 
-    const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: Number(id) } });
+    const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id_login } });
 
     try {
       if (loginEncontrado) {
@@ -53,7 +54,7 @@ class LoginPapelController {
           next(new NaoEncontrado(`ID ${novoLoginPapel.id_papel} de papel não encontrado`));
         }
       } else {
-        next(new NaoEncontrado(`ID ${id} de login não encontrado`));
+        next(new NaoEncontrado(`ID ${id_login} de login não encontrado`));
       }
     } catch (err) {
       next(err);
@@ -62,7 +63,7 @@ class LoginPapelController {
 
   static async removePapelDeLogin(req, res, next) {
     const { id } = req.params;
-    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: { id: Number(id) } });
+    const loginPapelEncontrado = await database.TN_T_LOGIN_PAPEL.findOne({ where: { id: id } });
     try {
       if (loginPapelEncontrado) {
         await database.TN_T_LOGIN_PAPEL.destroy({ where: { id: Number(id) } });

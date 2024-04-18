@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado");
 
 function verifyToken(req, res, next) {
-  const token = req.headers["authorization"]; // Você pode passar o token no cabeçalho da requisição
+  const token = req.headers["authorization"];
 
   if (!token) {
     return res.status(401).json({ message: "Token não fornecido." });
@@ -13,8 +13,8 @@ function verifyToken(req, res, next) {
       next(new AcessoNaoAutorizado("Token inválido"));
     }
 
-    req.userId = decoded.userId; // Adicione o ID do usuário autenticado ao objeto de requisição
-    next(); // Continue com a próxima função de middleware ou rota
+    req.userId = decoded.userId; 
+    next();
   });
 }
 

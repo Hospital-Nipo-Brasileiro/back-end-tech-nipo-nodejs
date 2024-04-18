@@ -4,15 +4,18 @@ const NaoEncontrado = require("../errors/NaoEncontrado");
 const database = require("../models");
 const ErroBase = require("../errors/ErroBase");
 const LoginService = require("../services/loginService");
-const validaPermissao = require("../middlewares/permissionador");
 const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado");
 
 
 class LoginController {
   static async buscaTodosLogins(req, res, next) {
-    const permissaoNecessaria = "R-ADMIN";
     try {
-      await LoginService.validaPermissao(req.userId, permissaoNecessaria, res);
+      const permissaoNecessaria = await LoginService.validaPermissao(req.userId, "R-ADMIN");
+      
+      if(permissaoNecessaria.PossuiPermissao === "false") {
+        return next(new AcessoNaoAutorizado());
+      }
+      
       const loginsEncontrados = await LoginService.buscaTodasPessoasELogins();
 
       if (!loginsEncontrados || loginsEncontrados.length === 0) {
@@ -21,9 +24,6 @@ class LoginController {
 
       res.status(200).send(loginsEncontrados);
     } catch (err) {
-      if(err == "Error: Error: Você não tem permissões de acesso"){
-        return next(new AcessoNaoAutorizado());
-      }
       next(err);
     }
   }
@@ -31,9 +31,13 @@ class LoginController {
 
   static async buscaLoginPorId(req, res, next) {
     const { id } = req.params;
-    const permissaoNecessaria = "R-ADMIN";
     try {
-      await LoginService.validaPermissao(req.userId, permissaoNecessaria, res);
+      const permissaoNecessaria = await LoginService.validaPermissao(req.userId, "R-ADMIN");
+      
+      if(permissaoNecessaria.PossuiPermissao === "false") {
+        return next(new AcessoNaoAutorizado());
+      }
+      
       const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (loginEncontrado) {
@@ -52,6 +56,12 @@ class LoginController {
   static async buscaPessoaPorLogin(req, res, next) {
     const { id } = req.params;
     try {
+      const permissaoNecessaria = await LoginService.validaPermissao(req.userId, "R-ADMIN");
+      
+      if(permissaoNecessaria.PossuiPermissao === "false") {
+        return next(new AcessoNaoAutorizado());
+      }
+      
       const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
       if (!loginEncontrado) {
@@ -89,10 +99,12 @@ class LoginController {
       dt_updated: new Date()
     };
 
-    // const permissaoNecessaria = "W-ADMIN";
-    // const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      // await validaPermissaoNecessaria(req, res, next);
+      const permissaoNecessaria = await LoginService.validaPermissao(req.userId, "W-ADMIN");
+      
+      if(permissaoNecessaria.PossuiPermissao === "false") {
+        return next(new AcessoNaoAutorizado());
+      }
 
       if (!pessoaEncontrada) {
         return next(new NaoEncontrado("Pessoa não encontrada"));
@@ -118,7 +130,6 @@ class LoginController {
 
   static async login(req, res, next) {
     const { ds_username, ds_password } = req.body;
-    console.log(ds_username, ds_password);
     const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { ds_username: ds_username } });
 
     try {
@@ -173,10 +184,7 @@ class LoginController {
     const { id } = req.params;
     const { senhaAtual, novaSenha, confirmaNovaSenha } = req.body;
 
-    const permissaoNecessaria = validaPermissao("W-ALTERA-SENHA");
     try {
-      await permissaoNecessaria(req, res, next);
-
       if (novaSenha === confirmaNovaSenha) {
         const usuarioExistente = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
@@ -208,11 +216,12 @@ class LoginController {
 
   static async restauraUsuario(req, res, next) {
     const { id } = req.params;
-
-    const permissaoNecessaria = "U-ADMIN";
-    const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      await validaPermissaoNecessaria(req, res, next);
+      const permissaoNecessaria = await LoginService.validaPermissao(req.userId, "U-ADMIN");
+      
+      if(permissaoNecessaria.PossuiPermissao === "false") {
+        return next(new AcessoNaoAutorizado());
+      }
 
       const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
@@ -257,10 +266,13 @@ class LoginController {
   static async desativaLogin(req, res, next) {
     const { id } = req.params;
 
-    const permissaoNecessaria = "D-ADMIN";
-    const validaPermissaoNecessaria = validaPermissao(permissaoNecessaria);
     try {
-      await validaPermissaoNecessaria(req, res, next);
+      const permissaoNecessaria = await LoginService.validaPermissao(req.userId, "D-ADMIN");
+      
+      if(permissaoNecessaria.PossuiPermissao === "false") {
+        return next(new AcessoNaoAutorizado());
+      }
+
 
       const loginEncontrado = await database.TN_T_LOGIN.findOne({ where: { id: id } });
 
@@ -273,6 +285,22 @@ class LoginController {
 
     } catch (err) {
       next(err);
+    }
+  }
+
+  static async validaPermissao(req, res, next) {
+    try {
+      const permissaoRecebida = req.body.permissao;
+
+      if(permissaoRecebida.PossuiPermissao === "false") {
+        next(new NaoEncontrado("Permissão não recebida!"));
+      }
+
+      const temPermissao = await LoginService.validaPermissao(req.userId, permissaoRecebida);
+
+      res.send(temPermissao);
+    } catch (e) {
+      next(e);
     }
   }
 

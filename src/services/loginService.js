@@ -1,4 +1,3 @@
-const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado");
 const db = require("../models");
 
 class LoginService {
@@ -118,11 +117,8 @@ class LoginService {
           AND PM.ds_nome = '${permission}';
       `);
 
-      if(resultado[0][0].PossuiPermissao == "false") {
-        throw new AcessoNaoAutorizado();  
-      } else {
-        return resultado;
-      }
+      return resultado[0][0];
+
     } catch (e) {
       throw new Error(e);
     }

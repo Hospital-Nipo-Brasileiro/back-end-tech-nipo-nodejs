@@ -11,6 +11,8 @@ const fs = require("fs");
 const { promisify } = require("util");
 const ErroBase = require("../errors/ErroBase.js");
 const NaoEncontrado = require("../errors/NaoEncontrado.js");
+const { validaPermissao } = require("../services/loginService.js");
+const AcessoNaoAutorizado = require("../errors/AcessoNaoAutorizado.js");
 const writeFileAsync = promisify(fs.writeFile);
 
 class AdmissaoController {
@@ -41,6 +43,12 @@ class AdmissaoController {
     try {
       const file = req.file.path;
       const diaAdmissao = req.body.diaAdmissao;
+
+      // const temPermissao = await validaPermissao("W-DESK");
+
+      // if(!temPermissao) {
+      //   next(new AcessoNaoAutorizado());
+      // }
 
       if (!file) {
         next("Arquivo não encontrado na requisição.", 400);
@@ -123,7 +131,7 @@ class AdmissaoController {
     }
   }
 
-  static async criaUmaPessoaAutomatico (req, _, next) {
+  static async criaUmaPessoaAutomatico (req, res, next) {
     const usersReceived = req.fileUsers;
   
     try {
@@ -144,89 +152,21 @@ class AdmissaoController {
         try {
           const pessoaEncontrada = await database.TN_T_PESSOA.findOne({ where: {nr_cpf: cpf}});
     
+          const userId = req.userId;
+
           if (pessoaEncontrada) {
-            next(new ErroBase(`Já existe uma pessoa com este cpf ${cpf}`, 409));
+            user.id = pessoaEncontrada.id;
+            await AdmissaoService.vinculaCargoAPessoaExistente({user, userId });
+            await AdmissaoService.vinculaSistemaAPessoaExistente({ user, userId});
+            console.log(user);
+          } else {
+            const novaPessoaCriada = await database.TN_T_PESSOA.create(novaPessoa);
+            user.id = novaPessoaCriada.id;
+            await AdmissaoService.vinculaCargoAPessoaExistente({user, userId});
+            await AdmissaoService.vinculaSistemaAPessoaExistente({ user, userId});
           }
-          
-          const novaPessoaCriada = await database.TN_T_PESSOA.create(novaPessoa);
 
-          const objectCargo = {
-            ds_nome: user.cargo,
-          };
-          const objectSetor = {
-            ds_nome: user.area,
-            ds_local: user.local,
-            ds_email_cordenacao: user.emailCoord
-          };
-
-          
-
-          const cargoEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_CARGO", objectCargo, objectCargo);
-          const setorEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_SETOR", { ds_nome: user.area }, objectSetor);
-
-          const objectCargoSetor = {
-            id_cargo: cargoEncontrado.id,
-            id_setor: setorEncontrado.id,
-          };
-
-          const cargoSetorEncontrado = await AdmissaoService.encontraOuCriaTabela("TN_T_CARGO_SETOR", objectCargoSetor, objectCargoSetor);
-
-          const objectPessoaCargo = {
-            id_pessoa: novaPessoaCriada.id,
-            id_cargo_setor: Number(cargoSetorEncontrado.id),
-            id_login: req.userId,
-            id_login_last_updated: req.userId
-          };
-
-          console.log(objectPessoaCargo);
-
-          await AdmissaoService.encontraOuCriaTabela("TN_T_PESSOA_CARGO", {
-            id_pessoa: novaPessoaCriada.id,
-            id_cargo_setor: Number(cargoSetorEncontrado.id)
-          }, objectPessoaCargo);
-
-          for(const sistema of user.acessos) {
-            const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: sistema } });
-
-            if(!sistemaEncontrado) {
-              const pessoaSistemaExistente = await database.TN_T_SISTEMA_PESSOA.findAll({ where: {id_pessoa: novaPessoaCriada.id}});
-
-              if(pessoaSistemaExistente) {
-                console.error(`Acesso não encontrado pelo nome ${sistema}.`);
-              } else {
-                await database.TN_T_PESSOA.destroy({ where: {id: novaPessoaCriada.id}});
-                next(new NaoEncontrado(`Acesso não encontrado pelo nome ${sistema}, apagando pessoa pré-criada`));
-              }
-            } else {
-              if(sistema === "DeskManager" || sistema === "Email") {
-                const novoSistemaPorPessoa = {
-                  id_pessoa: novaPessoaCriada.id,
-                  id_sistema: sistemaEncontrado.id,
-                  id_login: req.userId,
-                  id_login_last_updated: req.userId,
-                  ds_usuario: user.email,
-                  ds_senha: user.senha,
-                  dt_created: new Date(),
-                  dt_updated: new Date(),
-                };
-    
-                await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
-              } else {
-                const novoSistemaPorPessoa = {
-                  id_pessoa: novaPessoaCriada.id,
-                  id_sistema: sistemaEncontrado.id,
-                  ds_usuario: user.usuario,
-                  ds_senha: user.senha,
-                  id_login: req.userId,
-                  id_login_last_updated: req.userId,
-                  dt_created: new Date(),
-                  dt_updated: new Date(),
-                };
-    
-                await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
-              }
-            }
-          }
+          res.send(usersReceived);
         } catch (err) {
           console.error(err);
           next(err);

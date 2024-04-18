@@ -9,6 +9,7 @@ router
   .get("/login/:id/infos", LoginController.buscaPessoaPorLogin)
   .post("/login/cria", LoginController.criaLogin)
   .post("/login/:id/restaurar", LoginController.restauraUsuario)
+  .post("/valida-permissao", LoginController.validaPermissao)
   .put("/login/:id", LoginController.atualizaUmLogin)
   .put("/login/:id/altera", LoginController.alteraSenha)
   .put("/login/:id/reset", LoginController.resetaSenha)
