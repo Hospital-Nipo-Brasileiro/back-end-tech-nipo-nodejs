@@ -32,6 +32,10 @@ module.exports = {
       ds_usuario_copia: {
         type: Sequelize.STRING
       },
+      nr_ordem_servico: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       id_login: {
         allowNull: false,
         type: Sequelize.UUID,
