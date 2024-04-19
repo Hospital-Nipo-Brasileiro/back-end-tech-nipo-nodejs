@@ -527,7 +527,7 @@ class AdmissaoService {
       const objectCargo = {
         ds_nome: user.cargo,
       };
-      console.log(objectCargo);
+
       const objectSetor = {
         ds_nome: user.area,
         ds_local: user.local,
@@ -547,8 +547,6 @@ class AdmissaoService {
         id_login_last_updated: userId
       };
 
-      console.log(objectPessoaCargo);
-
       await AdmissaoService.encontraOuCriaTabela("TN_T_PESSOA_CARGO", {
         id_pessoa: user.id,
         id_cargo_setor: Number(cargoSetorEncontrado.id)
@@ -561,7 +559,6 @@ class AdmissaoService {
   }
 
   static async vinculaSistemaAPessoaExistente({user, userId}) {
-    console.log(user.acessos);
     for(const sistema of user.acessos) {
       try {
         const sistemaEncontrado = await database.TN_T_SISTEMA.findOne({ where: { ds_nome: sistema } });
@@ -602,9 +599,6 @@ class AdmissaoService {
               dt_created: new Date(),
               dt_updated: new Date(),
             };
-
-            console.log(novoSistemaPorPessoa);
-            console.log(novoSistemaPorPessoa.ds_usuario_copia);
 
             await database.TN_T_SISTEMA_PESSOA.create(novoSistemaPorPessoa);
           }
