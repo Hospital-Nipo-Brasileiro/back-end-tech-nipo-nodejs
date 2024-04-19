@@ -1,6 +1,7 @@
 const ErroBase = require("../errors/ErroBase.js");
 const NaoEncontrado = require("../errors/NaoEncontrado.js");
 const database = require("../models");
+const AdmissaoService = require("../services/admissaoService.js");
 const PessoaService = require("../services/pessoaService.js");
 
 class PessoasController {
@@ -105,6 +106,27 @@ class PessoasController {
       res.status(200).send(pessoaAtualizada);
     } else {
       next(new NaoEncontrado(`ID ${id} de pessoa não encontrado para atualizar informações.`));
+    }
+  }
+
+  static async atualizaCargo(req, res, next) {
+    const { id } = req.params;
+    const cargoEncontradoOuNovo = { ds_nome: req.body.cargo };
+    const setorEncontradoOuNovo = { 
+      ds_nome: req.body.setor,
+      ds_local: req.body.local,
+      ds_email_cordenacao: req.body.emailCoord
+    };
+    
+    try {
+      const novoCargo = AdmissaoService.encontraOuCriaTabela("TN_T_CARGO", cargoEncontradoOuNovo, cargoEncontradoOuNovo);
+      const novoSetor = AdmissaoService.encontraOuCriaTabela("TN_T_SETOR", { ds_nome: req.body.setor }, setorEncontradoOuNovo);
+      const novoCargoSetor = AdmissaoService.encontraOuCriaTabela("TN_T_CARGO_SETOR", {id_cargo: novoCargo.id, id_setor: novoSetor.id}, {id_cargo: novoCargo.id, id_setor: novoSetor.id});
+      const novoVinculoPessoaCargo = AdmissaoService.encontraOuCriaTabela("TN_T_PESSOA_CARGO", { id_pessoa: id, id_cargo_setor: novoCargoSetor});
+  
+      res.send(novoVinculoPessoaCargo);
+    } catch (error) {
+      next(error);
     }
   }
 

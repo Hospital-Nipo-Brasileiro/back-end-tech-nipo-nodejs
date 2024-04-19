@@ -10,6 +10,7 @@ router
   .post("/pessoas", PessoasController.criaUmaPessoa)
   .post("/pessoas/:id/restaurar", PessoasController.restauraUmaPessoa)
   .put("/pessoas/:id", PessoasController.atualizaUmaPessoa)
+  .put("/pessoas/:id/cargo", PessoasController.atualizaCargo)
   .delete("/pessoas/:id", PessoasController.deletaUmaPessoa);
 
 module.exports = router;
